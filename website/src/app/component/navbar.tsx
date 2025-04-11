@@ -51,6 +51,8 @@ export default function Navbar() {
             
         </nav>
         {openNav && (
+        <>
+        <div className="fixed inset-0 bg-black/70 z-40 transition-opacity duration-300" onClick={toggleNav}></div>
         <div className="lg:hidden fixed left-1/2 -translate-x-1/2 w-[90%] md:w-[85%] mt-[5rem] z-50 bg-navBlue p-4 m-auto transition-all duration-500 ease-in-out rounded-lg">
           <ul className="space-y-3 text-center text-greyText text-md md:text-2xl">
           <Link href="/">
@@ -64,6 +66,7 @@ export default function Navbar() {
             <li className="block py-2">Blog</li>
           </ul>
         </div>
+        </>
       )}
         </div>        
     );
