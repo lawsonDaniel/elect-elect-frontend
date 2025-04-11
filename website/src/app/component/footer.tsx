@@ -1,6 +1,9 @@
 'use client';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 export default function Footer() {
+    const pathname = usePathname();
     return(
         <div className="bg-navBlue  w-[100%] px-[7.78%] ">
             <div className=" py-[4.5%]  ">
@@ -13,12 +16,15 @@ export default function Footer() {
                     </div>
                     <hr className="bg-[#9CA3AF] h-[0.15rem] mt-14"/>
                     <ul className="list-none flex flex-col md:flex-row mt-5 text-[#D1D5DB] text-md md:text-[1.10rem] gap-5 md:gap-14">
-                        <li className="cursor-pointer">Home</li>
-                        <li className="cursor-pointer">About Us</li>
-                        <li className="cursor-pointer">Contact</li>
-                        <li className="cursor-pointer">Resource</li>
-                        <li className="cursor-pointer">Resource</li>
-                        <li >Blog</li>
+                    <Link href="/">
+                    <li className={`cursor-pointer hover:text-white ${pathname === '/' ? 'text-gold font-semibold' : ''}`}>Home</li>
+                    </Link>
+
+                    <Link href="/about-us">
+                    <li className={`cursor-pointer hover:text-white ${pathname === '/about-us' ? 'text-gold font-semibold' : ''}`}>About Us</li>
+                    </Link>
+                        <li className="cursor-pointer hover:text-white">Contact</li>
+                        <li className="cursor-pointer hover:text-white">Blog</li>
                     </ul>
                     <div className=" mt-12 md:mt-20 flex flex-col  md:flex-row md:justify-between  ">
                         <p className="text-[#D1D5DB] text-sm ">Copyright@2025 Engineering Dept. All rights reserved</p>

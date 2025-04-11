@@ -1,10 +1,15 @@
 'use client';
+import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
+import { usePathname } from 'next/navigation';
+
 
 
 export default function Navbar() {
     const [openNav, setOpenNav] = useState(false);
+    const pathname = usePathname();
+
 
     const toggleNav = () => {
         setOpenNav(!openNav);
@@ -25,12 +30,17 @@ export default function Navbar() {
         <div className="mt-2 absolute w-full ">
         <nav className=" fixed left-1/2 -translate-x-1/2 w-[92%] md:w-[85%] h-18 bg-navBlue  flex  items-center justify-between rounded-md shadow-sm px-7 z-50">
            <img src="logo.png" alt="logo" className="w-12 h-12" />
-            <ul className="hidden lg:flex text-[#D1D5DB]  text-lg justify-center list-none text items-center space-x-10  ">
-            <li className="cursor-pointer">Home</li>
-            <li className="cursor-pointer">About Us</li>
-            <li className="cursor-pointer">Contact</li>
-            <li className="cursor-pointer">Resource</li>
-            <li className="cursor-pointer">Blog</li>
+            <ul className="hidden lg:flex text-[#D1D5DB]   text-lg justify-center list-none text items-center space-x-10  ">
+            <Link href="/">
+              <li className={`cursor-pointer hover:text-white ${pathname === '/' ? 'text-gold font-semibold' : ''}`}>Home</li>
+            </Link>
+
+            <Link href="/about-us">
+              <li className={`cursor-pointer hover:text-white ${pathname === '/about-us' ? 'text-gold font-semibold' : ''}`}>About Us</li>
+            </Link>
+
+            <li className="cursor-pointer hover:text-white">Contact</li>
+            <li className="cursor-pointer hover:text-white">Blog</li>
             </ul>
             <div className="flex items-center gap-3">
                 <button className="bg-[#B3A273] text-white w-[4rem] h-10 md:w-24 md:h-10 rounded-md text-sm md:text-md cursor-pointer  ">Join Us</button>
@@ -42,11 +52,15 @@ export default function Navbar() {
         </nav>
         {openNav && (
         <div className="lg:hidden fixed left-1/2 -translate-x-1/2 w-[90%] md:w-[85%] mt-[5rem] z-50 bg-navBlue p-4 m-auto transition-all duration-500 ease-in-out rounded-lg">
-          <ul className="space-y-4 text-center text-greyText text-md md:text-2xl">
-            <li  className="block py-2">Home</li>
-            <li className="block py-2">About Us</li>
+          <ul className="space-y-3 text-center text-greyText text-md md:text-2xl">
+          <Link href="/">
+              <li className={`cursor-pointer hover:text-white ${pathname === '/' ? 'text-gold font-semibold' : ''}`}>Home</li>
+            </Link>
+
+            <Link href="/about-us">
+              <li className={`cursor-pointer hover:text-white ${pathname === '/about-us' ? 'text-gold font-semibold' : ''}`}>About Us</li>
+            </Link>
             <li className="block py-2">Contact</li>
-            <li className="block py-2">Resources</li>
             <li className="block py-2">Blog</li>
           </ul>
         </div>
