@@ -1,5 +1,6 @@
 'use client';
 import Header from "../component/navbar";
+import Footer from "../component/footer";
 
 export default function ContactUs() {
   return (
@@ -15,7 +16,7 @@ export default function ContactUs() {
                 </div>
             </section>
         </div>
-      
+      <Footer/>
     </div>
   )
 }

@@ -10,7 +10,7 @@ const DepartmentData = [
   {
     role: 'Deputy Dean',
     name:'Dr. Sunday Iliya',
-    image: '/image1.png',
+    image: '/Driliya.jpg',
   },
   {
     role: 'HOD',
@@ -78,7 +78,7 @@ export default function DepartmentCarousel() {
     }
 
   return (
-    <section className="bg-greyText text-[#6B7280] py-10 px-4 text-center">
+    <section className="bg-greyText text-[#6B7280] py-10 px-4 text-center ">
       {/* Intro Text */}
       <h1 className='text-center text-3xl text-black font-semibold'>Meet the Department</h1>
       <p className="max-w-4xl mx-auto mb-8 mt-4 text-[#6B7280] text-lg">
@@ -110,25 +110,35 @@ export default function DepartmentCarousel() {
         {/* Scrollable Faculty Cards */}
         <div
           ref={scrollRef}
-          className="flex scrollbar-none overflow-x-auto gap-4 snap-x snap-mandatory  scroll-smooth px-1 md:px-10"
+          className="flex scrollbar-none overflow-x-auto gap-4  snap-x snap-mandatory  scroll-smooth px-1 md:px-10"
         >
           {DepartmentData.map((member, index) => (
-            <div
-              key={index}
-              className="flex-shrink-0 snap-center w-[80vw] sm:w-[45vw] md:w-[30vw] lg:w-[22vw] bg-greyText text-[#6B7280] rounded-xl overflow-hidden shadow-md "
-            >
-              <Image
-                src={member.image}
-                alt={member.role}
-                width={300}
-                height={400}
-                
-                className="object-cover w-full h-[85%] "
-              />
-              <p className='text-black font-bold pt-3'> {member.name}</p>  
-              <p className="p-1 text-center font-semibold">{member.role}</p>
+          <div
+            key={index}
+            className="relative group flex-shrink-0 snap-center w-[80vw] sm:w-[45vw] md:w-[30vw] lg:w-[22vw] 
+             bg-greyText text-[#6B7280] rounded-xl overflow-hidden shadow-md 
+             hover:scale-[1.02] transition-transform duration-400"
+          >
+            {/* Image */}
+            <Image
+              src={member.image}
+              alt={member.role}
+              width={300}
+              height={400}
+              className="object-cover w-full h-[85%]  "
+            />
+
+            {/* Name & Role */}
+            <div className="p-3 z-10 relative">
+              <p className='text-black font-bold'>{member.name}</p>  
+              <p className="text-center font-semibold">{member.role}</p>
             </div>
-          ))}
+
+            {/* Overlay covers everything */}
+            <div className="absolute inset-0 bg-black  opacity-0 group-hover:opacity-20 transition-opacity duration-300 z-20" />
+          </div>
+        ))}
+
         </div>
       </div>
     </section>

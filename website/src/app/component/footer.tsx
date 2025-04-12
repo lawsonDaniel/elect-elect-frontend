@@ -23,7 +23,9 @@ export default function Footer() {
                     <Link href="/about-us">
                     <li className={`cursor-pointer hover:text-white ${pathname === '/about-us' ? 'text-gold font-semibold' : ''}`}>About Us</li>
                     </Link>
-                        <li className="cursor-pointer hover:text-white">Contact</li>
+                    <Link href="/contact-us">
+                    <li className={`cursor-pointer hover:text-white ${pathname === '/contact-us' ? 'text-gold font-semibold' : ''}`}>Contact</li>
+                    </Link>
                         <li className="cursor-pointer hover:text-white">Blog</li>
                     </ul>
                     <div className=" mt-12 md:mt-20 flex flex-col  md:flex-row md:justify-between  ">
