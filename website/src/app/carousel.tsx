@@ -14,12 +14,12 @@ const DepartmentData = [
   },
   {
     role: 'HOD',
-    name:'Dr. Sunday Iliya',
+    name:'Dr. O. Awodiji',
     image: '/HOD.jpeg',
   },
   {
     role: 'Senior Lecturer',
-    name:'Dr. Sunday Iliya',
+    name:'Dr. Geraldine',
     image: '/DrGeraldine.jpeg',
   },
   {
