@@ -60,7 +60,7 @@ export default function Navbar() {
             </Link>
 
             <Link href="/about-us">
-              <li className={`cursor-pointer hover:text-white ${pathname === '/about-us' ? 'text-gold font-semibold' : ''}`}>About Us</li>
+              <li className={`cursor-pointer py-2 hover:text-white ${pathname === '/about-us' ? 'text-gold font-semibold' : ''}`}>About Us</li>
             </Link>
             <li className="block py-2">Contact</li>
             <li className="block py-2">Blog</li>

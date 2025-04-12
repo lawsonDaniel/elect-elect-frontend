@@ -47,15 +47,15 @@ export default function AboutUs() {
             </div>
                 
             <section className="bg-greyText flex flex-col lg:flex-row w-full gap-5 mt-5">
-                    <div className=" lg:mt-[13%] mx-[4.27%] lg:ml-[4.27%] lg:mx-0 ">
+                    <div className=" lg:mt-[13%] mx-[4.27%] lg:ml-[7.47%] lg:mx-0 ">
                       <h1 className="font-bold text-3xl md:text-3xl">Our story</h1>
                       <p className="mt-4 text-base md:text-lg leading-relaxed text-[#6B7280] ">
                       Founded with a vision to lead in engineering education and research, our department has grown into a center of excellence known for its cutting-edge curriculum, hands-on learning approach, and impactful research. We are committed to bridging the gap between theory and practice, ensuring our students are prepared for both academia and industry.
                       </p>
                     </div>
-                    <Image src="/students.jpeg" alt="welcomeImage" width={592} height={404} className="mx-[4.27%] lg:mx-0 my-[4.5%] md:w-[80%] w-[91%] lg:mr-[7.78%] rounded-lg"  layout="intrinsic"/>
+                    <Image src="/students.jpeg" alt="welcomeImage" width={592} height={404} className="mx-[4.27%] lg:mx-0 my-[4.5%] md:w-[97%] w-[91%] md:mx-auto lg:mr-[7.78%] rounded-lg"  layout="intrinsic"/>
             </section>
-            <section className="py-16 px-4 md:py-24 max-w-7xl mx-auto flex flex-col">
+            <section className="py-16 px-4 md:py-24 max-w-7xl mx-auto flex flex-col lg:mx-[6.47%]">
                 <h2 className="text-3xl md:text-5xl font-bold text-center lg:ml-auto  mb-16">Our Mission & Vision</h2>
                 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-16">
