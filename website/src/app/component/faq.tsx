@@ -32,7 +32,7 @@ export default function FAQSection() {
   return (
     <section className="px-[4.27%] md:px-[7.78%] py-12 bg-greyText text-black">
       <h2 className="text-center text-xl md:text-2xl font-semibold mb-8 text-black">
-        Got questions? We've got answers.
+        Got questions? We&apos;ve got answers.
       </h2>
       <div className="space-y-4">
       {faqs.map((faq, index) => (
