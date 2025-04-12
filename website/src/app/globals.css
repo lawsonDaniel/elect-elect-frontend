@@ -13,6 +13,7 @@ html, body {
   /* Custom theme values */
   --bg-hero: url('/hero.jpeg');
   --bg-about: url('/aboutBG.png');
+  --bg-gate: url('/gate.jpeg');
   --color-navBlue:#101E27;
   --color-greyText:#EDF3F8;
   --color-gold:#B3A273;

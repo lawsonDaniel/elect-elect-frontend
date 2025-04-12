@@ -39,7 +39,9 @@ export default function Navbar() {
               <li className={`cursor-pointer hover:text-white ${pathname === '/about-us' ? 'text-gold font-semibold' : ''}`}>About Us</li>
             </Link>
 
-            <li className="cursor-pointer hover:text-white">Contact</li>
+            <Link href="/contact-us">
+              <li className={`cursor-pointer hover:text-white ${pathname === '/contact-us' ? 'text-gold font-semibold' : ''}`}>Contact</li>
+            </Link>
             <li className="cursor-pointer hover:text-white">Blog</li>
             </ul>
             <div className="flex items-center gap-3">
@@ -62,7 +64,9 @@ export default function Navbar() {
             <Link href="/about-us">
               <li className={`cursor-pointer py-2 hover:text-white ${pathname === '/about-us' ? 'text-gold font-semibold' : ''}`}>About Us</li>
             </Link>
-            <li className="block py-2">Contact</li>
+            <Link href="/contact-us">
+              <li className={`cursor-pointer hover:text-white ${pathname === '/contact-us' ? 'text-gold font-semibold' : ''}`}>Contact</li>
+            </Link>
             <li className="block py-2">Blog</li>
           </ul>
         </div>

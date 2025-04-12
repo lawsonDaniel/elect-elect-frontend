@@ -125,7 +125,7 @@ export default function DepartmentCarousel() {
                 
                 className="object-cover w-full h-[85%] "
               />
-              <p> {member.name}</p>  
+              <p className='text-black font-bold pt-3'> {member.name}</p>  
               <p className="p-1 text-center font-semibold">{member.role}</p>
             </div>
           ))}
