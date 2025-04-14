@@ -2,6 +2,7 @@
 import Header from "../component/navbar";
 import Footer from "../component/footer";
 import FAQSection from "../component/faq";
+import { Phone, MapPin, Clock, ArrowRight } from 'lucide-react';
 
 
 export default function ContactUs() {
@@ -31,6 +32,45 @@ export default function ContactUs() {
             className="w-full"
             style={{ border: 0 }}
           ></iframe>
+        </div>
+      </section>
+      <section className=" px-[4.27%] md:px-[7.78%] py-2">
+        <div className='grid grid-rows-1 md:grid-cols-2 lg:grid-cols-3 gap-12'>
+          <div className="">
+            <MapPin size={28} className="bg-navBlue text-greyText p-1 rounded-md pt-2"/>
+            <h2 className="font-semibold text-lg pt-3">Our Location</h2>
+            <p className="text-sm  font-semibold pt-3">Department of Electrical & Electronics Engineering</p>
+            <p className="text-sm  text-[#6B7280] pt-3">Univerisity of Jos Permanent Site P.M.B 2084, Jos, Plateau State, Nigeria</p>
+            <span className="flex flex-row gap-1 mt-2"> <a
+                href="https://www.google.com/maps/place/Faculty+of+Engineering,+University+of+Jos/@9.9651271,8.8845577,17z/data=!3m1!4b1!4m6!3m5!1s0x10536d4f475ba63b:0x57a5f389e07bc14a!8m2!3d9.9651271!4d8.8845577!16s%2Fg%2F11j3373hdg?entry=ttu&g_ep=EgoyMDI1MDQwOS4wIKXMDSoASAFQAw%3D%3D"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-black hover:underline"
+              >
+                 Find us on the map
+              </a><ArrowRight size={12} className="text-black translate-y-1/2"/>
+            </span>
+
+          </div>
+          <div>
+            <Phone size={28} className="bg-navBlue text-greyText p-1 rounded-md"/>
+            <h2 className="font-semibold text-lg pt-3">Contact Information</h2>
+            <p className="text-sm   text-[#6B7280] pt-3"> <span className="font-semibold text-black">Email:</span> department.email@university.edu</p>
+            <p className="text-sm   text-[#6B7280] pt-3"> <span className="font-semibold text-black">Phone: </span>
+            +234 999 999 9999</p>
+            <p className="text-sm   text-[#6B7280] pt-3"> <span className="font-semibold text-black">Website: </span> 
+            www.unijos.ng</p>
+
+          </div>
+          <div>
+            <Clock size={28} className="bg-navBlue text-greyText p-1 rounded-md"/>
+            <h2 className="font-semibold text-lg pt-3">Office Hours</h2>
+            <p className="text-sm  text-[#6B7280] pt-3"> <span className="font-semibold text-black">Monday – Friday: </span>
+            8:00 AM – 5:00 PM</p>
+            <p className="text-sm  text-[#6B7280] pt-3"> <span className="font-semibold text-black">Sartuday and Sunday: </span>
+             Closed</p>
+
+          </div>
         </div>
       </section>
       <FAQSection />
