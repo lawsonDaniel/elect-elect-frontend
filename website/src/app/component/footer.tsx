@@ -38,7 +38,7 @@ export default function Footer() {
                             <Image src="/instagram.png" alt="facebook" layout='intrinsic' width={30} height={30}/>
                             </div>
                             <div className="w-[2.75rem] h-[2.75rem] rounded-full bg-[#FFFFFF1A] overflow-hidden flex items-center justify-center ">
-                            <Image src="/vector.png" alt="facebook" layout='intrinsic' width={30} height={30}/>
+                            <Image src="/Vector.png" alt="x" layout='intrinsic' width={30} height={30}/>
                             </div>
                             
                         </div>
