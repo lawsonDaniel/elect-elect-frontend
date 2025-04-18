@@ -58,7 +58,7 @@ export default function Home() {
 
   return (
     <div className="bg-greyText">
-      <div className="relative bg-cover bg-center bg-no-repeat h-screen bg-[image:var(--bg-hero)]">
+      <div className="relative bg-cover bg-center bg-no-repeat h-screen bg-[image:var(--bg-Faculty)]">
         <div className="absolute inset-0 bg-[#101E2799]"></div>
         <Header />
         {/* Hero Section */}

@@ -45,7 +45,7 @@ export default function Navbar() {
             <li className="cursor-pointer hover:text-white">Blog</li>
             </ul>
             <div className="flex items-center gap-3">
-                <button className="bg-[#B3A273] text-white w-[4rem] h-10 md:w-24 md:h-10 rounded-md text-sm md:text-md cursor-pointer  ">Join Us</button>
+                <Link href="/login"><button className="bg-[#B3A273] text-white w-[4rem] h-10 md:w-24 md:h-10 rounded-md text-sm md:text-md cursor-pointer  ">Login</button></Link>
                 {openNav ? <X className=" lg:hidden cursor-pointer w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 " color="white" size={35} onClick={toggleNav}/> : 
                 <Menu className=" lg:hidden cursor-pointer w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12" color="white"  size={35} onClick={toggleNav}/>}
             </div>
