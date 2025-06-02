@@ -9,7 +9,7 @@ type DashboardHeaderProps = {
 
 export default function DashHeader({ isMobileOpen, setIsMobileOpen }: DashboardHeaderProps) {
   return (
-    <div className="relative flex items-center  w-full px-4 py-2">
+    <div className="relative flex items-center justify-between w-full px-4 py-2">
       {/* Left side: menu + search */}
       <div className="flex items-center gap-4 flex-shrink-0">
         <div 

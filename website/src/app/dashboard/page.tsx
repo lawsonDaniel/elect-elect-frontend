@@ -26,7 +26,7 @@ export default function Dashboard() {
       <Sidenav isMobileOpen={isMobileOpen} setIsMobileOpen={setIsMobileOpen}/>
       </div>
       
-      <div className="flex flex-col mt-4">
+      <div className="flex flex-col mt-4 w-full">
         {/* Your dashboard content here */}
         <DashHeader isMobileOpen={isMobileOpen} setIsMobileOpen={setIsMobileOpen}/>
         <h1 className={`text-2xl  mt-10 font-semibold ${spaceGrotesk.className} `}>Welcome Back, Enoch</h1>
