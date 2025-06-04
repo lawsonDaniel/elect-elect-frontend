@@ -41,19 +41,19 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-[#EEF4FA] flex flex-col lg:flex-row ">
-      <div className="relative lg:hidden bg-cover bg-center bg-no-repeat h-[198px] md:bg-[image:var(--bg-Faculty)] md:mb-14 ">
-        <div className="hidden md:block absolute inset-0 bg-[#101E2799]"></div>
+      <div className="relative lg:hidden bg-cover bg-center bg-no-repeat h-[198px] bg-[image:var(--bg-Faculty)] mb-14 ">
+        <div className=" absolute inset-0 bg-[#101E2799]"></div>
         {/* Hero Section */}
         <section className="bg-no-repeat bg-cover flex flex-col ">
           <div className="px-[4.27%] md:px-[7.78%] h-[8.6rem] md:h-[10.438rem] w-full items-center mt-10 z-20 text-left md:text-center">
             <Link href="/">
               <div className="text-sm text-left mb-6 ">
-                <p className="text-black md:text-white hover:underline text-left text-lg">
+                <p className="text-white hover:underline text-left text-lg">
                   &larr; Back to website
                 </p>
               </div>
             </Link>
-            <h1 className="text-2xl md:text-3xl text-black md:text-white font-bold ">Enter the following details</h1>
+            <h1 className=" text-center text-2xl md:text-3xl text-white font-bold ">LOGIN</h1>
           </div>
         </section>
       </div>
@@ -77,7 +77,7 @@ export default function Login() {
           </Link>
         </div>
 
-        <h2 className="hidden md:block text-xl font-semibold mb-4">Enter the following details</h2>
+        <h2 className=" md:block text-xl mt-1 md:mt-0  font-semibold mb-4">Enter the following details:</h2>
 
         {/* Form using Formik object */}
         <form onSubmit={formik.handleSubmit}>

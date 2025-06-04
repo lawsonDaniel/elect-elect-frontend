@@ -67,7 +67,7 @@ export default function SideNav({ isMobileOpen, setIsMobileOpen }: SideNavProps)
 
     {/* Menu Text */}
     <div className={`text-xs sm:text-sm text-[#6B7280] px-2 pt-2 pb-2 text-left ${isExpanded ? '' : 'text-center'}`}>
-      {isExpanded ? 'MENU' : 'M'}
+      {isExpanded ?'MENU' : 'MENU'}
     </div>
 
     {/* Navigation Links */}
@@ -114,7 +114,7 @@ export default function SideNav({ isMobileOpen, setIsMobileOpen }: SideNavProps)
 
       {/* Academics Text */}
       <div className={`text-gray-500 px-2 pt-2 pb-2 text-left text-xs sm:text-sm ${isExpanded ? '' : 'text-center'}`}>
-        {isExpanded ? 'ACADEMICS' : 'A'}
+        {isExpanded ? 'ACADEMICS' : 'ACADEMICS'}
       </div>
 
       {/* CGP Calculator */}
