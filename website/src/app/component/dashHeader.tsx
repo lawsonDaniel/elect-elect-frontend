@@ -19,7 +19,20 @@ export default function DashHeader({ isMobileOpen, setIsMobileOpen }: DashboardH
           <Menu size={40} className='bg-white p-2 border text-[#6B7280] rounded-md border-[#6B7280]' />
         </div>
         
-        <div className="relative w-full max-w-xs sm:max-w-sm md:max-w-md lg:w-[31.5rem] lg:max-w-none">
+        {/* Mobile: Show only search icon */}
+        <div className="sm:hidden flex-shrink-0">
+          <button className="w-10 h-10 flex items-center justify-center bg-white border border-[#6B7280] rounded-md">
+            <Image
+              src='/search.png'
+              width={20}
+              height={20}
+              alt="search"
+            />
+          </button>
+        </div>
+
+        {/* Desktop: Show full search bar */}
+        <div className="hidden sm:block relative w-full max-w-sm md:max-w-md lg:w-[31.5rem] lg:max-w-none">
           <Image
             src='/search.png'
             width={24}
