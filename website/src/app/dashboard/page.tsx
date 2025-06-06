@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import { ChevronLeft, ChevronRight, MessageCircle, Library, Calculator, CreditCard } from 'lucide-react';
 import Sidenav from '../component/sideNav';
 import DashHeader from '../component/dashHeader';
 import {Poppins, Space_Grotesk,} from "next/font/google"
@@ -33,7 +34,6 @@ import Image from 'next/image';
     },
   ];
 
-
 const poppins = Poppins({
   subsets: ['latin'],        
   weight: ['400', '500', '600', '700'],
@@ -44,23 +44,120 @@ const poppins = Poppins({
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
   weight: ['400', '500', '700'], 
-  
 })
 
 export default function Dashboard() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [currentAnnouncement, setCurrentAnnouncement] = useState(0);
+  
+  const announcements = [
+    {
+      title: "Class Resumption Notice",
+      content: "The Department of Electrical and Electronics Engineering wishes to inform all students that the second semester will officially commence on Monday, May 6, 2025..."
+    },
+    {
+      title: "Academic Calendar Update",
+      content: "Please note the updated academic calendar for the 2025/2026 session. All students are advised to take note of important dates..."
+    },
+    {
+      title: "Registration Reminder",
+      content: "All returning students are reminded to complete their course registration before the deadline..."
+    }
+  ];
+
+  const quickActions = [
+    { icon: MessageCircle, label: "Open Chat Space" },
+    { icon: Library, label: "Go to Mini Library" },
+    { icon: Calculator, label: "Use CGP Calculator" },
+    { icon: CreditCard, label: "Make a Payment" }
+  ];
+
+  const calendarEvents = [
+    {
+      month: "August, 2025",
+      events: [
+        { date: "12th", title: "Resumption of 2025/2026 Academic Session" },
+        { date: "13th", title: "Academic Staff Meeting" }
+      ]
+    },
+    {
+      month: "September, 2025", 
+      events: [
+        { date: "12th", title: "Resumption of 2025/2026 Academic Session" },
+        { date: "13th", title: "Academic Staff Meeting" }
+      ]
+    },
+    {
+      month: "October, 2025",
+      events: [
+        { date: "5th", title: "Mid-Semester Break Begins" },
+        { date: "15th", title: "Classes Resume" },
+        { date: "20th", title: "Department Open Day" },
+        { date: "28th", title: "Research Symposium" }
+      ]
+    },
+    {
+      month: "November, 2025",
+      events: [
+        { date: "2nd", title: "Course Registration Deadline" },
+        { date: "10th", title: "First Semester Examinations Begin" },
+        { date: "25th", title: "Engineering Project Presentations" }
+      ]
+    },
+    {
+      month: "December, 2025",
+      events: [
+        { date: "1st", title: "End of First Semester" },
+        { date: "5th", title: "Graduation Ceremony" },
+        { date: "15th", title: "Christmas Break Begins" }
+      ]
+    },
+    {
+      month: "January, 2026",
+      events: [
+        { date: "8th", title: "Second Semester Begins" },
+        { date: "15th", title: "Late Registration Deadline" },
+        { date: "20th", title: "Orientation for New Students" }
+      ]
+    },
+    {
+      month: "February, 2026",
+      events: [
+        { date: "3rd", title: "Department Workshop" },
+        { date: "14th", title: "Valentine's Day Break" },
+        { date: "28th", title: "Mid-Semester Assessment" }
+      ]
+    },
+    {
+      month: "March, 2026",
+      events: [
+        { date: "10th", title: "Industrial Training Begins" },
+        { date: "15th", title: "Career Fair" },
+        { date: "25th", title: "Spring Break" }
+      ]
+    }
+  ];
+
+  const nextAnnouncement = () => {
+    setCurrentAnnouncement((prev) => (prev + 1) % announcements.length);
+  };
+
+  const prevAnnouncement = () => {
+    setCurrentAnnouncement((prev) => (prev - 1 + announcements.length) % announcements.length);
+  };
+
   return (
     <div className={`flex min-h-screen`}>
       <div className='h-screen flex items-center justify-start '>
       <Sidenav isMobileOpen={isMobileOpen} setIsMobileOpen={setIsMobileOpen}/>
       </div>
       
-      <div className="flex flex-col mt-1 w-full px-3 lg:pr-7">
+      <div className="flex flex-col mt-1 w-full px-3 lg:pr-7 overflow-y-auto h-screen">
         {/* Your dashboard content here */}
         <DashHeader isMobileOpen={isMobileOpen} setIsMobileOpen={setIsMobileOpen}/>
         
         {/* Rest of your dashboard components */}
-        <div className='w-full'>
+        <div className={`w-full ${poppins.className}`}>
           <h1 className={`text-xl sm:text-2xl font-semibold ${spaceGrotesk.className} mb-2`}>Welcome Back, Enoch</h1>
           <div className='w-full flex flex-col lg:flex-row lg:justify-between gap-4 mb-6'>
             <p className='lg:w-1/2 flex-shrink-0 text-sm sm:text-base'>Here&apos;s your current academic and departmental summary.</p>
@@ -90,7 +187,7 @@ export default function Dashboard() {
           </div>
           
           {/* Main Content Area */}
-          <div className='flex flex-col xl:flex-row gap-4 sm:gap-6'>
+          <div className='flex flex-col xl:flex-row gap-4 sm:gap-6 mb-8'>
             {/* Blue Chart/Content Box */}
             <div className='bg-navBlue text-white p-6 w-full lg:w-[31.4rem]  sm:h-80 md:h-[20.75rem] rounded-lg flex-shrink-0 order-1'>
               {/* Header */}
@@ -139,10 +236,10 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-            </div>
+      </div>
             
             {/* Cards Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 flex-1 order-1 xl:order-2">
+            <div className={`grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 flex-1 order-1 xl:order-2 ${spaceGrotesk.className}`}>
               {cards.map((card, idx) => (
                 <div
                   key={idx}
@@ -155,6 +252,102 @@ export default function Dashboard() {
                   <div className="text-xs text-gray-500">{card.sub}</div>
                 </div>
               ))}
+            </div>
+          </div>
+
+          {/* New Dashboard Components Section */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            {/* Left Column - Quick Actions and Announcements */}
+            <div className="lg:col-span-2 space-y-6">
+              
+              {/* Quick Actions */}
+              <div className="bg-white rounded-lg shadow-sm border border-gray-300 p-6">
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {quickActions.map((action, index) => (
+                    <button
+                      key={index}
+                      className="flex items-center gap-3 p-3 rounded-md border border-gray-300 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200 text-left"
+                    >
+                      <action.icon className="w-5 h-5 text-gray-600" />
+                      <span className="text-gray-700 text-sm">{action.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Announcements */}
+              <div className="bg-white rounded-lg shadow-sm border border-gray-300 p-6">
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">Announcements</h2>
+                
+                <div className="relative">
+                  <div className="mb-4">
+                    <h3 className="font-medium text-gray-900 mb-2">
+                      {announcements[currentAnnouncement].title}
+                    </h3>
+                    <p className="text-gray-600 text-sm leading-relaxed">
+                      {announcements[currentAnnouncement].content}
+                    </p>
+                  </div>
+                  
+                  {/* Navigation - Simple line with arrows */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1 h-0.5 bg-gray-300 mx-4"></div>
+                    
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={prevAnnouncement}
+                        className="p-1 hover:bg-gray-100 transition-colors duration-200"
+                      >
+                        <ChevronLeft className="w-5 h-5 text-gray-600" />
+                      </button>
+                      <button
+                        onClick={nextAnnouncement}
+                        className="p-1 hover:bg-gray-100 transition-colors duration-200"
+                      >
+                        <ChevronRight className="w-5 h-5 text-gray-600" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column - School Calendar */}
+            <div className="lg:col-span-1">
+              <div className="bg-white rounded-lg shadow-sm border border-gray-300 p-6 sticky top-6">
+                <h2 className="text-lg font-semibold text-gray-900 mb-6">School Calendar</h2>
+                
+                {/* Scrollable container with max height */}
+                <div className="max-h-96 overflow-y-auto pr-2 space-y-6 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                  {calendarEvents.map((monthData, monthIndex) => (
+                    <div key={monthIndex}>
+                      <h3 className="text-sm font-bold text-gray-900 mb-3 sticky top-0 bg-white pb-1">
+                        {monthData.month}
+                      </h3>
+                      
+                      <div className="space-y-3">
+                        {monthData.events.map((event, eventIndex) => (
+                          <div key={eventIndex} className="flex items-start gap-4">
+                            <div className="flex-shrink-0 text-right">
+                              <span className="text-gray-900 font-medium text-sm">
+                                {event.date}
+                              </span>
+                            </div>
+                            
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm text-gray-900 leading-tight">
+                                {event.title}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>

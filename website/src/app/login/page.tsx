@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Notification from "../component/notification";
+import { useState } from 'react';
 
 // Validation schema using Yup
 const validationSchema = Yup.object({
@@ -16,17 +17,50 @@ const validationSchema = Yup.object({
 });
 
 export default function Login() {
+  const [isLoading, setIsLoading] = useState(false);
+
   // Form submission handler
   interface LoginFormValues {
     email: string;
     password: string;
   }
 
-  const handleSubmit = (values: LoginFormValues): void => {
-    console.log('Form values:', values);
-    Notification.info('Form submitted successfully!');
-    // Add your login logic here
-    // Example: await loginUser(values.email, values.password);
+  const handleSubmit = async (values: LoginFormValues): Promise<void> => {
+    setIsLoading(true);
+    
+    try {
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: values.email,
+          password: values.password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        Notification.info('Login successful!');
+        console.log('Login successful:', data);
+        
+        // Handle successful login (e.g., redirect to dashboard)
+        // Example: router.push('/dashboard');
+        // You might also want to store the user token or session data
+        
+      } else {
+        // Handle API error response
+        Notification.info(data.message || 'Login failed. Please try again.');
+        console.error('Login failed:', data);
+      }
+    } catch (error) {
+      console.error('Network error:', error);
+      Notification.info('Network error. Please check your connection and try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Formik object
@@ -89,7 +123,8 @@ export default function Login() {
               value={formik.values.email}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              className={`p-3 rounded-md border w-full focus:outline-none focus:ring-2 focus:ring-blue-400 ${
+              disabled={isLoading}
+              className={`p-3 rounded-md border w-full focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed ${
                 formik.errors.email && formik.touched.email ? 'border-red-500' : 'border-gray-300'
               }`}
               placeholder="Enter your Email"
@@ -102,12 +137,13 @@ export default function Login() {
           <div className="mb-6">
             <label className="text-sm mb-1 block">Enter Password</label>
             <input
-              type="password"
+              type="passwo
               name="password"
               value={formik.values.password}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              className={`p-3 rounded-md border w-full focus:outline-none focus:ring-2 focus:ring-blue-400 ${
+              disabled={isLoading}
+              className={`p-3 rounded-md border w-full focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed ${
                 formik.errors.password && formik.touched.password ? 'border-red-500' : 'border-gray-300'
               }`}
               placeholder="Password"
@@ -119,10 +155,10 @@ export default function Login() {
 
           <button
             type="submit"
-            disabled={formik.isSubmitting}
+            disabled={formik.isSubmitting || isLoading}
             className="bg-navBlue text-white py-3 rounded-md font-medium hover:bg-gray-800 transition duration-300 cursor-pointer w-full disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {formik.isSubmitting ? 'Signing in...' : 'Continue'}
+            {isLoading ? 'Signing in...' : 'Continue'}
           </button>
         </form>
 
