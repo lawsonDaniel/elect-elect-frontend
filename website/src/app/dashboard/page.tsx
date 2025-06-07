@@ -158,7 +158,7 @@ export default function Dashboard() {
         
         {/* Rest of your dashboard components */}
         <div className={`w-full ${poppins.className}`}>
-          <h1 className={`text-xl sm:text-2xl font-semibold ${spaceGrotesk.className} mb-2`}>Welcome Back, Enoch</h1>
+          <h1 className={`text-xl sm:text-2xl font-semibold ${spaceGrotesk.className} mb-2`}>Welcome Back, John</h1>
           <div className='w-full flex flex-col lg:flex-row lg:justify-between gap-4 mb-6'>
             <p className='lg:w-1/2 flex-shrink-0 text-sm sm:text-base'>Here&apos;s your current academic and departmental summary.</p>
             <div className='flex flex-col sm:flex-row gap-2 lg:w-1/2 lg:justify-end'>
@@ -210,7 +210,7 @@ export default function Dashboard() {
         />
         
         <div>
-          <h3 className="text-lg font-semibold mb-1">Enoch Folorunso</h3>
+          <h3 className="text-lg font-semibold mb-1">John Doe</h3>
           <p className="text-gray-400 text-sm">Student</p>
         </div>
       </div>

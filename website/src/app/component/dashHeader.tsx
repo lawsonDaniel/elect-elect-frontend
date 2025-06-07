@@ -1,15 +1,23 @@
 'use client';
 import { Menu, Sun, Moon } from "lucide-react";
 import Image from "next/image";
+import {Poppins} from "next/font/google"
 
 type DashboardHeaderProps = {
   isMobileOpen: boolean;
   setIsMobileOpen: (open: boolean) => void;
 };
 
+const poppins = Poppins({
+  subsets: ['latin'],        
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-poppins', // optional: to use as a CSS variable
+  display: 'swap',            
+});
+
 export default function DashHeader({ isMobileOpen, setIsMobileOpen }: DashboardHeaderProps) {
   return (
-    <div className="relative flex items-center justify-between w-full mb-5 py-2">
+    <div className={`relative flex items-center justify-between w-full mb-5 py-2 ${poppins.className}`}>
       {/* Left side: menu + search */}
       <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0 flex-1 min-w-0">
         <div
