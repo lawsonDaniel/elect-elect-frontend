@@ -53,9 +53,10 @@ export default function SideNav({ isMobileOpen, setIsMobileOpen }: SideNavProps)
         )}
       </div>
 
+      {/* Toggle button - now visible on mobile too */}
       <button 
         onClick={toggleSidebar} 
-        className="absolute -right-3 sm:-right-5 p-1 rounded-full bg-navBlue hover:bg-gray-300 hidden md:block"
+        className="absolute -right-3 sm:-right-5 p-1 rounded-full bg-navBlue hover:bg-gray-300"
       >        
         <ChevronLeft
               color='white'
@@ -63,11 +64,13 @@ export default function SideNav({ isMobileOpen, setIsMobileOpen }: SideNavProps)
               className={`sm:w-5 sm:h-5 transition-transform duration-300 ${isExpanded ? '' : 'rotate-180'}`}
             />
       </button>
+
+      
     </div>
 
     {/* Menu Text */}
     <div className={`text-xs sm:text-sm text-[#6B7280] px-2 pt-2 pb-2 text-left ${isExpanded ? '' : 'text-center'}`}>
-      {isExpanded ? 'MENU' : 'M'}
+      {isExpanded ?'MENU' : 'MENU'}
     </div>
 
     {/* Navigation Links */}
@@ -114,7 +117,7 @@ export default function SideNav({ isMobileOpen, setIsMobileOpen }: SideNavProps)
 
       {/* Academics Text */}
       <div className={`text-gray-500 px-2 pt-2 pb-2 text-left text-xs sm:text-sm ${isExpanded ? '' : 'text-center'}`}>
-        {isExpanded ? 'ACADEMICS' : 'A'}
+        {isExpanded ? 'ACADEMICS' : 'ACADEMICS'}
       </div>
 
       {/* CGP Calculator */}

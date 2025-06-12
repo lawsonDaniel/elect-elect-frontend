@@ -1,15 +1,23 @@
 'use client';
 import { Menu, Sun, Moon } from "lucide-react";
 import Image from "next/image";
+import {Poppins} from "next/font/google"
 
 type DashboardHeaderProps = {
   isMobileOpen: boolean;
   setIsMobileOpen: (open: boolean) => void;
 };
 
+const poppins = Poppins({
+  subsets: ['latin'],        
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-poppins', // optional: to use as a CSS variable
+  display: 'swap',            
+});
+
 export default function DashHeader({ isMobileOpen, setIsMobileOpen }: DashboardHeaderProps) {
   return (
-    <div className="relative flex items-center justify-between w-full px-4 py-2">
+    <div className={`relative flex items-center justify-between w-full mb-5 py-2 ${poppins.className}`}>
       {/* Left side: menu + search */}
       <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0 flex-1 min-w-0">
         <div
@@ -19,7 +27,20 @@ export default function DashHeader({ isMobileOpen, setIsMobileOpen }: DashboardH
           <Menu size={40} className='bg-white p-2 border text-[#6B7280] rounded-md border-[#6B7280]' />
         </div>
         
-        <div className="relative w-full max-w-xs sm:max-w-sm md:max-w-md lg:w-[31.5rem] lg:max-w-none">
+        {/* Mobile: Show only search icon */}
+        <div className="sm:hidden flex-shrink-0">
+          <button className="w-10 h-10 flex items-center justify-center bg-white border border-[#6B7280] rounded-md">
+            <Image
+              src='/search.png'
+              width={20}
+              height={20}
+              alt="search"
+            />
+          </button>
+        </div>
+
+        {/* Desktop: Show full search bar */}
+        <div className="hidden sm:block relative w-full max-w-sm md:max-w-md lg:w-[31.5rem] lg:max-w-none">
           <Image
             src='/search.png'
             width={24}
@@ -52,6 +73,19 @@ export default function DashHeader({ isMobileOpen, setIsMobileOpen }: DashboardH
           alt="notification" 
           className="sm:w-6 sm:h-6 flex-shrink-0"
         />
+      </div>
+      <div className="flex flex-row ml-2 mr-2">
+        <Image 
+          src='/DrTijani.png' 
+          width={48} 
+          height={48} 
+          alt="Profile Picture" 
+          className="rounded-full "
+        />
+        <div className="hidden md:flex flex-col ml-3">
+          <p className="font-bold">John Doe</p>
+          <p>student</p>
+        </div>
       </div>
 
       {/* overlay for mobile */}
