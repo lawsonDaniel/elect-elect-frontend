@@ -96,7 +96,7 @@ export default function Login() {
       <div className="w-full lg:w-1/2 flex flex-col justify-center px-8 md:px-20 lg:px-28">
         <div className="flex lg:flex-row flex-row-reverse justify-between">
           {/* Logo */}
-          <Link href="/">
+          <Link href="/"> 
             <div className="lg:mb-6 hidden lg:block">
               <Image src="/logo.png" alt="Logo" width={40} height={40} />
             </div>
@@ -137,7 +137,7 @@ export default function Login() {
           <div className="mb-6">
             <label className="text-sm mb-1 block">Enter Password</label>
             <input
-              type="passwo
+              type="password"
               name="password"
               value={formik.values.password}
               onChange={formik.handleChange}
