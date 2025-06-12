@@ -39,9 +39,11 @@ export default function SideNav({ isMobileOpen, setIsMobileOpen }: SideNavProps)
     {/* Logo and Toggle */}
     <div className="relative flex items-center p-3 sm:p-4">
       <div className="flex items-center">
-      <img 
-        src="logo.png" 
-        alt="logo" 
+      <Image 
+        src="/logo.png" 
+        width={48}
+        height={48}
+        alt="Logo" 
         className={`w-8 h-8 sm:w-12 sm:h-12 ${isExpanded?'':'translate-x-1/4 transition-all duration-700 ease-in-out'}`} 
       />
         
@@ -82,7 +84,7 @@ export default function SideNav({ isMobileOpen, setIsMobileOpen }: SideNavProps)
             width={16} 
             height={16} 
             alt='dashboard'
-            className={`sm:w-5 sm:h-5 ${pathname === '/dashboard' ? 'brightness-0 invert' : ''} ${isExpanded?'':'ml-0'} transition-all duration-700 ease-in-out`}
+            className={`sm:w-5 sm:h-5  ${isExpanded?'':'ml-0'} transition-all duration-700 ease-in-out`}
           />
         </div>
         
@@ -96,13 +98,13 @@ export default function SideNav({ isMobileOpen, setIsMobileOpen }: SideNavProps)
       </Link>
 
       {/* Chat Room */}
-      <Link href="/chat" className={`transition-all duration-1000 ease-in-out flex items-center px-3 sm:px-4 py-2 text-[#6B7280] hover:bg-gray-300 rounded-lg mx-2 mt-1 ${pathname === '/chat' ? 'bg-navBlue text-white' : ''} ${isExpanded?'':'justify-center'}`}>
+      <Link href="/dashboard/chat" className={`transition-all duration-1000 ease-in-out flex items-center px-3 sm:px-4 py-2 text-[#6B7280] hover:bg-gray-300 rounded-lg mx-2 mt-1 ${pathname === '/dashboard/chat' ? 'bg-navBlue text-white' : ''} ${isExpanded?'':'justify-center'}`}>
         <div className="min-w-[20px] sm:min-w-[24px] flex justify-center items-center">
           <Image src='/messages.png' 
             width={16} 
             height={16} 
             alt='chat room'
-            className={`sm:w-5 sm:h-5 ${pathname === '/chat' ? 'brightness-0 invert' : ''} ${isExpanded?'':'ml-0'} transition-all duration-700 ease-in-out`}
+            className={`sm:w-5 sm:h-5  ${isExpanded?'':'ml-0'} transition-all duration-700 ease-in-out`}
           />
         </div>
         
@@ -121,13 +123,13 @@ export default function SideNav({ isMobileOpen, setIsMobileOpen }: SideNavProps)
       </div>
 
       {/* CGP Calculator */}
-      <Link href="/cgp-calculator" className={`transition-all duration-1000 ease-in-out flex items-center px-3 sm:px-4 py-2 text-[#6B7280] hover:bg-gray-300 rounded-lg mx-2 mt-1 ${pathname === '/cgp-calculator' ? 'bg-navBlue text-white' : ''} ${isExpanded?'':'justify-center'}`}>
+      <Link href="dashboard/gpaCalculator" className={`transition-all duration-1000 ease-in-out flex items-center px-3 sm:px-4 py-2 text-[#6B7280] hover:bg-gray-300 rounded-lg mx-2 mt-1 ${pathname === 'dashboard/gpaCalculator' ? 'bg-navBlue text-white' : ''} ${isExpanded?'':'justify-center'}`}>
         <div className="min-w-[20px] sm:min-w-[24px] flex justify-center items-center">
           <Image src='/calculator.png' 
             width={16} 
             height={16} 
             alt='calculator'
-            className={`sm:w-5 sm:h-5 ${pathname === '/cgp-calculator' ? 'brightness-0 invert' : ''} ${isExpanded?'':'ml-0'} transition-all duration-700 ease-in-out`}
+            className={`sm:w-5 sm:h-5  ${isExpanded?'':'ml-0'} transition-all duration-700 ease-in-out`}
           />
         </div>
         
@@ -141,13 +143,13 @@ export default function SideNav({ isMobileOpen, setIsMobileOpen }: SideNavProps)
       </Link>
 
       {/* Library */}
-      <Link href="/library" className={`transition-all duration-1000 ease-in-out flex items-center px-3 sm:px-4 py-2 text-[#6B7280] hover:bg-gray-300 rounded-lg mx-2 mt-1 ${pathname === '/library' ? 'bg-navBlue text-white' : ''} ${isExpanded?'':'justify-center'}`}>
+      <Link href="/dashboard/MiniLibrary" className={`transition-all duration-1000 ease-in-out flex items-center px-3 sm:px-4 py-2 text-[#6B7280] hover:bg-gray-300 rounded-lg mx-2 mt-1 ${pathname === '/dashboard/MiniLibrary' ? 'bg-navBlue text-white' : ''} ${isExpanded?'':'justify-center'}`}>
         <div className="min-w-[20px] sm:min-w-[24px] flex justify-center items-center">
           <Image src='/book-01.png' 
             width={16} 
             height={16} 
             alt='library'
-            className={`sm:w-5 sm:h-5 ${pathname === '/library' ? 'brightness-0 invert' : ''} ${isExpanded?'':'ml-0'} transition-all duration-700 ease-in-out`}
+            className={`sm:w-5 sm:h-5  ${isExpanded?'':'ml-0'} transition-all duration-700 ease-in-out`}
           />
         </div>
         
@@ -161,13 +163,13 @@ export default function SideNav({ isMobileOpen, setIsMobileOpen }: SideNavProps)
       </Link>
 
       {/* Payments */}
-      <Link href="/payments" className={`transition-all duration-1000 ease-in-out flex items-center px-3 sm:px-4 py-2 text-[#6B7280] hover:bg-gray-300 rounded-lg mx-2 mt-1 ${pathname === '/payments' ? 'bg-navBlue text-white' : ''} ${isExpanded?'':'justify-center'}`}>
+      <Link href="/dashboard/payment" className={`transition-all duration-1000 ease-in-out flex items-center px-3 sm:px-4 py-2 text-[#6B7280] hover:bg-gray-300 rounded-lg mx-2 mt-1 ${pathname === '/dashboard/payment' ? 'bg-navBlue text-white' : ''} ${isExpanded?'':'justify-center'}`}>
         <div className="min-w-[20px] sm:min-w-[24px] flex justify-center items-center">
           <Image src='/elements.png' 
             width={16} 
             height={16} 
             alt='payment'
-            className={`sm:w-5 sm:h-5 ${pathname === '/payments' ? 'brightness-0 invert' : ''} ${isExpanded?'':'ml-0'} transition-all duration-700 ease-in-out`}
+            className={`sm:w-5 sm:h-5  ${isExpanded?'':'ml-0'} transition-all duration-700 ease-in-out`}
           />
         </div>
        
@@ -184,13 +186,13 @@ export default function SideNav({ isMobileOpen, setIsMobileOpen }: SideNavProps)
     {/* Bottom Actions */}
     <div className="mt-auto mb-4">
       {/* Settings */}
-      <Link href="/settings" className={`transition-all duration-1000 ease-in-out flex items-center px-3 sm:px-4 py-2 text-[#6B7280] hover:bg-gray-300 rounded-lg mx-2 ${pathname === '/settings' ? 'bg-navBlue text-white' : ''} ${isExpanded?'':'justify-center'}`}>
+      <Link href="/dashboard/settings" className={`transition-all duration-1000 ease-in-out flex items-center px-3 sm:px-4 py-2 text-[#6B7280] hover:bg-gray-300 rounded-lg mx-2 ${pathname === '/dashboard/settings' ? 'bg-navBlue text-white' : ''} ${isExpanded?'':'justify-center'}`}>
         <div className="min-w-[20px] sm:min-w-[24px] flex justify-center items-center">
           <Image src='/setting.png' 
             width={16} 
             height={16} 
             alt='settings'
-            className={`sm:w-5 sm:h-5 ${pathname === '/settings' ? 'brightness-0 invert' : ''} ${isExpanded?'':'ml-0'} transition-all duration-700 ease-in-out`}
+            className={`sm:w-5 sm:h-5 ${pathname === '/dashboard/settings' ? 'brightness-0 invert' : ''} ${isExpanded?'':'ml-0'} transition-all duration-700 ease-in-out`}
           />
         </div>
        
