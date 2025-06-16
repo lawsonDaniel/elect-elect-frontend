@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react';
-import { Upload, X, Eye, EyeOff } from 'lucide-react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Upload, Eye, EyeOff } from 'lucide-react';
+import { Formik, Form, Field, ErrorMessage, FieldProps, FormikProps } from 'formik';
 import * as Yup from 'yup';
 import SideNav from '@/app/component/sideNav';
 import { Poppins } from "next/font/google";
@@ -13,6 +13,58 @@ const poppins = Poppins({
   variable: '--font-poppins',
   display: 'swap',            
 });
+
+// Type definitions
+interface ProfileFormValues {
+  firstName: string;
+  surname: string;
+  otherNames: string;
+  department: string;
+  matric: string;
+  email: string;
+  phone: string;
+  role: 'Student' | 'Faculty' | 'Staff' | 'Admin';
+}
+
+interface PasswordFormValues {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
+interface NotificationFormValues {
+  emailNotifications: boolean;
+  smsNotifications: boolean;
+  pushNotifications: boolean;
+}
+
+interface ShowPasswordsState {
+  current: boolean;
+  new: boolean;
+  confirm: boolean;
+}
+
+interface PasswordStrength {
+  strength: number;
+  label: string;
+  color: string;
+}
+
+interface CustomFieldProps {
+  name: string;
+  type?: string;
+  placeholder?: string;
+  className?: string;
+  children?: React.ReactNode;
+  [key: string]: unknown;
+}
+
+interface PasswordFieldProps {
+  name: string;
+  placeholder: string;
+  showPassword: boolean;
+  onToggleVisibility: () => void;
+}
 
 // Validation Schemas
 const profileValidationSchema = Yup.object({
@@ -68,16 +120,16 @@ const notificationValidationSchema = Yup.object({
 });
 
 export default function Settings() {
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('profile');
-  const [showPasswords, setShowPasswords] = useState({
+  const [isMobileOpen, setIsMobileOpen] = useState<boolean>(false);
+  const [activeTab, setActiveTab] = useState<'profile' | 'password' | 'notifications'>('profile');
+  const [showPasswords, setShowPasswords] = useState<ShowPasswordsState>({
     current: false,
     new: false,
     confirm: false
   });
 
   // Initial form values
-  const initialProfileValues = {
+  const initialProfileValues: ProfileFormValues = {
     firstName: 'Enoch',
     surname: 'Folorunso',
     otherNames: 'Dami',
@@ -88,26 +140,26 @@ export default function Settings() {
     role: 'Student'
   };
 
-  const initialPasswordValues = {
+  const initialPasswordValues: PasswordFormValues = {
     currentPassword: '',
     newPassword: '',
     confirmPassword: ''
   };
 
-  const initialNotificationValues = {
+  const initialNotificationValues: NotificationFormValues = {
     emailNotifications: true,
     smsNotifications: false,
     pushNotifications: true
   };
 
-  const togglePasswordVisibility = (field) => {
+  const togglePasswordVisibility = (field: keyof ShowPasswordsState): void => {
     setShowPasswords(prev => ({
       ...prev,
       [field]: !prev[field]
     }));
   };
 
-  const getPasswordStrength = (password) => {
+  const getPasswordStrength = (password: string): PasswordStrength => {
     if (!password) return { strength: 0, label: '', color: '' };
     
     let score = 0;
@@ -123,7 +175,7 @@ export default function Settings() {
     return { strength: 100, label: 'Strong', color: 'bg-green-500' };
   };
 
-  const handleProfileSubmit = (values, { setSubmitting }) => {
+  const handleProfileSubmit = (values: ProfileFormValues, { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }): void => {
     console.log('Saving profile data:', values);
     // Add your save logic here
     setTimeout(() => {
@@ -132,7 +184,7 @@ export default function Settings() {
     }, 1000);
   };
 
-  const handlePasswordSubmit = (values, { setSubmitting, resetForm }) => {
+  const handlePasswordSubmit = (values: PasswordFormValues, { setSubmitting, resetForm }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void }): void => {
     console.log('Updating password...');
     // Add your password update logic here
     setTimeout(() => {
@@ -142,7 +194,7 @@ export default function Settings() {
     }, 1000);
   };
 
-  const handleNotificationSubmit = (values, { setSubmitting }) => {
+  const handleNotificationSubmit = (values: NotificationFormValues, { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }): void => {
     console.log('Saving notification preferences:', values);
     // Add your save logic here
     setTimeout(() => {
@@ -152,10 +204,10 @@ export default function Settings() {
   };
 
   // Custom Field Component for better styling
-  const CustomField = ({ name, type = "text", placeholder, className = "", children, ...props }) => {
+  const CustomField: React.FC<CustomFieldProps> = ({ name, type = "text", placeholder, className = "", children, ...props }) => {
     return (
       <Field name={name}>
-        {({ field, meta }) => (
+        {({ field, meta }: FieldProps) => (
           <div>
             {type === 'select' ? (
               <select
@@ -186,10 +238,10 @@ export default function Settings() {
   };
 
   // Custom Password Field Component
-  const PasswordField = ({ name, placeholder, showPassword, onToggleVisibility }) => {
+  const PasswordField: React.FC<PasswordFieldProps> = ({ name, placeholder, showPassword, onToggleVisibility }) => {
     return (
       <Field name={name}>
-        {({ field, meta }) => (
+        {({ field, meta }: FieldProps) => (
           <div>
             <div className="relative">
               <input
@@ -287,7 +339,7 @@ export default function Settings() {
                   validationSchema={profileValidationSchema}
                   onSubmit={handleProfileSubmit}
                 >
-                  {({ isSubmitting, resetForm }) => (
+                  {({ isSubmitting, resetForm }: FormikProps<ProfileFormValues>) => (
                     <Form>
                       {/* Profile Picture Section */}
                       <div className="mb-8">
@@ -418,7 +470,7 @@ export default function Settings() {
                   validationSchema={passwordValidationSchema}
                   onSubmit={handlePasswordSubmit}
                 >
-                  {({ isSubmitting, resetForm, values }) => {
+                  {({ isSubmitting, resetForm, values }: FormikProps<PasswordFormValues>) => {
                     const passwordStrength = getPasswordStrength(values.newPassword);
                     
                     return (
@@ -568,7 +620,7 @@ export default function Settings() {
                   validationSchema={notificationValidationSchema}
                   onSubmit={handleNotificationSubmit}
                 >
-                  {({ isSubmitting }) => (
+                  {({ isSubmitting }: FormikProps<NotificationFormValues>) => (
                     <Form>
                       <div className="space-y-4">
                         <div className="flex items-center justify-between">
