@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
-import { ChevronLeft, Menu} from 'lucide-react';
+import { ChevronLeft} from 'lucide-react';
 import {Poppins} from "next/font/google"
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -18,7 +18,7 @@ const poppins = Poppins({
   display: 'swap',            
 });
 
-export default function SideNav({ isMobileOpen, setIsMobileOpen }: SideNavProps) {
+export default function SideNav({ isMobileOpen }: SideNavProps) {
     const [isExpanded, setIsExpanded] = useState(true);
     
     const pathname = usePathname();
