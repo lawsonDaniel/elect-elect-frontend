@@ -123,7 +123,7 @@ export default function SideNav({ isMobileOpen, setIsMobileOpen }: SideNavProps)
       </div>
 
       {/* CGP Calculator */}
-      <Link href="dashboard/gpaCalculator" className={`transition-all duration-1000 ease-in-out flex items-center px-3 sm:px-4 py-2 text-[#6B7280] hover:bg-gray-300 rounded-lg mx-2 mt-1 ${pathname === 'dashboard/gpaCalculator' ? 'bg-navBlue text-white' : ''} ${isExpanded?'':'justify-center'}`}>
+      <Link href="/dashboard/gpaCalculator" className={`transition-all duration-1000 ease-in-out flex items-center px-3 sm:px-4 py-2 text-[#6B7280] hover:bg-gray-300 rounded-lg mx-2 mt-1 ${pathname === '/dashboard/gpaCalculator' ? 'bg-navBlue text-white' : ''} ${isExpanded?'':'justify-center'}`}>
         <div className="min-w-[20px] sm:min-w-[24px] flex justify-center items-center">
           <Image src='/calculator.png' 
             width={16} 
@@ -143,7 +143,7 @@ export default function SideNav({ isMobileOpen, setIsMobileOpen }: SideNavProps)
       </Link>
 
       {/* Library */}
-      <Link href="/dashboard/MiniLibrary" className={`transition-all duration-1000 ease-in-out flex items-center px-3 sm:px-4 py-2 text-[#6B7280] hover:bg-gray-300 rounded-lg mx-2 mt-1 ${pathname === '/dashboard/MiniLibrary' ? 'bg-navBlue text-white' : ''} ${isExpanded?'':'justify-center'}`}>
+      <Link href="/dashboard/mini-library" className={`transition-all duration-1000 ease-in-out flex items-center px-3 sm:px-4 py-2 text-[#6B7280] hover:bg-gray-300 rounded-lg mx-2 mt-1 ${pathname === '/dashboard/mini-library' ? 'bg-navBlue text-white' : ''} ${isExpanded?'':'justify-center'}`}>
         <div className="min-w-[20px] sm:min-w-[24px] flex justify-center items-center">
           <Image src='/book-01.png' 
             width={16} 
