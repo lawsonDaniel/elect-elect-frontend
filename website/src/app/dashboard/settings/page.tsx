@@ -6,6 +6,7 @@ import * as Yup from 'yup';
 import SideNav from '@/app/component/sideNav';
 import { Poppins } from "next/font/google";
 import DashHeader from '@/app/component/dashHeader';
+import Image from 'next/image';
 
 const poppins = Poppins({
   subsets: ['latin'],        
@@ -130,12 +131,12 @@ export default function Settings() {
 
   // Initial form values
   const initialProfileValues: ProfileFormValues = {
-    firstName: 'Enoch',
-    surname: 'Folorunso',
-    otherNames: 'Dami',
+    firstName: 'John',
+    surname: 'Doe',
+    otherNames: 'Elon',
     department: 'Electrical & Electronics Engineering',
-    matric: 'UJ/2018/EL/0001',
-    email: 'enoch@gmail.com',
+    matric: 'UJ/2018/EN/0001',
+    email: 'elon@gmail.com',
     phone: '+234 90 1234 5680',
     role: 'Student'
   };
@@ -301,7 +302,7 @@ export default function Settings() {
                     onClick={() => setActiveTab('profile')}
                     className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
                       activeTab === 'profile'
-                        ? 'border-blue-600 text-blue-600'
+                        ? 'border-navBlue text-navBlue'
                         : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                     }`}
                   >
@@ -311,7 +312,7 @@ export default function Settings() {
                     onClick={() => setActiveTab('password')}
                     className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
                       activeTab === 'password'
-                        ? 'border-blue-600 text-blue-600'
+                        ? 'border-navBlue text-navBlue'
                         : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                     }`}
                   >
@@ -321,7 +322,7 @@ export default function Settings() {
                     onClick={() => setActiveTab('notifications')}
                     className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
                       activeTab === 'notifications'
-                        ? 'border-blue-600 text-blue-600'
+                        ? 'border-navBlue text-navBlue'
                         : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                     }`}
                   >
@@ -345,21 +346,26 @@ export default function Settings() {
                       <div className="mb-8">
                         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                           <div className="w-20 h-20 rounded-full bg-green-200 flex items-center justify-center overflow-hidden">
-                            <img 
-                              src="/api/placeholder/80/80" 
+                            <Image
+                            width={64}
+                            height={64} 
+                              src="/DrTijani.png" 
                               alt="Profile" 
                               className="w-full h-full object-cover"
                             />
                           </div>
-                          <div className="flex-1">
-                            <h3 className="text-lg font-semibold text-gray-900 mb-1">Profile Picture</h3>
-                            <p className="text-sm text-gray-500 mb-3">PNG, JPEG, Under 15mb</p>
-                            <div className="flex flex-col sm:flex-row gap-3">
-                              <button type="button" className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors">
-                                <Upload className="w-4 h-4" />
+                          <div className="w-full flex flex-col md:flex-row justify-between">
+                            <div className='flex flex-col'>
+                              <h3 className="text-lg font-semibold text-gray-900 mb-1">Profile Picture</h3>
+                              <p className="text-sm text-gray-500 mb-3">PNG, JPEG, Under 15mb</p>
+                            </div>
+                            
+                            <div className="flex flex-row gap-3">
+                              <button type="button" className="flex items-center gap-2 px-2 py-0 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors">
+                                <Upload className="w-4 h-4 " />
                                 Upload New Picture
                               </button>
-                              <button type="button" className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors">
+                              <button type="button" className="px-2 py-1 bg-[#EF4444] text-sm text-white rounded-md hover:bg-red-900 transition-colors">
                                 Delete
                               </button>
                             </div>
@@ -424,7 +430,6 @@ export default function Settings() {
                           </label>
                           <CustomField name="role" type="select">
                             <option value="Student">Student</option>
-                            <option value="Faculty">Faculty</option>
                             <option value="Staff">Staff</option>
                             <option value="Admin">Admin</option>
                           </CustomField>

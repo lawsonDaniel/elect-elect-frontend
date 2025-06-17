@@ -78,13 +78,13 @@ export default function SideNav({ isMobileOpen }: SideNavProps) {
     {/* Navigation Links */}
     <div className="flex-1 overflow-y-auto">
       {/* Dashboard */}
-      <Link href="/dashboard" className={`transition-all duration-1000 text-[#6B7280] ease-in-out flex items-center px-3 sm:px-4 py-2 hover:bg-gray-300 ${pathname === '/dashboard' ? 'bg-navBlue text-white' : ''} rounded-lg mx-2 ${isExpanded?'':'justify-center'}`}>
+      <Link href="/dashboard" className={`transition-all duration-1000 ease-in-out flex items-center px-3 sm:px-4 py-2 text-[#6B7280] hover:bg-gray-300 rounded-lg mx-2 mt-1 ${pathname === '/dashboard' ? 'bg-navBlue text-white' : ''} ${isExpanded?'':'justify-center'}`}>
         <div className="min-w-[20px] sm:min-w-[24px] flex justify-center items-center">
           <Image src='/dashboard-square.png' 
             width={16} 
             height={16} 
             alt='dashboard'
-            className={`sm:w-5 sm:h-5  ${isExpanded?'':'ml-0'} transition-all duration-700 ease-in-out`}
+            className={`sm:w-5 sm:h-5 ${pathname === '/dashboard' ? ' ' : 'invert brightness-50'}  ${isExpanded?'':'ml-0'} transition-all duration-700 ease-in-out`}
           />
         </div>
         
@@ -212,7 +212,7 @@ export default function SideNav({ isMobileOpen }: SideNavProps) {
             width={16} 
             height={16} 
             alt='logout'
-            className={`sm:w-5 sm:h-5 ${pathname === '/logout' ? 'brightness-0 invert' : ''} ${isExpanded?'':'ml-0'} transition-all duration-700 ease-in-out`}
+            className={`sm:w-5 sm:h-5  ${isExpanded?'':'ml-0'} transition-all duration-700 ease-in-out`}
           />
         </div>
         

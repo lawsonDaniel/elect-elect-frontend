@@ -5,6 +5,8 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Notification from "../component/notification";
 import { useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
+
 
 // Validation schema using Yup
 const validationSchema = Yup.object({
@@ -12,12 +14,14 @@ const validationSchema = Yup.object({
     .email('Please enter a valid email address')
     .required('Email is required'),
   password: Yup.string()
-    .min(6, 'Password must be at least 6 characters')
+    .min(8, 'Password must be at least 8 characters')
     .required('Password is required')
 });
 
 export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+ 
 
   // Form submission handler
   interface LoginFormValues {
@@ -136,18 +140,32 @@ export default function Login() {
 
           <div className="mb-6">
             <label className="text-sm mb-1 block">Enter Password</label>
-            <input
-              type="password"
-              name="password"
-              value={formik.values.password}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              disabled={isLoading}
-              className={`p-3 rounded-md border w-full focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed ${
-                formik.errors.password && formik.touched.password ? 'border-red-500' : 'border-gray-300'
-              }`}
-              placeholder="Password"
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                value={formik.values.password}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                disabled={isLoading}
+                className={`p-3 pr-12 rounded-md border w-full focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed ${
+                  formik.errors.password && formik.touched.password ? 'border-red-500' : 'border-gray-300'
+                }`}
+                placeholder="Password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                disabled={isLoading}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {showPassword ? (
+                  <EyeOff className="h-5 w-5" />
+                ) : (
+                  <Eye className="h-5 w-5" />
+                )}
+              </button>
+            </div>
             {formik.errors.password && formik.touched.password && (
               <div className="text-red-500 text-sm mt-1">{formik.errors.password}</div>
             )}
@@ -161,8 +179,9 @@ export default function Login() {
             {isLoading ? 'Signing in...' : 'Continue'}
           </button>
         </form>
+        <p className="mt-3 text-black font-medium hover:underline cursor-pointer">Forgot password?</p>
 
-        <p className="text-sm text-gray-500 mt-6">
+        <p className="text-sm text-gray-500 mt-4">
           Don't Have an account?{' '}
           <a href="#" className="text-black font-medium hover:underline">
             Sign Up
