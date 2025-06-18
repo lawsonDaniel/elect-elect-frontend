@@ -152,7 +152,7 @@ export default function Login() {
                   formik.errors.password && formik.touched.password ? 'border-red-500' : 'border-gray-300'
                 }`}
                 placeholder="Password"
-              />
+              />=
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
@@ -179,7 +179,7 @@ export default function Login() {
             {isLoading ? 'Signing in...' : 'Continue'}
           </button>
         </form>
-        <p className="mt-3 text-black font-medium hover:underline cursor-pointer">Forgot password?</p>
+        <p className="mt-3 text-black  font-medium hover:underline cursor-pointer">Forgot password?</p>
 
         <p className="text-sm text-gray-500 mt-4">
           Don't Have an account?{' '}
