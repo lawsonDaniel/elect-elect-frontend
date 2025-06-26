@@ -1,7 +1,7 @@
 'use client';
 import Header from "../component/navbar";
 import Footer from "../component/footer";
-import Carousel from "../carousel";
+import Carousel from "../component/carousel";
 import Image from 'next/image';
 
 export default function AboutUs() {
