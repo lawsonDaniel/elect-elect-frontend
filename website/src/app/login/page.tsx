@@ -152,7 +152,7 @@ export default function Login() {
                   formik.errors.password && formik.touched.password ? 'border-red-500' : 'border-gray-300'
                 }`}
                 placeholder="Password"
-              />=
+              />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
