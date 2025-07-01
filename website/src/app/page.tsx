@@ -98,7 +98,13 @@ export default function Home() {
         <div className="mt-6 grid grid-row-1 lg:grid-cols-3 gap-10 -mx-[1%] md:mx-[2.6%] lg:mx-[4.6%]">
           {values.map(({ image, title, description }) => (
             <div key={title} className="bg-gray-800 p-6 rounded-lg text-center">
-              <Image src={image} alt={title} width={48} height={48} className="m-auto"  layout="intrinsic" />
+              <Image 
+              src={image} 
+              alt={title} 
+              width={48} 
+              height={48} 
+              className="m-auto" 
+              layout="intrinsic" />
               <h3 className="text-xl font-semibold text-white mt-5">{title}</h3>
               <p className="mt-2 text-[#D1D5DB] text-sm">{description}</p>
             </div>
@@ -121,7 +127,13 @@ export default function Home() {
                 {points.map((point, index) => (
                   <li key={index} className="flex items-center mt-2 text-sm gap-3">
                     <div className="flex items-center justify-center h-[1rem] w-[1rem] bg-navBlue shrink-0">
-                      <Image src="/check (1).png" alt="" width={16} height={16} className="h-full w-full object-contain block"  layout="intrinsic"/>
+                      <Image 
+                      src="/check (1).png" 
+                      alt="" 
+                      width={16} 
+                      height={16} 
+                      className="h-full w-full object-contain block"  
+                      layout="intrinsic"/>
                     </div>
                     {point}
                   </li>
@@ -130,7 +142,11 @@ export default function Home() {
               <div className="mt-auto ml-auto">
                 <button className="w-[7.75rem] h-[2.5rem] bg-transparent rounded-4xl border border-[#9CA3AF] flex items-center justify-center gap-2">
                   Enroll now
-                  <Image src="/arrow.png" alt="arrow" width={16} height={16}  layout="intrinsic" />
+                  <Image src="/arrow.png" 
+                  alt="arrow" 
+                  width={16}
+                  height={16}  
+                  layout="intrinsic" />
                 </button>
               </div>
             </div>
@@ -152,12 +168,22 @@ export default function Home() {
           <div className="mt-6 grid grid-row-1 lg:grid-cols-2 lg:-mx-[1.78%]">
             {news.map(({ images, title, description }) => (
               <div key={title} className="lg:p-4 rounded-lg text-left">
-                <Image src={images} alt={title} width={589} height={314} className="m-auto  md:w-full md:h-full rounded-lg" layout="intrinsic" />
+                <Image 
+                src={images} 
+                alt={title} 
+                width={589} 
+                height={314} 
+                className="m-auto  md:w-full md:h-full rounded-lg" layout="intrinsic" />
                 <p className="mt-3">News</p>
                 <h3 className="text-xl font-semibold text-black mt-5">{title}</h3>
                 <p className="mt-2 text-black text-sm">{description}</p>
                 <div className="flex items-center mt-4 mb-5">
-                  <Image src="/Ellipse 1.png" alt="HOD" width={48} height={48} className="rounded-full" />
+                  <Image src="/Ellipse 1.png" 
+                  alt="HOD" 
+                  width={48} 
+                  height={48} 
+
+                  className="rounded-full" />
                   <div className="ml-1 flex flex-col">
                     <p>HOD</p>
                     <p className="font-bold">Dr. O. Awodiji</p>
