@@ -181,8 +181,8 @@ export default function Login() {
         </form>
         <p className="mt-3 text-black  font-medium hover:underline cursor-pointer">Forgot password?</p>
 
-        <p className="text-sm text-gray-500 mt-4">
-          Don't Have an account?{' '}
+        <p className="text-sm text-gray-500 mt-6">
+          Don’t Have an account?{' '}
           <a href="#" className="text-black font-medium hover:underline">
             Sign Up
           </a>
