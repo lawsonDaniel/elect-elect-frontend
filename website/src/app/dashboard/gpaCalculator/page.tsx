@@ -12,9 +12,9 @@ const poppins = Poppins({
 });
 
 
-
 export default function Calculator() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+
 
   return (
     <div className="flex min-h-screen">
@@ -26,10 +26,7 @@ export default function Calculator() {
         <DashHeader isMobileOpen={isMobileOpen} setIsMobileOpen={setIsMobileOpen}/>
         
         {/* Page Content Area */}
-        <div className={`w-full ${poppins.className}`}>
-          {/* Your page content goes here */}
-          
-        </div>
+      
       </div>
     </div>
   );
