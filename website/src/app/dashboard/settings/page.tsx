@@ -273,16 +273,8 @@ export default function Settings() {
   };
 
   return (
-    <div className="flex min-h-screen">
-      <div className='h-screen flex items-center justify-start'>
-        <SideNav isMobileOpen={isMobileOpen} setIsMobileOpen={setIsMobileOpen}/>
-      </div>
+    <>
       
-      <div className="flex flex-col mt-1 w-full px-3 lg:pr-7 overflow-y-auto h-screen">
-        <DashHeader isMobileOpen={isMobileOpen} setIsMobileOpen={setIsMobileOpen}/>
-        
-        {/* Page Content Area */}
-        <div className={`w-full ${poppins.className}`}>
           <div className="p-4 md:p-6">
             {/* Header */}
             <div className="mb-8">
@@ -679,8 +671,7 @@ export default function Settings() {
               </div>
             )}
           </div>
-        </div>
-      </div>
-    </div>
+       
+    </>
   );
 }

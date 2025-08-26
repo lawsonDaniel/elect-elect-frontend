@@ -147,17 +147,8 @@ export default function Dashboard() {
   };
 
   return (
-    <div className={`flex min-h-screen`}>
-      <div className='h-screen flex items-center justify-start '>
-      <Sidenav isMobileOpen={isMobileOpen} setIsMobileOpen={setIsMobileOpen}/>
-      </div>
-      
-      <div className="flex flex-col mt-1 w-full px-3 lg:pr-7 overflow-y-auto h-screen">
-        {/* Your dashboard content here */}
-        <DashHeader isMobileOpen={isMobileOpen} setIsMobileOpen={setIsMobileOpen}/>
-        
-        {/* Rest of your dashboard components */}
-        <div className={`w-full ${poppins.className}`}>
+   <>
+    
           <h1 className={`text-xl sm:text-2xl font-semibold ${spaceGrotesk.className} mb-2`}>Welcome Back, John</h1>
           <div className='w-full flex flex-col lg:flex-row lg:justify-between gap-4 mb-6'>
             <p className='lg:w-1/2 flex-shrink-0 text-sm sm:text-base'>Here&apos;s your current academic and departmental summary.</p>
@@ -350,8 +341,7 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
+
+   </>
   );
 }
