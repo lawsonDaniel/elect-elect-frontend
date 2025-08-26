@@ -152,7 +152,7 @@ export default function Login() {
                   formik.errors.password && formik.touched.password ? 'border-red-500' : 'border-gray-300'
                 }`}
                 placeholder="Password"
-              />=
+              />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
@@ -182,13 +182,13 @@ export default function Login() {
         <p className="mt-3 text-black  font-medium hover:underline cursor-pointer">Forgot password?</p>
 
         <p className="text-sm text-gray-500 mt-6">
-          Don’t Have an account?{' '}
+          Don&apos;t Have an account?{' '}
           <a href="#" className="text-black font-medium hover:underline">
             Sign Up
           </a>
         </p>
       </div>
-
+{/* new */}
       {/* Right Side - Image */}
       <div className="hidden lg:block w-1/2 h-[95vh] relative my-auto mx-4 ">
         <div className="absolute inset-0 bg-[#101E274D] z-20 rounded-xl"></div>

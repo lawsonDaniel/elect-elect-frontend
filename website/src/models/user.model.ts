@@ -72,11 +72,11 @@ const UserSchema = new mongoose.Schema({
   },
   level: {
     type: Number,
-    required: function() {
+    required: function(this: any) {
       return this.role === UserRole.STUDENT;
     },
     enum: [100, 200, 300, 400, 500],
-    default: function() {
+    default: function(this: any) {
       return this.role === UserRole.STUDENT ? 100 : undefined;
     }
   },
