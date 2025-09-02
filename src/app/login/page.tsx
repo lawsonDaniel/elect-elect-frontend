@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import Image from "next/image";
 import Link from "next/link";
 import { useFormik } from 'formik';
@@ -6,22 +6,28 @@ import * as Yup from 'yup';
 import Notification from "../component/notification";
 import { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
-
+import endPoints from '@/utils/endpoints.class';
+import { useRouter } from 'next/navigation';
+import { setCookie, parseCookies } from 'nookies';
 
 // Validation schema using Yup
 const validationSchema = Yup.object({
   email: Yup.string()
     .email('Please enter a valid email address')
-    .required('Email is required'),
+    .required('Email is required')
+    .matches(
+      /^[a-zA-Z0-9._%+-]+@unijos\.edu\.ng$/,
+      'Please use your official University of Jos email address (@unijos.edu.ng)'
+    ),
   password: Yup.string()
-    .min(8, 'Password must be at least 8 characters')
-    .required('Password is required')
+    .min(6, 'Password must be at least 6 characters')
+    .required('Password is required'),
 });
 
 export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
- 
+  const router = useRouter();
 
   // Form submission handler
   interface LoginFormValues {
@@ -33,35 +39,44 @@ export default function Login() {
     setIsLoading(true);
     
     try {
-      const response = await fetch('/api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: values.email,
-          password: values.password,
-        }),
+      const response = await endPoints.login({
+        email: values.email,
+        password: values.password,
       });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        Notification.info('Login successful!');
-        console.log('Login successful:', data);
+      Notification.info('Login successful!');
+      console.log('Login successful:', response);
+      
+      // Store token in cookies using nookies
+      if (response.token) {
+        // Set auth token cookie with 7 days expiration
+        setCookie(null, 'auth-token', response.token, {
+          maxAge: 60 * 60 * 24 * 7, // 7 days in seconds
+          path: '/',
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'strict',
+        });
         
-        // Handle successful login (e.g., redirect to dashboard)
-        // Example: router.push('/dashboard');
-        // You might also want to store the user token or session data
-        
-      } else {
-        // Handle API error response
-        Notification.info(data.message || 'Login failed. Please try again.');
-        console.error('Login failed:', data);
+        // Also store user info in cookies for easy access
+        if (response.user) {
+          setCookie(null, 'user-info', JSON.stringify({
+            id: response.user._id,
+            email: response.user.schoolEmail,
+            userType: response.user.userType,
+            firstName: response.user.firstName,
+            surname: response.user.surname,
+          }), {
+            maxAge: 60 * 60 * 24 * 7,
+            path: '/',
+          });
+        }
       }
-    } catch (error) {
-      console.error('Network error:', error);
-      Notification.info('Network error. Please check your connection and try again.');
+      
+    router.push('/dashboard');
+      
+    } catch (error: any) {
+      console.error('Login error:', error);
+      Notification.info(error.message || 'Login failed. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -188,7 +203,7 @@ export default function Login() {
           </a>
         </p>
       </div>
-{/* new */}
+
       {/* Right Side - Image */}
       <div className="hidden lg:block w-1/2 h-[95vh] relative my-auto mx-4 ">
         <div className="absolute inset-0 bg-[#101E274D] z-20 rounded-xl"></div>

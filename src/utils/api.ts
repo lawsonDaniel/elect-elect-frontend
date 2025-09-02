@@ -2,7 +2,7 @@ import axios from "axios";
 import { parseCookies } from "nookies";
 
 // Replace the URL with your actual API endpoint
-const baseURL =  process.env.NEXT_PUBLIC_BASE_URL  || "hhttp://localhost:3000/api" 
+const baseURL =  process.env.NEXT_PUBLIC_BASE_URL  || "http://localhost:3000/api" 
  ;
 console.log(baseURL, "backend running");
 
