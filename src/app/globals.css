@@ -1,0 +1,52 @@
+/* src/app/globals.css */
+@import "tailwindcss";
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+@theme {
+  /* Custom theme values */
+  --bg-hero: url('/hero.jpeg');
+  --bg-about: url('/aboutBG.png');
+  --bg-Faculty: url('/FacultyIMG3.jpg');
+  --bg-gate: url('/gate.jpeg');
+  --color-navBlue: #101E27;
+  --color-greyText: #EDF3F8;
+  --color-gold: #B3A273;
+
+  /* DARKMODE COLORS*/
+  --color-darkBackground: #070E12;
+  --color-darktexth: #FFFFFF;
+  --color-darktextp: #EDF3F8;
+}
+
+/* Hide scrollbar across browsers */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Dark mode styles */
+.dark {
+  background-color: var(--color-darkBackground);
+  color: var(--color-darktextp);
+}
+
+.dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+  color: var(--color-darktexth);
+}
+
+/* Smooth transitions */
+body, .dark {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+button, input, a {
+  transition: all 0.2s ease;
+}
