@@ -8,34 +8,76 @@ import {ArrowRight, ArrowLeft} from "lucide-react";
 
 const DepartmentData = [
   {
+    role: 'HOD',
+    name:'Dr. Olurotimi O. Awodiji',
+    image: '/HOD.jpeg',
+  },
+  {
     role: 'Deputy Dean',
     name:'Dr. Sunday Iliya',
     image: '/Driliya.jpg',
   },
-  {
-    role: 'HOD',
-    name:'Dr. O. Awodiji',
-    image: '/HOD.jpeg',
-  },
+  
+  
   {
     role: 'Senior Lecturer',
-    name:'Dr. Geraldine',
+    name:'Dr. Emmanuel Kasai Akut',
+    image: '/Dr_Akut.jpg',
+  },
+  {
+    role: 'Lecturer 1',
+    name:'Engr. Patrick Nyabvou Julius',
+    image: '/Engr_Patrick.jpg',
+  },
+  {
+    role: 'Lecturer I',
+    name:'Engr. Egbujo Felix Iheanacho',
+    image: '/Engr_Felix.jpg',
+  },
+  {
+    role: 'Lecturer I',
+    name:'Engr. Kishak Zakka Cinfwat',
+    image: '/Engr_Kishak.jpg',
+  },
+  {
+    role: 'Lecturer I',
+    name:'Engr. Isaiah A, Akintunde',
+    image: '/Engr_Akintunde.jpg',
+  },
+  {
+    role: 'Lecturer II',
+    name:'Dr. Geraldine Rangmoen Rimven',
     image: '/DrGeraldine.jpeg',
   },
   {
-    role: 'Senior Lecturer',
-    name:'Dr. Sunday Iliya',
-    image: '/DrTijani.png',
+    role: 'Chief Technologist',
+    name:'Mari Yahaya Maimako',
+    image: '/Mr_Mari.jpg',
+  },
+   {
+    role: 'Principal Technologist',
+    name:'Bala John Abiti',
+    image: '/Mr_John.jpg',
   },
   {
-    role: 'Senior Lecturer',
-    name:'Dr. Sunday Iliya',
-    image: '/DrGeraldine.jpeg',
+    role: 'Technologist',
+    name:'Nwoye Raphael Ugochukwu',
+    image: '/Mr_Raphael.jpg',
   },
   {
-    role: 'Senior Lecturer',
-    name:'Dr. Sunday Iliya',
-    image: '/DrTijani.png',
+    role: 'Technologist I',
+    name:'Odaudu Paul James',
+    image: '/Mr_Paul.jpg',
+  },
+  {
+    role: 'Technologist I',
+    name:'Unite Ali Dogo',
+    image: '/Mr_Dogo.jpg',
+  },
+  {
+    role: 'Technologist I',
+    name:'Adegbenle Adeniyi S',
+    image: '/Mr_Adeniyi.jpg',
   },
 ]
 
