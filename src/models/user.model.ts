@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema, Model } from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 
@@ -232,6 +232,6 @@ userSchema.index({ userType: 1, level: 1 });
 userSchema.index({ userType: 1, rank: 1 });
 userSchema.index({ userType: 1, department: 1 });
 
-// Export model - FIXED: Check if model already exists to prevent overwrite
+// Register the User model
 const User = mongoose.models.User || mongoose.model<IUser>('User', userSchema);
 export default User;

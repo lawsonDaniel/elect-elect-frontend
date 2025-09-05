@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/utils/db';
 import User from '@/models/user.model';
+import { supabase } from '@/utils/supabase/client';
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,7 +13,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { surname, firstName, gender, schoolEmail, password, rank, staffId, department, faculty } = body;
 
-    // Check if user already exists
+    // Check if user already exists in MongoDB
     const existingUser = await User.findOne({ schoolEmail });
     if (existingUser) {
       return NextResponse.json(
@@ -21,29 +22,142 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create new staff user
+    // Check if staffId already exists in MongoDB
+    const existingUserByStaffId = await User.findOne({ staffId });
+    if (existingUserByStaffId) {
+      return NextResponse.json(
+        { error: 'User with this staff ID already exists' },
+        { status: 400 }
+      );
+    }
+
+    // Check if user exists in Supabase
+    const { data: supabaseUser } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('school_email', schoolEmail)
+      .single();
+
+    if (supabaseUser) {
+      return NextResponse.json(
+        { error: 'User with this email already exists in the system' },
+        { status: 400 }
+      );
+    }
+
+    // Check if staffId exists in Supabase
+    const { data: supabaseUserByStaffId } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('staff_id', staffId)
+      .single();
+
+    if (supabaseUserByStaffId) {
+      return NextResponse.json(
+        { error: 'User with this staff ID already exists in the system' },
+        { status: 400 }
+      );
+    }
+
+    // Validate password length
+    if (password.length < 6) {
+      return NextResponse.json(
+        { error: 'Password must be at least 6 characters' },
+        { status: 400 }
+      );
+    }
+
+    // ✅ 1. FIRST CREATE MONGODB USER (without supabase_user_id initially)
     const user = new User({
       surname,
       firstName,
       gender,
       userType: 'staff',
       schoolEmail,
-      password,
+      password, // This will be hashed by your User model
       rank,
       staffId,
       department,
       faculty,
+      // supabase_user_id will be added after Supabase user is created
     });
 
-    // Save user to database
+    // Save user to MongoDB first
     await user.save();
+
+    let supabaseSyncStatus = 'completed';
+    let supabaseUserId: string | null = null;
+
+    try {
+      // ✅ 2. NOW CREATE SUPABASE AUTH USER (using the already-created MongoDB user._id)
+      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+        email: schoolEmail,
+        password: password, // Use the actual password provided by user
+        email_confirm: true,
+        user_metadata: {
+          mongo_user_id: user._id.toString(), // Now user is defined
+          user_type: 'staff'
+        }
+      });
+
+      if (authError) {
+        console.error('Supabase auth creation error:', authError);
+        throw new Error(`Supabase auth failed: ${authError.message}`);
+      }
+
+      supabaseUserId = authData.user.id;
+
+      // ✅ 3. CREATE PROFILE IN SUPABASE
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .insert({
+          id: authData.user.id,
+          mongo_user_id: user._id.toString(), // Reference to MongoDB
+          surname,
+          first_name: firstName,
+          gender,
+          user_type: 'staff',
+          school_email: schoolEmail,
+          rank,
+          staff_id: staffId,
+          department,
+          faculty
+        });
+
+      if (profileError) {
+        console.error('Supabase profile creation error:', profileError);
+        // Clean up the auth user if profile creation failed
+        await supabase.auth.admin.deleteUser(authData.user.id);
+        throw new Error(`Supabase profile creation failed: ${profileError.message}`);
+      }
+
+      // ✅ 4. UPDATE MONGODB USER WITH SUPABASE USER ID
+      user.supabase_user_id = supabaseUserId;
+      await user.save();
+
+    } catch (supabaseError: any) {
+      console.error('Supabase sync error:', supabaseError);
+      supabaseSyncStatus = 'failed';
+      
+      // 🧹 ROLLBACK: Delete the MongoDB user since Supabase creation failed
+      await User.findByIdAndDelete(user._id);
+      
+      return NextResponse.json(
+        { error: `Failed to create user in authentication system: ${supabaseError.message}` },
+        { status: 500 }
+      );
+    }
 
     // Return success response (exclude password)
     const userResponse = user.toObject();
     delete userResponse.password;
 
     return NextResponse.json(
-      { message: 'Staff user created successfully', user: userResponse },
+      { 
+        message: 'Staff user created successfully', 
+        user: userResponse,
+        supabase_sync: supabaseSyncStatus
+      },
       { status: 201 }
     );
 
@@ -59,8 +173,9 @@ export async function POST(request: NextRequest) {
     }
 
     if (error.code === 11000) {
+      const field = Object.keys(error.keyValue)[0];
       return NextResponse.json(
-        { error: 'Duplicate field value entered' },
+        { error: `${field} already exists` },
         { status: 400 }
       );
     }

@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@aws-sdk/s3-request-presigner": "^3.882.0",
+    "@supabase/supabase-js": "^2.57.0",
     "axios": "^1.11.0",
     "barcode": "^0.1.0",
     "bcryptjs": "^3.0.2",
@@ -18,6 +20,7 @@
     "lucide-react": "^0.486.0",
     "mongoose": "^8.15.1",
     "next": "15.3.0",
+    "next-auth": "^4.24.11",
     "nookies": "^2.5.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -26,6 +29,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@supabase/ssr": "^0.7.0",
     "@tailwindcss/postcss": "^4",
     "@types/barcode": "^0.0.33",
     "@types/jsonwebtoken": "^9.0.10",
