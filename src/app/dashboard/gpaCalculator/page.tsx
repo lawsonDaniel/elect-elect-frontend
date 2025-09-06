@@ -293,7 +293,7 @@ function page() {
                     <select
                       value={course.grade}
                       onChange={(e) => handleGradeChange(course.id, e.target.value)}
-                      className="border rounded px-2 py-1"
+                      className={`border rounded px-2 py-1 ${darkMode? 'bg-navBlue':'bg-[#fffff]'} `}
                     >
                       {gradeOptions.map((g) => (
                         <option key={g} value={g}>
