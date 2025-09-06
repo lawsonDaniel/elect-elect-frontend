@@ -35,21 +35,21 @@ const gradePoints: Record<string, number> = {
 const allCourses: Record<string, Course[]> = {
   "100": [
     { id: "c1", code: "EEE 101", title: "Intro to Electronics", creditUnit: 3, grade: "A" },
-    { id: "c2", code: "MTH 111", title: "General Mathematics", creditUnit: 4, grade: "C" },
+    { id: "c2", code: "MTH 111", title: "General Mathematics", creditUnit: 4, grade: "A" },
   ],
   "200": [
-    { id: "c3", code: "EEE 201", title: "Circuits & Systems", creditUnit: 3, grade: "B" },
+    { id: "c3", code: "EEE 201", title: "Circuits & Systems", creditUnit: 3, grade: "A" },
     { id: "c4", code: "MTH 211", title: "Advanced Calculus", creditUnit: 4, grade: "A" },
   ],
   "300": [
-    { id: "c5", code: "EEE 301", title: "Signals & Systems", creditUnit: 3, grade: "C" },
-    { id: "c6", code: "CSC 311", title: "Algorithms", creditUnit: 3, grade: "B" },
+    { id: "c5", code: "EEE 301", title: "Signals & Systems", creditUnit: 3, grade: "A" },
+    { id: "c6", code: "CSC 311", title: "Algorithms", creditUnit: 3, grade: "A" },
   ],
   "400": [
     { id: "c7", code: "EEE 401", title: "Microprocessors", creditUnit: 3, grade: "A" },
   ],
   "500": [
-    { id: "c8", code: "EEE 501", title: "Final Year Project", creditUnit: 6, grade: "B" },
+    { id: "c8", code: "EEE 501", title: "Final Year Project", creditUnit: 6, grade: "A" },
   ],
 };
 function page() {
