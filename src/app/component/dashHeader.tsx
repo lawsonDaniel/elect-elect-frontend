@@ -42,7 +42,7 @@ export default function DashHeader({ isMobileOpen, setIsMobileOpen }: DashboardH
 
       {/* Right side: toggle + notification */}
       <div className="flex items-center gap-2 sm:gap-4 ml-4 flex-shrink-0">
-        <div className="flex items-center gap-1 sm:gap-2 p-1 rounded-full border dark:border-[#EDF3F8]">
+        <div className={`flex items-center gap-1 sm:gap-2 p-1 rounded-full border ${darkMode? 'border-[#EDF3F8]':'[#101E27]'} `}>
           <button 
             onClick={handleToggle}
             className={`w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center rounded-full ${
@@ -57,8 +57,8 @@ export default function DashHeader({ isMobileOpen, setIsMobileOpen }: DashboardH
             onClick={handleToggle}
             className={`w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center rounded-full ${
               darkMode 
-                ? 'bg-[#101E27] text-[#EDF3F8] shadow' 
-                : 'text-[#6B7280] dark:text-[#EDF3F8]'
+                ? 'bg-[#101E27] dark:text-[#EDF3F8] shadow' 
+                : 'text-[#101E27] '
             }`}
           >
             <Moon size={14} className="sm:w-[18px] sm:h-[18px]" />
@@ -70,7 +70,7 @@ export default function DashHeader({ isMobileOpen, setIsMobileOpen }: DashboardH
           width={20} 
           height={20} 
           alt="notification" 
-          className="sm:w-6 sm:h-6 flex-shrink-0 dark:invert"
+          className={`sm:w-6 sm:h-6 flex-shrink-0 ${darkMode && 'invert'}`}
         />
       </div>
       
@@ -82,9 +82,9 @@ export default function DashHeader({ isMobileOpen, setIsMobileOpen }: DashboardH
           alt="Profile Picture" 
           className="rounded-full"
         />
-        <div className="hidden md:flex flex-col ml-3 dark:text-[#EDF3F8]">
-          <p className="font-bold dark:text-[#FFFFFF]">John Doe</p>
-          <p>student</p>
+        <div className="hidden md:flex flex-col ml-3 text-[#101E27] dark:text-[#EDF3F8]">
+          <p className={`font-bold ${darkMode? 'text-[#FFFFFF]':'text-[#101E27]'}`}>John Doe</p>
+          <p className={` ${darkMode? 'text-[#FFFFFF]':'text-[#101E27]'}`}>student</p>
         </div>
       </div>
 
