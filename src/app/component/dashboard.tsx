@@ -24,7 +24,7 @@ function Dashboard({children}:any) {
         <DashHeader isMobileOpen={isMobileOpen} setIsMobileOpen={setIsMobileOpen}/>
         
         {/* Page Content Area */}
-        <div className={`w-full ${poppins.className}`}>
+        <div className={`w-full `}>
           {/* Your page content goes here */}
           {children}
         </div>

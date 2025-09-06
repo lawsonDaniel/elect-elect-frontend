@@ -86,7 +86,7 @@ export default function SideNav({ isMobileOpen }: SideNavProps) {
     </div>
 
     {/* Navigation Links */}
-    <div className="flex-1 overflow-y-auto">
+    <div className="">
       {/* Dashboard */}
       <Link href="/dashboard" className={`transition-all duration-1000 ease-in-out flex items-center px-3 sm:px-4 py-2 rounded-lg mx-2 mt-1 ${
         pathname === '/dashboard' 

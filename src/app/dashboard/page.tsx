@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, MessageCircle, Library, Calculator, CreditCa
 import { Poppins, Space_Grotesk } from "next/font/google"
 import Image from 'next/image';
 import { useDarkMode } from '@/contexts/DarkModeContext';
+import Link from 'next/link';
 
 const cards = [
   {
@@ -146,8 +147,8 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8">
-      <h1 className={`text-xl sm:text-2xl font-semibold ${spaceGrotesk.className} mb-2 ${darkMode ? 'text-[#FFFFFF]' : 'text-gray-900'}`}>
+    <div className="p-4 sm:p-6 lg:p-4">
+      <h1 className={`text-xl sm:text-2xl font-semibold  font-grotesk mb-2 ${darkMode ? 'text-[#FFFFFF]' : 'text-gray-900'}`}>
         Welcome Back, John
       </h1>
       
@@ -192,9 +193,9 @@ export default function Dashboard() {
           {/* Header */}
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-semibold">Your Profile</h2>
-            <button className="text-gray-400 hover:text-gray-300 text-sm transition-colors cursor-pointer">
+            <Link href='/dashboard/settings'><button className="text-gray-400 hover:text-gray-300 text-sm transition-colors cursor-pointer">
               See More
-            </button>
+            </button></Link>
           </div>
 
           {/* Profile Section */}
