@@ -52,8 +52,22 @@ export default function Home() {
   ];
 
   const news = [
-    { images: "/research.png", title: "New Research Initiative Launched", description: "Our department is excited to announce a new research initiative." },
-    { images: "/research.png",  title: "Upcoming Workshop on AI", description: "Join us for an engaging workshop on artificial intelligence applications." }
+    { images: "/research.png", 
+      title: "New Research Initiative Launched", 
+      description: "Our department is excited to announce a new research initiative.",
+      author:"Dr. O. Awodiji",
+      date:"June 18, 2025",
+      timeposted:"5mins Read",
+      },
+      
+    { images: "/research.png",  
+      title: "Upcoming Workshop on AI", 
+      description: "Join us for an engaging workshop on artificial intelligence applications.",
+      author:"Dr. O. Awodiji", 
+      date:"June 18, 2025",
+      timeposted:"5mins Read",
+    },
+      
   ];
 
   return (
@@ -166,7 +180,7 @@ export default function Home() {
             <button className="w-[6.313rem] h-[3rem] bg-transparent border border-[#9CA3AF] rounded-lg mt-2">View All</button>
           </div>
           <div className="mt-6 grid grid-row-1 lg:grid-cols-2 lg:-mx-[1.78%]">
-            {news.map(({ images, title, description }) => (
+            {news.map(({ images, title, description, author, date, timeposted }) => (
               <div key={title} className="lg:p-4 rounded-lg text-left">
                 <Image 
                 src={images} 
@@ -185,8 +199,12 @@ export default function Home() {
 
                   className="rounded-full" />
                   <div className="ml-1 flex flex-col">
-                    <p>HOD</p>
-                    <p className="font-bold">Dr. O. Awodiji</p>
+                    <p className="font-bold">{author}</p>
+                    <div className="flex flex-row gap-2">
+                      <p>{date}</p>
+                      <p>{timeposted}</p>
+                    </div>
+                    
                   </div>
                 </div>
               </div>
