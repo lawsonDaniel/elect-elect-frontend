@@ -72,18 +72,18 @@ export default function Home() {
       </div>
 
       {/* Welcome Message */}
-      <section className="bg-greyText flex flex-col lg:flex-row w-full gap-5">
+      <section className="bg-greyText flex flex-col lg:flex-row w-full gap-5 lg:gap-0">
         <Image src="/welcome-img.png" alt="welcomeImage" width={592} height={562} className="mx-[4.27%] md:mx-[7.78%] lg:ml-[7.78%] my-[4.5%] md:w-[80%] w-[91%] "  layout="intrinsic"/>
-        <div className="lg:mr-[7.78%] lg:mt-[13%] mx-[4.27%] md:mx-[7.78%]">
+        <div className="lg:mr-[7.78%] lg:mt-[13%] mx-[4.27%] md:mx-[7.78%] lg:ml-0">
           <h1 className="font-bold text-lg md:text-3xl">Welcome Message from the HOD</h1>
           <p className="mt-4 text-sm md:text-lg leading-relaxed ">
           &quot;At our department, we are committed to pushing the boundaries of knowledge, preparing students to be industry-ready, and fostering a culture of innovation. Whether you are a prospective student, a researcher, or an industry partner, we invite you to explore our programs and collaborate with us in shaping the future of technology.&quot;
           </p>
           <div className="flex items-center mt-4 mb-5">
-            <Image src="/Ellipse 1.png" alt="HOD" width={48} height={48} className="rounded-full"  layout="intrinsic"/>
+            <Image src="/HOD.jpeg" alt="HOD" width={48} height={48} className="rounded-full"  layout="intrinsic"/>
             <div className="ml-3 flex flex-col">
               <p>HOD</p>
-              <p className="font-bold">Dr. O. Awodiji</p>
+              <p className="font-bold">Dr. Olurotimi O. Awodiji</p>
             </div>
           </div>
         </div>
