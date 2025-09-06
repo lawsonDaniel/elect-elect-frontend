@@ -2,8 +2,11 @@
 import Header from "./component/navbar";
 import Footer from "./component/footer";
 import Image from 'next/image';
+import { useDarkMode } from '@/contexts/DarkModeContext';
+import ScrollAnimationSection from "./component/ScrollAnimationSection"
 
 export default function Home() {
+  const { darkMode } = useDarkMode();
 
   const values = [
     {
@@ -57,11 +60,12 @@ export default function Home() {
   ];
 
   return (
-    <div className="bg-greyText">
+    <div className={darkMode ? 'bg-[#070E12]' : 'bg-greyText'}>
       <div className="relative bg-cover bg-center bg-no-repeat h-screen bg-[image:var(--bg-Faculty)]">
         <div className="absolute inset-0 bg-[#101E2799]"></div>
         <Header />
         {/* Hero Section */}
+        <ScrollAnimationSection>
         <section className="bg-no-repeat bg-cover flex flex-col">
           <div className="px-[4.27%] md:px-[7.78%] h-screen w-full items-center text-white z-20 translate-y-3/12 md:translate-y-1/3">
             <h1 className="max-w-[35rem] text-5xl">Welcome to the Department of Electrical and Electronics Engineering</h1>
@@ -69,27 +73,39 @@ export default function Home() {
             <button className="bg-transparent backdrop-blur-lg border border-white/20 text-white px-4 py-2 rounded-lg cursor-pointer mt-5">Explore Our Programs</button>
           </div>
         </section>
+        </ScrollAnimationSection>
       </div>
 
       {/* Welcome Message */}
-      <section className="bg-greyText flex flex-col lg:flex-row w-full gap-5">
+      <ScrollAnimationSection>
+      <section className={`flex flex-col lg:flex-row w-full gap-5 ${
+        darkMode ? 'bg-[#070E12]' : 'bg-greyText'
+      }`}>
         <Image src="/welcome-img.png" alt="welcomeImage" width={592} height={562} className="mx-[4.27%] md:mx-[7.78%] lg:ml-[7.78%] my-[4.5%] md:w-[80%] w-[91%] "  layout="intrinsic"/>
         <div className="lg:mr-[7.78%] lg:mt-[13%] mx-[4.27%] md:mx-[7.78%]">
-          <h1 className="font-bold text-lg md:text-3xl">Welcome Message from the HOD</h1>
-          <p className="mt-4 text-sm md:text-lg leading-relaxed ">
+          <h1 className={`font-bold text-lg md:text-3xl ${
+            darkMode ? 'text-[#FFFFFF]' : 'text-black'
+          }`}>Welcome Message from the HOD</h1>
+          <p className={`mt-4 text-sm md:text-lg leading-relaxed ${
+            darkMode ? 'text-[#EDF3F8]' : 'text-black'
+          }`}>
           &quot;At our department, we are committed to pushing the boundaries of knowledge, preparing students to be industry-ready, and fostering a culture of innovation. Whether you are a prospective student, a researcher, or an industry partner, we invite you to explore our programs and collaborate with us in shaping the future of technology.&quot;
           </p>
           <div className="flex items-center mt-4 mb-5">
             <Image src="/Ellipse 1.png" alt="HOD" width={48} height={48} className="rounded-full"  layout="intrinsic"/>
             <div className="ml-3 flex flex-col">
-              <p>HOD</p>
-              <p className="font-bold">Dr. O. Awodiji</p>
+              <p className={darkMode ? 'text-[#EDF3F8]' : 'text-black'}>HOD</p>
+              <p className={`font-bold ${
+                darkMode ? 'text-[#FFFFFF]' : 'text-black'
+              }`}>Dr. O. Awodiji</p>
             </div>
           </div>
         </div>
       </section>
+      </ScrollAnimationSection>
 
       {/* Values Section */}
+      <ScrollAnimationSection>
       <section className="bg-navBlue p-6 md:p-12">
         <h2 className="text-center text-md md:text-2xl font-light text-white">Our Mission and Vision</h2>
         <h2 className="text-center font-bold text-2xl md:text-4xl max-w-2xl m-auto mt-3 text-white">
@@ -97,7 +113,9 @@ export default function Home() {
         </h2>
         <div className="mt-6 grid grid-row-1 lg:grid-cols-3 gap-10 -mx-[1%] md:mx-[2.6%] lg:mx-[4.6%]">
           {values.map(({ image, title, description }) => (
-            <div key={title} className="bg-gray-800 p-6 rounded-lg text-center">
+            <div key={title} className={`p-6 rounded-lg text-center ${
+              darkMode ? 'bg-[#101E27]' : 'bg-gray-800'
+            }`}>
               <Image 
               src={image} 
               alt={title} 
@@ -111,19 +129,37 @@ export default function Home() {
           ))}
         </div>
       </section>
+      </ScrollAnimationSection>
 
       {/* Academic Programs */}
-      <section className="bg-greyText p-6 md:p-12">
-        <h2 className="text-center text-2xl md:text-4xl font-bold text-black  mx-[7.78%]">Academic Programs</h2>
-        <h2 className="text-center text-md font-light m-auto text-[#6B7280] -mx-[1%] md:mx-[2.2%] lg:mx-[4.6%] mt-3">
+      <ScrollAnimationSection>
+      <section className={`p-6 md:p-12 ${
+        darkMode ? 'bg-[#070E12]' : 'bg-greyText'
+      }`}>
+        <h2 className={`text-center text-2xl md:text-4xl font-bold mx-[7.78%] ${
+          darkMode ? 'text-[#FFFFFF]' : 'text-black'
+        }`}>Academic Programs</h2>
+        <h2 className={`text-center text-md font-light m-auto -mx-[1%] md:mx-[2.2%] lg:mx-[4.6%] mt-3 ${
+          darkMode ? 'text-[#EDF3F8]' : 'text-[#6B7280]'
+        }`}>
           Our department offers a comprehensive curriculum designed to equip students with cutting-edge knowledge, hands-on experience, and industry-ready skills in electrical and electronics engineering. Whether you&apos;re starting your journey or advancing your expertise, we have the right program for you.
         </h2>
         <div className="mt-6 grid grid-row-1 lg:grid-cols-3 gap-10 -mx-[1%] md:mx-[2.2%] lg:mx-[4.6%]">
           {Programs.map(({ title, description, points }) => (
-            <div key={title} className="bg-greyText p-6 rounded-lg border-[#9CA3AF] border-1 h-full flex flex-col mb-8">
-              <h3 className="text-xl font-semibold text-black">{title}</h3>
-              <p className="mt-2 text-[#6B7280] text-sm">{description}</p>
-              <ul className="mt-4 text-[#4B5563] text-left">
+            <div key={title} className={`p-6 rounded-lg border h-full flex flex-col mb-8 ${
+              darkMode 
+                ? 'bg-[#070E12] border-[#101E27]' 
+                : 'bg-greyText border-[#9CA3AF]'
+            } border-1`}>
+              <h3 className={`text-xl font-semibold ${
+                darkMode ? 'text-[#FFFFFF]' : 'text-black'
+              }`}>{title}</h3>
+              <p className={`mt-2 text-sm ${
+                darkMode ? 'text-[#EDF3F8]' : 'text-[#6B7280]'
+              }`}>{description}</p>
+              <ul className={`mt-4 text-left ${
+                darkMode ? 'text-[#EDF3F8]' : 'text-[#4B5563]'
+              }`}>
                 {points.map((point, index) => (
                   <li key={index} className="flex items-center mt-2 text-sm gap-3">
                     <div className="flex items-center justify-center h-[1rem] w-[1rem] bg-navBlue shrink-0">
@@ -140,7 +176,11 @@ export default function Home() {
                 ))}
               </ul>
               <div className="mt-auto ml-auto">
-                <button className="w-[7.75rem] h-[2.5rem] bg-transparent rounded-4xl border border-[#9CA3AF] flex items-center justify-center gap-2">
+                <button className={`w-[7.75rem] h-[2.5rem] bg-transparent rounded-4xl border flex items-center justify-center gap-2 ${
+                  darkMode 
+                    ? 'border-[#101E27] text-[#EDF3F8]' 
+                    : 'border-[#9CA3AF] text-black'
+                }`}>
                   Enroll now
                   <Image src="/arrow.png" 
                   alt="arrow" 
@@ -153,17 +193,27 @@ export default function Home() {
           ))}
         </div>
       </section>
+      </ScrollAnimationSection>
 
       {/* News Section */}
-      <section className="bg-greyText mt-9">
+      <ScrollAnimationSection>
+      <section className={`mt-9 ${
+        darkMode ? 'bg-[#070E12]' : 'bg-greyText'
+      }`}>
         <div className="mx-[4.27%] md:mx-[7.78%]">
-          <h2>Updates</h2>
+          <h2 className={darkMode ? 'text-[#EDF3F8]' : 'text-black'}>Updates</h2>
           <div className="flex flex-col md:flex-row justify-between">
             <div className="mt-4">
-              <h1 className="font-medium text-3xl md:text-4xl">Latest Department News</h1>
-              <p>Stay informed with our latest updates and events.</p>
+              <h1 className={`font-medium text-3xl md:text-4xl ${
+                darkMode ? 'text-[#FFFFFF]' : 'text-black'
+              }`}>Latest Department News</h1>
+              <p className={darkMode ? 'text-[#EDF3F8]' : 'text-black'}>Stay informed with our latest updates and events.</p>
             </div>
-            <button className="w-[6.313rem] h-[3rem] bg-transparent border border-[#9CA3AF] rounded-lg mt-2">View All</button>
+            <button className={`w-[6.313rem] h-[3rem] bg-transparent border rounded-lg mt-2 ${
+              darkMode 
+                ? 'border-[#101E27] text-[#EDF3F8]' 
+                : 'border-[#9CA3AF] text-black'
+            }`}>View All</button>
           </div>
           <div className="mt-6 grid grid-row-1 lg:grid-cols-2 lg:-mx-[1.78%]">
             {news.map(({ images, title, description }) => (
@@ -174,9 +224,15 @@ export default function Home() {
                 width={589} 
                 height={314} 
                 className="m-auto  md:w-full md:h-full rounded-lg" layout="intrinsic" />
-                <p className="mt-3">News</p>
-                <h3 className="text-xl font-semibold text-black mt-5">{title}</h3>
-                <p className="mt-2 text-black text-sm">{description}</p>
+                <p className={`mt-3 ${
+                  darkMode ? 'text-[#EDF3F8]' : 'text-black'
+                }`}>News</p>
+                <h3 className={`text-xl font-semibold mt-5 ${
+                  darkMode ? 'text-[#FFFFFF]' : 'text-black'
+                }`}>{title}</h3>
+                <p className={`mt-2 text-sm ${
+                  darkMode ? 'text-[#EDF3F8]' : 'text-black'
+                }`}>{description}</p>
                 <div className="flex items-center mt-4 mb-5">
                   <Image src="/Ellipse 1.png" 
                   alt="HOD" 
@@ -185,8 +241,10 @@ export default function Home() {
 
                   className="rounded-full" />
                   <div className="ml-1 flex flex-col">
-                    <p>HOD</p>
-                    <p className="font-bold">Dr. O. Awodiji</p>
+                    <p className={darkMode ? 'text-[#EDF3F8]' : 'text-black'}>HOD</p>
+                    <p className={`font-bold ${
+                      darkMode ? 'text-[#FFFFFF]' : 'text-black'
+                    }`}>Dr. O. Awodiji</p>
                   </div>
                 </div>
               </div>
@@ -194,6 +252,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+      </ScrollAnimationSection>
 
       <Footer />
     </div>

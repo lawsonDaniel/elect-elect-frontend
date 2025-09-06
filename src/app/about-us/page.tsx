@@ -3,8 +3,11 @@ import Header from "../component/navbar";
 import Footer from "../component/footer";
 import Carousel from "../component/carousel";
 import Image from 'next/image';
+import { useDarkMode } from '@/contexts/DarkModeContext';
 
 export default function AboutUs() {
+    const { darkMode } = useDarkMode();
+
     const Programs = [
         {
           title: "Undergraduate Programs",
@@ -33,9 +36,9 @@ export default function AboutUs() {
         }
       ];
     return (
-        <div className="bg-greyText">
+        <div className={darkMode ? 'bg-[#070E12]' : 'bg-greyText'}>
             <div className="relative bg-cover bg-center bg-no-repeat h-[375px] bg-[image:var(--bg-about)] ">
-                    {/* <div className="absolute inset-0 bg-[#101E2799]"></div> */}
+                    <div className="absolute inset-0 bg-[#101E2799]"></div>
                     <Header />
                     {/* Hero Section */}
                     <section className="bg-no-repeat bg-cover flex flex-col ">
@@ -46,22 +49,34 @@ export default function AboutUs() {
                     </section>
             </div>
                 
-            <section className="bg-greyText flex flex-col lg:flex-row w-full gap-5 mt-5">
+            <section className={`flex flex-col lg:flex-row w-full gap-5 mt-5 ${
+                darkMode ? 'bg-[#070E12]' : 'bg-greyText'
+            }`}>
                     <div className=" lg:mt-[13%] mx-[4.27%] lg:ml-[7.47%] lg:mx-0 ">
-                      <h1 className="font-bold text-3xl md:text-3xl">Our story</h1>
-                      <p className="mt-4 text-base md:text-lg leading-relaxed text-[#6B7280] ">
+                      <h1 className={`font-bold text-3xl md:text-3xl ${
+                        darkMode ? 'text-[#FFFFFF]' : 'text-black'
+                      }`}>Our story</h1>
+                      <p className={`mt-4 text-base md:text-lg leading-relaxed ${
+                        darkMode ? 'text-[#EDF3F8]' : 'text-[#6B7280]'
+                      }`}>
                       Founded with a vision to lead in engineering education and research, our department has grown into a center of excellence known for its cutting-edge curriculum, hands-on learning approach, and impactful research. We are committed to bridging the gap between theory and practice, ensuring our students are prepared for both academia and industry.
                       </p>
                     </div>
                     <Image src="/students.jpeg" alt="welcomeImage" width={592} height={404} className="mx-[4.27%] lg:mx-0 my-[4.5%] md:w-[97%] w-[91%] md:mx-auto lg:mr-[7.78%] rounded-lg"  layout="intrinsic"/>
             </section>
-            <section className="py-16 px-4 md:py-24 max-w-7xl mx-auto flex flex-col lg:mx-[6.47%]">
-                <h2 className="text-3xl md:text-5xl font-bold text-center lg:ml-auto  mb-16">Our Mission & Vision</h2>
+            <section className={`py-16 px-4 md:py-24 max-w-7xl mx-auto flex flex-col lg:mx-[6.47%] ${
+                darkMode ? 'bg-[#070E12]' : 'bg-greyText'
+            }`}>
+                <h2 className={`text-3xl md:text-5xl font-bold text-center lg:ml-auto mb-16 ${
+                    darkMode ? 'text-[#FFFFFF]' : 'text-black'
+                }`}>Our Mission & Vision</h2>
                 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-16">
                     {/* Mission Section */}
                     <div className="relative">
-                    <div className="absolute -z-10 opacity-10 text-[#6B7280] font-bold text-7xl md:text-9xl top-0 left-0">
+                    <div className={`absolute -z-10 opacity-10 font-bold text-7xl md:text-9xl top-0 left-0 ${
+                        darkMode ? 'text-[#EDF3F8]' : 'text-[#6B7280]'
+                    }`}>
                         MISSION
                     </div>
                     <div className="mb-6">
@@ -73,7 +88,9 @@ export default function AboutUs() {
                         className="rounded-lg shadow-lg w-full h-auto object-cover"
                         />
                     </div>
-                    <p className="text-[#6B7280] text-base md:text-lg leading-relaxed">
+                    <p className={`text-base md:text-lg leading-relaxed ${
+                        darkMode ? 'text-[#EDF3F8]' : 'text-[#6B7280]'
+                    }`}>
                         To foster technological advancements, industry-ready education, 
                         and sustainable engineering solutions through research, 
                         innovation, and collaboration.
@@ -82,10 +99,14 @@ export default function AboutUs() {
                     
                     {/* Vision Section */}
                     <div className="relative">
-                    <div className="absolute -z-10 opacity-10 text-gray-300 font-bold text-7xl md:text-9xl top-0 right-0">
+                    <div className={`absolute -z-10 opacity-10 font-bold text-7xl md:text-9xl top-0 right-0 ${
+                        darkMode ? 'text-[#EDF3F8]' : 'text-gray-300'
+                    }`}>
                         VISION
                     </div>
-                    <p className="text-[#6B7280] text-base md:text-lg  leading-relaxed mb-6">
+                    <p className={`text-base md:text-lg leading-relaxed mb-6 ${
+                        darkMode ? 'text-[#EDF3F8]' : 'text-[#6B7280]'
+                    }`}>
                         To be a globally recognized leader in electrical and electronics 
                         engineering, driving progress through cutting-edge research and 
                         world-class education.
@@ -105,17 +126,33 @@ export default function AboutUs() {
             
             <Carousel/>
             {/* Academic Programs */}
-            <section className="bg-greyText p-6 md:p-12">
-            <h2 className="text-center text-3xl md:text-4xl font-bold text-black  mx-[7.78%]">Academic Programs</h2>
-            <h2 className="text-center text-md font-light m-auto text-[#6B7280] -mx-[1%] md:mx-[2.2%] lg:mx-[4.6%] mt-3">
+            <section className={`p-6 md:p-12 ${
+                darkMode ? 'bg-[#070E12]' : 'bg-greyText'
+            }`}>
+            <h2 className={`text-center text-3xl md:text-4xl font-bold mx-[7.78%] ${
+                darkMode ? 'text-[#FFFFFF]' : 'text-black'
+            }`}>Academic Programs</h2>
+            <h2 className={`text-center text-md font-light m-auto -mx-[1%] md:mx-[2.2%] lg:mx-[4.6%] mt-3 ${
+                darkMode ? 'text-[#EDF3F8]' : 'text-[#6B7280]'
+            }`}>
                 Our department offers a comprehensive curriculum designed to equip students with cutting-edge knowledge, hands-on experience, and industry-ready skills in electrical and electronics engineering. Whether you&apos;re starting your journey or advancing your expertise, we have the right program for you.
             </h2>
             <div className="mt-6 grid grid-row-1  lg:grid-cols-3 gap-10 -mx-[1%] md:mx-[2.2%] lg:mx-[4.6%]">
                 {Programs.map(({ title, description, points }) => (
-                <div key={title} className=" bg-greyText p-6 rounded-lg border-[#9CA3AF] border-1 h-full flex flex-col mb-8">
-                    <h3 className="text-xl font-semibold text-black">{title}</h3>
-                    <p className="mt-2 text-[#6B7280] text-sm">{description}</p>
-                    <ul className="mt-4 text-[#4B5563] text-left">
+                <div key={title} className={`p-6 rounded-lg border h-full flex flex-col mb-8 ${
+                    darkMode 
+                        ? 'bg-[#070E12] border-[#101E27]' 
+                        : 'bg-greyText border-[#9CA3AF]'
+                } border-1`}>
+                    <h3 className={`text-xl font-semibold ${
+                        darkMode ? 'text-[#FFFFFF]' : 'text-black'
+                    }`}>{title}</h3>
+                    <p className={`mt-2 text-sm ${
+                        darkMode ? 'text-[#EDF3F8]' : 'text-[#6B7280]'
+                    }`}>{description}</p>
+                    <ul className={`mt-4 text-left ${
+                        darkMode ? 'text-[#EDF3F8]' : 'text-[#4B5563]'
+                    }`}>
                     {points.map((point, index) => (
                         <li key={index} className="flex items-center mt-2 text-sm gap-3">
                         <div className="flex items-center justify-center h-[1rem] w-[1rem] bg-navBlue shrink-0">
@@ -126,7 +163,11 @@ export default function AboutUs() {
                     ))}
                     </ul>
                     <div className="mt-auto ml-auto">
-                    <button className="w-[7.75rem] h-[2.5rem] bg-transparent rounded-4xl border border-[#9CA3AF] flex items-center justify-center gap-2">
+                    <button className={`w-[7.75rem] h-[2.5rem] bg-transparent rounded-4xl border flex items-center justify-center gap-2 ${
+                        darkMode 
+                            ? 'border-[#101E27] text-[#EDF3F8]' 
+                            : 'border-[#9CA3AF] text-black'
+                    }`}>
                         Enroll now
                         <Image src="/arrow.png" alt="arrow" width={16} height={16}   />
                     </button>

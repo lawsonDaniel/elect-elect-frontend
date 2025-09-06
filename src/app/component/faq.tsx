@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Plus, Minus } from 'lucide-react'; // Optional: use lucide icons for +/-
+import { Plus, Minus } from 'lucide-react';
+import { useDarkMode } from '@/contexts/DarkModeContext';
 
 const faqs = [
   {
@@ -26,6 +27,7 @@ const faqs = [
 ];
 
 export default function FAQSection() {
+  const { darkMode } = useDarkMode();
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const toggleFAQ = (index: number) => {
@@ -33,34 +35,48 @@ export default function FAQSection() {
   };
 
   return (
-    <section className="px-[4.27%] md:px-[7.78%] py-12 bg-greyText text-black">
-      <h2 className="text-center text-xl md:text-2xl font-semibold mb-8">
+    <section className={`px-[4.27%] md:px-[7.78%] py-12 ${
+      darkMode ? 'bg-[#070E12] text-[#FFFFFF]' : 'bg-greyText text-black'
+    }`}>
+      <h2 className={`text-center text-xl md:text-2xl font-semibold mb-8 ${
+        darkMode ? 'text-[#FFFFFF]' : 'text-black'
+      }`}>
         Got questions? We&apos;ve got answers.
       </h2>
       <div className="space-y-4">
         {faqs.map((faq, index) => {
           const isOpen = openIndex === index;
           return (
-            <div key={index} className="border border-gray-600 rounded-lg overflow-hidden">
+            <div key={index} className={`border rounded-lg overflow-hidden ${
+              darkMode ? 'border-[#101E27]' : 'border-gray-600'
+            }`}>
               <button
                 onClick={() => toggleFAQ(index)}
-                className="flex items-center w-full p-5 text-left gap-4"
+                className={`flex items-center w-full p-5 text-left gap-4 ${
+                  darkMode ? 'text-[#FFFFFF]' : 'text-black'
+                }`}
               >
                 <span className="shrink-0">
                   {isOpen ? (
-                    <Minus className="w-4 h-4" />
+                    <Minus className={`w-4 h-4 ${
+                      darkMode ? 'text-[#EDF3F8]' : 'text-black'
+                    }`} />
                   ) : (
-                    <Plus className="w-4 h-4" />
+                    <Plus className={`w-4 h-4 ${
+                      darkMode ? 'text-[#EDF3F8]' : 'text-black'
+                    }`} />
                   )}
                 </span>
                 <span className="text-sm md:text-base">{faq.question}</span>
               </button>
               <div
-                className={`transition-all duration-500 ease-in-out px-5 overflow-hidden text-sm text-black ${
+                className={`transition-all duration-500 ease-in-out px-5 overflow-hidden text-sm ${
                   isOpen ? 'max-h-[200px] opacity-100' : 'max-h-0 opacity-0'
                 }`}
               >
-                <div className="pb-5 text-[#6B7280]">{faq.answer}</div>
+                <div className={`pb-5 ${
+                  darkMode ? 'text-[#EDF3F8]' : 'text-[#6B7280]'
+                }`}>{faq.answer}</div>
               </div>
             </div>
           );

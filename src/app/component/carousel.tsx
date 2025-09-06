@@ -3,8 +3,7 @@
 import Image from 'next/image'
 import {useState, useEffect, useRef } from 'react'
 import {ArrowRight, ArrowLeft} from "lucide-react";
-
-
+import { useDarkMode } from '@/contexts/DarkModeContext';
 
 const DepartmentData = [
   {
@@ -82,6 +81,7 @@ const DepartmentData = [
 ]
 
 export default function DepartmentCarousel() {
+  const { darkMode } = useDarkMode();
   const scrollRef = useRef<HTMLDivElement>(null)
   const [isAtStart, setIsAtStart] = useState(true)
   const [isAtEnd, setIsAtEnd] = useState(false)
@@ -107,7 +107,6 @@ export default function DepartmentCarousel() {
   }, [])
     
 
-
     const scroll = (direction: 'left' | 'right') => {
       if (scrollRef.current) {
         const container = scrollRef.current
@@ -120,10 +119,16 @@ export default function DepartmentCarousel() {
     }
 
   return (
-    <section className="bg-greyText text-[#6B7280] py-10 px-4 text-center ">
+    <section className={`py-10 px-4 text-center ${
+      darkMode ? 'bg-[#070E12]' : 'bg-greyText'
+    }`}>
       {/* Intro Text */}
-      <h1 className='text-center text-3xl text-black font-semibold'>Meet the Department</h1>
-      <p className="max-w-4xl mx-auto mb-8 mt-4 text-[#6B7280] text-lg">
+      <h1 className={`text-center text-3xl font-semibold ${
+        darkMode ? 'text-[#FFFFFF]' : 'text-black'
+      }`}>Meet the Department</h1>
+      <p className={`max-w-4xl mx-auto mb-8 mt-4 text-lg ${
+        darkMode ? 'text-[#EDF3F8]' : 'text-[#6B7280]'
+      }`}>
         Our department consists of renowned researchers, industry experts, and dedicated educators committed to shaping future engineers. With expertise in fields such as renewable energy, artificial intelligence, embedded systems, and robotics, they bring real-world experience into the classroom.
       </p>
 
@@ -132,22 +137,28 @@ export default function DepartmentCarousel() {
       {!isAtStart && (
   <ArrowLeft 
     size={60} 
-    color='black' 
+    color={darkMode ? 'white' : 'black'} 
     onClick={() => scroll('left')}
-    className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-10 text-[#4B5563] rounded-full p-4 shadow-md hover:bg-gray-400 bg-greyText opacity-[82%]"
+    className={`hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-10 rounded-full p-4 shadow-md opacity-[82%] ${
+      darkMode 
+        ? 'bg-[#101E27] text-[#EDF3F8] hover:bg-[#1A2832]' 
+        : 'bg-greyText text-[#4B5563] hover:bg-gray-400'
+    }`}
   />
 )}
 
 {!isAtEnd && (
   <ArrowRight 
     size={60} 
-    color='black' 
+    color={darkMode ? 'white' : 'black'} 
     onClick={() => scroll('right')}
-    className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-greyText text-[#4B5563] rounded-full p-4 shadow-md hover:bg-gray-400 opacity-[82%]"
+    className={`hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-10 rounded-full p-4 shadow-md opacity-[82%] ${
+      darkMode 
+        ? 'bg-[#101E27] text-[#EDF3F8] hover:bg-[#1A2832]' 
+        : 'bg-greyText text-[#4B5563] hover:bg-gray-400'
+    }`}
   />
 )}
-
-        
 
         {/* Scrollable Faculty Cards */}
         <div
@@ -157,9 +168,11 @@ export default function DepartmentCarousel() {
           {DepartmentData.map((member, index) => (
           <div
             key={index}
-            className="relative group flex-shrink-0 snap-center w-[80vw] sm:w-[45vw] md:w-[30vw] lg:w-[22vw] 
-             bg-greyText text-[#6B7280] rounded-xl overflow-hidden shadow-md 
-             hover:scale-[1.02] transition-transform duration-400"
+            className={`relative group flex-shrink-0 snap-center w-[80vw] sm:w-[45vw] md:w-[30vw] lg:w-[22vw] 
+             rounded-xl overflow-hidden shadow-md 
+             hover:scale-[1.02] transition-transform duration-400 ${
+               darkMode ? 'bg-[#101E27]' : 'bg-greyText'
+             }`}
           >
             {/* Image */}
             <Image
@@ -172,8 +185,12 @@ export default function DepartmentCarousel() {
 
             {/* Name & Role */}
             <div className="p-3 z-10 relative">
-              <p className='text-black font-bold'>{member.name}</p>  
-              <p className="text-center font-semibold">{member.role}</p>
+              <p className={`font-bold ${
+                darkMode ? 'text-[#FFFFFF]' : 'text-black'
+              }`}>{member.name}</p>  
+              <p className={`text-center font-semibold ${
+                darkMode ? 'text-[#EDF3F8]' : 'text-[#6B7280]'
+              }`}>{member.role}</p>
             </div>
 
             {/* Overlay covers everything */}
