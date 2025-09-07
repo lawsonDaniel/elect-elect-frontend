@@ -208,6 +208,25 @@ class EndPoints {
     }
   }
 
+  public updateUser = async (id: string, data: ) => {
+    try {
+      const response = await api.put(`/auth/user/${id}`, data);
+      return response.data;
+    } catch (error: any) {
+      if (error.response) {
+        const errorData = error.response.data;
+        const errorMessage = errorData?.error || 'Failed to update user';
+        const customError = new Error(errorMessage);
+        (customError as any).response = error.response;
+        throw customError;
+      } else if (error.request) {
+        throw new Error('Network error: Unable to reach the server.');
+      } else {
+        throw new Error(error.message || 'An unexpected error occurred during update');
+      }
+    }
+  }
+
   public deleteMaterial = async (id: string) => {
     try {
       const response = await api.delete(`/materials/${id}`);
