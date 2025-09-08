@@ -14,7 +14,7 @@ interface ScrollAnimationSectionProps {
 
 const ScrollAnimationSection: React.FC<ScrollAnimationSectionProps> = ({ 
   children, 
-  threshold = 0.1, 
+  threshold = 0.25, 
   triggerOnce = false,
   className = "",
   animationType = 'fadeInUp',
