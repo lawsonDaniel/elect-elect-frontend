@@ -7,12 +7,15 @@ import { join } from 'path';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> } // ✅ Correctly type params as a Promise
 ) {
   try {
+    // Await the params Promise to get the actual parameters
+    const { id } = await params;
+
     await dbConnect();
 
-    const material = await Material.findById(params.id);
+    const material = await Material.findById(id); // Use the unpacked `id`
     
     if (!material) {
       return NextResponse.json(

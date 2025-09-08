@@ -120,7 +120,7 @@ export async function POST(request: NextRequest) {
           gender,
           user_type: 'student',
           school_email: schoolEmail,
-          date_of_birth: new Date(dob),
+         date_of_birth: new Date(dob).toISOString(), // Convert to ISO string
           matt_number: mattNumber,
           level
         });

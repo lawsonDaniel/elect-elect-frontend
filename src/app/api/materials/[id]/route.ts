@@ -23,12 +23,13 @@ async function verifyToken(request: NextRequest) {
 // GET: Fetch single material by ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> } // ✅ Correct type
 ) {
   try {
+    const { id } = await params; // ✅ Await the params promise
     await dbConnect();
 
-    const material = await Material.findById(params.id)
+    const material = await Material.findById(id) // Use the resolved `id`
       .populate('uploadedBy', 'firstName surname userType');
 
     if (!material) {
@@ -55,16 +56,17 @@ export async function GET(
 // PUT: Update material
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> } // ✅ Correct type
 ) {
   try {
+    const { id } = await params; // ✅ Await the params promise
     const user = await verifyToken(request);
     await dbConnect();
 
     const body = await request.json();
     const { courseTitle, courseCode, materialType, description } = body;
 
-    const material = await Material.findById(params.id);
+    const material = await Material.findById(id); // Use the resolved `id`
     
     if (!material) {
       return NextResponse.json(
@@ -117,13 +119,14 @@ export async function PUT(
 // DELETE: Delete material
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> } // ✅ Correct type
 ) {
   try {
+    const { id } = await params; // ✅ Await the params promise
     const user = await verifyToken(request);
     await dbConnect();
 
-    const material = await Material.findById(params.id);
+    const material = await Material.findById(id); // Use the resolved `id`
     
     if (!material) {
       return NextResponse.json(
@@ -148,7 +151,7 @@ export async function DELETE(
       console.warn('Could not delete file:', fileError);
     }
 
-    await Material.findByIdAndDelete(params.id);
+    await Material.findByIdAndDelete(id); // Use the resolved `id`
 
     return NextResponse.json({
       success: true,

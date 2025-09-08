@@ -32,7 +32,7 @@ const uploadSchema = Yup.object().shape({
 export default function Page() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [selectedLevel, setSelectedLevel] = useState('All Resources');
-  const [materials, setMaterials] = useState([]);
+  const [materials, setMaterials] = useState<any>([]);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -44,7 +44,7 @@ export default function Page() {
   const materialTypes = ['Lecture Notes (PDF)', 'Past Questions (PDF)', 'Handout (DOCX)', 'Textbook (PDF)', 'Assignment (PDF)'];
 
   // Formik form for upload
-  const formik = useFormik({
+  const formik:any= useFormik({
     initialValues: {
       courseTitle: '',
       courseCode: '',
@@ -411,7 +411,7 @@ export default function Page() {
                     placeholder="e.g., Power Systems Analysis"
                   />
                   {formik.touched.courseTitle && formik.errors.courseTitle && (
-                    <div className="text-red-500 text-xs mt-1">{formik.errors.courseTitle}</div>
+                    <div className="text-red-500 text-xs mt-1">{formik?.errors?.courseTitle}</div>
                   )}
                 </div>
                 

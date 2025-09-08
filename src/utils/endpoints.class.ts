@@ -27,7 +27,7 @@ interface UPLOAD_MATERIAL_DATA {
   materialType: string;
   description: string;
   file: File;
-  level:string
+  level: string
 }
 
 interface UPDATE_MATERIAL_DATA {
@@ -46,24 +46,33 @@ interface MATERIALS_QUERY {
   limit?: number;
 }
 
+interface UPDATE_PASSWORD_DATA {
+  currentPassword: string;
+  newPassword: string;
+}
+
+interface UPDATE_NOTIFICATION_DATA {
+  emailNotifications: boolean;
+  smsNotifications: boolean;
+  pushNotifications: boolean;
+}
+interface CREATE_NOTIFICATION_DATA {
+  userId: string;
+  type: 'announcement' | 'event' | 'message' | 'payment' | 'other';
+  title: string;
+  content: string;
+}
+
+interface UPDATE_NOTIFICATION_DATA {
+  id: string;
+}
 class EndPoints {
-  // Auth endpoints
   public staffRegister = async (data: REGISTER_STAFF_DATA) => {
     try {
       const response = await api.post('/auth/staff/register', data);
       return response.data;
     } catch (error: any) {
-      if (error.response) {
-        const errorData = error.response.data;
-        const errorMessage = errorData?.message || 'Registration failed';
-        const customError = new Error(errorMessage);
-        (customError as any).response = error.response;
-        throw customError;
-      } else if (error.request) {
-        throw new Error('Network error: Unable to reach the server. Please check your internet connection.');
-      } else {
-        throw new Error(error.message || 'An unexpected error occurred during registration');
-      }
+      throw new Error(error.response?.data?.error || 'Registration failed');
     }
   }
 
@@ -72,17 +81,7 @@ class EndPoints {
       const response = await api.post('/auth/student/register', data);
       return response.data;
     } catch (error: any) {
-      if (error.response) {
-        const errorData = error.response.data;
-        const errorMessage = errorData?.message || 'Registration failed';
-        const customError = new Error(errorMessage);
-        (customError as any).response = error.response;
-        throw customError;
-      } else if (error.request) {
-        throw new Error('Network error: Unable to reach the server. Please check your internet connection.');
-      } else {
-        throw new Error(error.message || 'An unexpected error occurred during registration');
-      }
+      throw new Error(error.response?.data?.error || 'Registration failed');
     }
   }
 
@@ -91,25 +90,13 @@ class EndPoints {
       const response = await api.post('/auth/login', data);
       return response.data;
     } catch (error: any) {
-      if (error.response) {
-        const errorData = error.response.data;
-        const errorMessage = errorData?.error || 'Login failed';
-        const customError = new Error(errorMessage);
-        (customError as any).response = error.response;
-        throw customError;
-      } else if (error.request) {
-        throw new Error('Network error: Unable to reach the server. Please check your internet connection.');
-      } else {
-        throw new Error(error.message || 'An unexpected error occurred during login');
-      }
+      throw new Error(error.response?.data?.error || 'Login failed');
     }
   }
 
-  // Materials endpoints
   public getMaterials = async (params?: MATERIALS_QUERY) => {
     try {
       const queryParams = new URLSearchParams();
-      
       if (params?.level) queryParams.append('level', params.level);
       if (params?.materialType) queryParams.append('materialType', params.materialType);
       if (params?.courseCode) queryParams.append('courseCode', params.courseCode);
@@ -121,17 +108,7 @@ class EndPoints {
       const response = await api.get(url);
       return response.data;
     } catch (error: any) {
-      if (error.response) {
-        const errorData = error.response.data;
-        const errorMessage = errorData?.error || 'Failed to fetch materials';
-        const customError = new Error(errorMessage);
-        (customError as any).response = error.response;
-        throw customError;
-      } else if (error.request) {
-        throw new Error('Network error: Unable to reach the server.');
-      } else {
-        throw new Error(error.message || 'An unexpected error occurred');
-      }
+      throw new Error(error.response?.data?.error || 'Failed to fetch materials');
     }
   }
 
@@ -143,30 +120,13 @@ class EndPoints {
       formData.append('courseCode', data.courseCode);
       formData.append('materialType', data.materialType);
       formData.append('description', data.description);
-      formData.append('level',data.level)
-       for (const pair of formData.entries()) {
-        console.log(`${pair[0]}: ${pair[1]}`);
-    }
-    const response = await api.post('/materials', formData, {
-  headers: {
-    'Content-Type': 'multipart/form-data',
-  },
-});
-
-      console.log("Upload response:", response);
-    return response.data;
+      formData.append('level', data.level);
+      const response = await api.post('/materials', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      return response.data;
     } catch (error: any) {
-      if (error.response) {
-        const errorData = error.response.data;
-        const errorMessage = errorData?.error || 'Failed to upload material';
-        const customError = new Error(errorMessage);
-        (customError as any).response = error.response;
-        throw customError;
-      } else if (error.request) {
-        throw new Error('Network error: Unable to reach the server.');
-      } else {
-        throw new Error(error.message || 'An unexpected error occurred during upload');
-      }
+      throw new Error(error.response?.data?.error || 'Failed to upload material');
     }
   }
 
@@ -175,17 +135,7 @@ class EndPoints {
       const response = await api.get(`/materials/${id}`);
       return response.data;
     } catch (error: any) {
-      if (error.response) {
-        const errorData = error.response.data;
-        const errorMessage = errorData?.error || 'Failed to fetch material';
-        const customError = new Error(errorMessage);
-        (customError as any).response = error.response;
-        throw customError;
-      } else if (error.request) {
-        throw new Error('Network error: Unable to reach the server.');
-      } else {
-        throw new Error(error.message || 'An unexpected error occurred');
-      }
+      throw new Error(error.response?.data?.error || 'Failed to fetch material');
     }
   }
 
@@ -194,36 +144,34 @@ class EndPoints {
       const response = await api.put(`/materials/${id}`, data);
       return response.data;
     } catch (error: any) {
-      if (error.response) {
-        const errorData = error.response.data;
-        const errorMessage = errorData?.error || 'Failed to update material';
-        const customError = new Error(errorMessage);
-        (customError as any).response = error.response;
-        throw customError;
-      } else if (error.request) {
-        throw new Error('Network error: Unable to reach the server.');
-      } else {
-        throw new Error(error.message || 'An unexpected error occurred during update');
-      }
+      throw new Error(error.response?.data?.error || 'Failed to update material');
     }
   }
 
-  public updateUser = async (id: string, data:any ) => {
+  public updateUser = async (id: string, data: any) => {
     try {
       const response = await api.put(`/auth/user/${id}`, data);
       return response.data;
     } catch (error: any) {
-      if (error.response) {
-        const errorData = error.response.data;
-        const errorMessage = errorData?.error || 'Failed to update user';
-        const customError = new Error(errorMessage);
-        (customError as any).response = error.response;
-        throw customError;
-      } else if (error.request) {
-        throw new Error('Network error: Unable to reach the server.');
-      } else {
-        throw new Error(error.message || 'An unexpected error occurred during update');
-      }
+      throw new Error(error.response?.data?.error || 'Failed to update user');
+    }
+  }
+
+  public updatePassword = async (data: UPDATE_PASSWORD_DATA) => {
+    try {
+      const response = await api.put('/auth/password', data);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.error || 'Failed to update password');
+    }
+  }
+
+  public updateNotificationPreferences = async (data: UPDATE_NOTIFICATION_DATA) => {
+    try {
+      const response = await api.put('/auth/notifications', data);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.error || 'Failed to update notification preferences');
     }
   }
 
@@ -232,17 +180,7 @@ class EndPoints {
       const response = await api.delete(`/materials/${id}`);
       return response.data;
     } catch (error: any) {
-      if (error.response) {
-        const errorData = error.response.data;
-        const errorMessage = errorData?.error || 'Failed to delete material';
-        const customError = new Error(errorMessage);
-        (customError as any).response = error.response;
-        throw customError;
-      } else if (error.request) {
-        throw new Error('Network error: Unable to reach the server.');
-      } else {
-        throw new Error(error.message || 'An unexpected error occurred during deletion');
-      }
+      throw new Error(error.response?.data?.error || 'Failed to delete material');
     }
   }
 
@@ -251,12 +189,8 @@ class EndPoints {
       const response = await api.get(`/materials/${id}/download`, {
         responseType: 'blob',
       });
-      
-      // Create blob URL for download
       const blob = new Blob([response.data]);
       const url = window.URL.createObjectURL(blob);
-      
-      // Get filename from Content-Disposition header or use default
       const contentDisposition = response.headers['content-disposition'];
       let filename = 'download';
       if (contentDisposition) {
@@ -265,31 +199,16 @@ class EndPoints {
           filename = filenameMatch[1];
         }
       }
-      
-      // Create temporary link and trigger download
       const link = document.createElement('a');
       link.href = url;
       link.setAttribute('download', filename);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      
-      // Clean up blob URL
       window.URL.revokeObjectURL(url);
-      
       return { success: true, message: 'Download started' };
     } catch (error: any) {
-      if (error.response) {
-        const errorData = error.response.data;
-        const errorMessage = errorData?.error || 'Failed to download material';
-        const customError = new Error(errorMessage);
-        (customError as any).response = error.response;
-        throw customError;
-      } else if (error.request) {
-        throw new Error('Network error: Unable to reach the server.');
-      } else {
-        throw new Error(error.message || 'An unexpected error occurred during download');
-      }
+      throw new Error(error.response?.data?.error || 'Failed to download material');
     }
   }
 
@@ -299,19 +218,90 @@ class EndPoints {
       const response = await api.get(url);
       return response.data;
     } catch (error: any) {
-      if (error.response) {
-        const errorData = error.response.data;
-        const errorMessage = errorData?.error || 'Failed to fetch statistics';
-        const customError = new Error(errorMessage);
-        (customError as any).response = error.response;
-        throw customError;
-      } else if (error.request) {
-        throw new Error('Network error: Unable to reach the server.');
-      } else {
-        throw new Error(error.message || 'An unexpected error occurred');
-      }
+      throw new Error(error.response?.data?.error || 'Failed to fetch statistics');
     }
   }
+
+  public getAnnouncements = async () => {
+    try {
+      const response = await api.get('/announcements');
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.error || 'Failed to fetch announcements');
+    }
+  }
+
+  public createAnnouncement = async (data: { title: string; content: string }) => {
+    try {
+      const response = await api.post('/announcements/create', data);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.error || 'Failed to create announcement');
+    }
+  }
+
+  public getCalendarEvents = async () => {
+    try {
+      const response = await api.get('/calendar');
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.error || 'Failed to fetch calendar events');
+    }
+  }
+
+  public createCalendarEvent = async (data: { date: string; title: string }) => {
+    try {
+      const response = await api.post('/calendar/create', data);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.error || 'Failed to create calendar event');
+    }
+  }
+
+  public getUserProfile = async () => {
+    try {
+      const response = await api.get('/user/me');
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.error || 'Failed to fetch profile');
+    }
+  }
+
+  public getDashboardStats = async () => {
+    try {
+      const response = await api.get('/dashboard/stats');
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.error || 'Failed to fetch stats');
+    }
+  }
+ public getNotifications = async () => {
+    try {
+      const response = await api.get('/notifications');
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.error || 'Failed to fetch notifications');
+    }
+  }
+
+  public createNotification = async (data: CREATE_NOTIFICATION_DATA) => {
+    try {
+      const response = await api.post('/notifications', data);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.error || 'Failed to create notification');
+    }
+  }
+
+  public markNotificationAsRead = async (data: any) => {
+    try {
+      const response = await api.put('/notifications', data);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.error || 'Failed to update notification');
+    }
+  }
+
 }
 
 const endPoints = new EndPoints();

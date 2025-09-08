@@ -31,6 +31,11 @@ export interface IUser extends Document {
   createPasswordResetToken(): string;
   createdAt: Date;
   updatedAt: Date;
+  notificationPreferences: {
+    emailNotifications: boolean;
+    smsNotifications: boolean;
+    pushNotifications: boolean;
+  };
   supabase_user_id?: string; // Made optional in interface
 }
 
@@ -114,6 +119,11 @@ const userSchema = new Schema<IUser>(
     // Student fields
     dob: {
       type: Date,
+    },
+     notificationPreferences: {
+      emailNotifications: { type: Boolean, default: true },
+      smsNotifications: { type: Boolean, default: false },
+      pushNotifications: { type: Boolean, default: true },
     },
     mattNumber: {
       type: String,

@@ -83,7 +83,7 @@ const StudentSignup = () => {
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {
         // Transform the form data to match the API interface
-        const apiData = {
+        const apiData:any = {
           surname: values.surname.trim(),
           firstName: values.firstName.trim(),
           gender: values.gender,

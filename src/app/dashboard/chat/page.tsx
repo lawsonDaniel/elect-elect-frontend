@@ -6,8 +6,8 @@ import { Send, Users, MessageCircle, Loader2, ArrowLeft, Paperclip, X, Download,
 import { useDarkMode } from '@/contexts/DarkModeContext';
 import { parseCookies } from 'nookies';
 import { v4 as uuidv4 } from 'uuid';
+import endPoints from '@/utils/endpoints.class';
 
-// Simple type definitions
 interface User {
   id: string;
   first_name: string;
@@ -33,7 +33,7 @@ interface Message {
   created_at: string;
   file_attachment?: FileAttachment;
   sender?: User;
-  isPending?: boolean; // Added for optimistic updates
+  isPending?: boolean;
 }
 
 interface Chat {
@@ -43,12 +43,11 @@ interface Chat {
 }
 
 export default function SimpleChat() {
-  // State
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [chats, setChats] = useState<Chat[]>([]);
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<any[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
@@ -88,28 +87,30 @@ export default function SimpleChat() {
           return;
         }
 
-        let { data: profile } = await supabase
+        let { data: profile }:any = await supabase
           .from('profiles')
           .select('*')
           .eq('id', userId)
           .single();
 
         if (!profile) {
-          const { data: newProfile } = await supabase
-            .from('profiles')
-            .insert({
-              id: userId,
-              first_name: userMetadata?.first_name || 'User',
-              surname: userMetadata?.surname || '',
-              school_email: userEmail || '',
-              level: userMetadata?.level || '100',
-              user_type: 'student',
-              online: true
-            })
-            .select()
-            .single();
-          profile = newProfile;
-        }
+  const { data: newProfile } = await supabase
+    .from('profiles')
+    .insert({
+      id: userId,
+      first_name: userMetadata?.first_name || 'User',
+      surname: userMetadata?.surname || '',
+      school_email: userEmail || '',
+      level: userMetadata?.level || '100',
+      user_type: 'student',
+      online: true,
+      mongo_user_id: userId // Add this required field
+    })
+    .select()
+    .single();
+  
+  profile = newProfile;
+}
 
         if (profile) {
           setCurrentUser(profile);
@@ -133,7 +134,7 @@ export default function SimpleChat() {
     if (!currentUser) return;
 
     const loadUsers = async () => {
-      const { data } = await supabase
+      const { data }:any = await supabase
         .from('profiles')
         .select('*')
         .eq('user_type', 'student')
@@ -193,7 +194,7 @@ export default function SimpleChat() {
     if (!currentUser || !selectedChat) return;
 
     const loadMessages = async () => {
-      const { data } = await supabase
+      const { data }:any = await supabase
         .from('messages')
         .select(`
           *,
@@ -227,6 +228,28 @@ export default function SimpleChat() {
           if (newMessage.sender_id !== currentUser.id && newMessage.receiver_id !== currentUser.id) {
             return;
           }
+
+          // Create notification for incoming message
+          if (newMessage.receiver_id === currentUser.id) {
+            try {
+              const { data: sender } = await supabase
+                .from('profiles')
+                .select('first_name, surname')
+                .eq('id', newMessage.sender_id)
+                .single();
+
+              await endPoints.createNotification({
+                userId: currentUser.id,
+                type: 'message',
+                title: `New Chat Message from ${sender?.first_name} ${sender?.surname}`,
+                content: newMessage.file_attachment
+                  ? `Sent a file: ${newMessage.file_attachment.file_name}`
+                  : newMessage.text || 'New message received',
+              });
+            } catch (error) {
+              console.error('Error creating notification:', error);
+            }
+          }
           
           const { data: sender } = await supabase
             .from('profiles')
@@ -240,7 +263,6 @@ export default function SimpleChat() {
               ((newMessage.sender_id === selectedChat.id && newMessage.receiver_id === currentUser.id) ||
                (newMessage.sender_id === currentUser.id && newMessage.receiver_id === selectedChat.id))) {
             setMessages(prev => {
-              // Avoid duplicates by checking if message already exists
               if (prev.some(msg => msg.id === newMessage.id)) return prev;
               return [...prev, messageWithSender];
             });
@@ -254,7 +276,7 @@ export default function SimpleChat() {
             const existingChatIndex = prev.findIndex(chat => chat.id === partnerId);
             
             if (existingChatIndex >= 0) {
-              const updatedChats = [...prev];
+              const updatedChats:any= [...prev];
               updatedChats[existingChatIndex].last_message = messageWithSender;
               const updatedChat = updatedChats.splice(existingChatIndex, 1)[0];
               return [updatedChat, ...updatedChats];
@@ -345,7 +367,6 @@ export default function SimpleChat() {
     setSending(true);
     setUploading(!!selectedFile);
 
-    // Create optimistic message
     const tempId = uuidv4();
     const optimisticMessage: Message = {
       id: tempId,
@@ -368,7 +389,6 @@ export default function SimpleChat() {
       };
     }
 
-    // Update UI immediately
     setMessages(prev => [...prev, optimisticMessage]);
     setChats(prev => {
       const updatedChats = [...prev];
@@ -397,20 +417,19 @@ export default function SimpleChat() {
         }
       }
 
-      const { data, error } = await supabase
-        .from('messages')
-        .insert({
-          text: optimisticMessage.text,
-          sender_id: currentUser.id,
-          receiver_id: selectedChat.id,
-          file_attachment: fileAttachment
-        })
-        .select()
-        .single();
+ const { data, error } = await supabase
+  .from('messages')
+  .insert({
+    text: optimisticMessage.text,
+    sender_id: currentUser.id,
+    receiver_id: selectedChat.id,
+    file_attachment: fileAttachment ? JSON.parse(JSON.stringify(fileAttachment)) : null
+  })
+  .select()
+  .single();
 
       if (error) throw error;
 
-      // Update message with real data from server
       setMessages(prev => prev.map(msg => 
         msg.id === tempId 
           ? { ...data, sender: currentUser, isPending: false }
@@ -418,7 +437,6 @@ export default function SimpleChat() {
       ));
     } catch (error) {
       console.error('Error sending message:', error);
-      // Remove optimistic message on error
       setMessages(prev => prev.filter(msg => msg.id !== tempId));
       alert('Failed to send message');
     } finally {
@@ -454,7 +472,7 @@ export default function SimpleChat() {
   if (loading) {
     return (
       <div className="flex-1 flex items-center justify-center">
-        <Loader2 className="w-12 h-12 animate-spin text-blue-500" />
+        <Loader2 className="w-12 h-12 animate-spin text-[#2563EB]" />
       </div>
     );
   }
@@ -467,7 +485,7 @@ export default function SimpleChat() {
         <p className="text-gray-500 mb-6">You need to be logged in to use chat</p>
         <button
           onClick={() => window.location.reload()}
-          className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+          className="px-6 py-3 bg-[#2563EB] text-white rounded-lg hover:bg-[#1E40AF]"
         >
           Reload Page
         </button>
@@ -476,36 +494,36 @@ export default function SimpleChat() {
   }
 
   return (
-    <div className={`w-full h-screen flex ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'}`}>
+    <div className={`w-full h-screen flex ${darkMode ? 'bg-[#0A1218]' : 'bg-white'} transition-colors duration-200`}>
       {/* Mobile menu button */}
       {!sidebarOpen && (
         <button
           onClick={() => setSidebarOpen(true)}
-          className="md:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-blue-500 text-white shadow-lg"
+          className="md:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-[#2563EB] text-white shadow-lg"
         >
           <Menu className="w-5 h-5" />
         </button>
       )}
 
       {/* Sidebar */}
-      <div className={`w-80 border-r ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-gray-50 border-gray-200'} 
+      <div className={`w-80 border-r ${darkMode ? 'bg-[#1E2A38] border-[#2A3744]' : 'bg-gray-50 border-gray-200'} 
         fixed md:relative h-full z-40 transition-transform duration-300 ease-in-out
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
         
-        <div className={`p-4 border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+        <div className={`p-4 border-b ${darkMode ? 'border-[#2A3744]' : 'border-gray-200'}`}>
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">
+            <div className="w-10 h-10 bg-[#2563EB] rounded-full flex items-center justify-center text-white font-bold">
               {currentUser.first_name[0]}{currentUser.surname[0]}
             </div>
             <div>
               <h2 className="font-semibold">{currentUser.first_name} {currentUser.surname}</h2>
-              <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+              <p className={`text-sm ${darkMode ? 'text-[#A0B3C6]' : 'text-gray-600'}`}>
                 Level {currentUser.level}
               </p>
             </div>
             <button
               onClick={() => setSidebarOpen(false)}
-              className="md:hidden ml-auto p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700"
+              className="md:hidden ml-auto p-1 rounded hover:bg-[#2A3744] dark:hover:bg-[#2A3744]"
             >
               <X className="w-5 h-5" />
             </button>
@@ -516,10 +534,10 @@ export default function SimpleChat() {
               onClick={() => setView('users')}
               className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium ${
                 view === 'users'
-                  ? 'bg-blue-500 text-white'
+                  ? 'bg-[#2563EB] text-white'
                   : darkMode
-                  ? 'bg-gray-700 text-gray-300 hover:text-white'
-                  : 'bg-white text-gray-600 hover:text-gray-900'
+                  ? 'bg-[#1E2A38] text-[#A0B3C6] hover:bg-[#2A3744]'
+                  : 'bg-white text-gray-600 hover:bg-gray-100'
               }`}
             >
               <Users className="w-4 h-4 mx-auto" />
@@ -528,10 +546,10 @@ export default function SimpleChat() {
               onClick={() => setView('chats')}
               className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium ${
                 view === 'chats'
-                  ? 'bg-blue-500 text-white'
+                  ? 'bg-[#2563EB] text-white'
                   : darkMode
-                  ? 'bg-gray-700 text-gray-300 hover:text-white'
-                  : 'bg-white text-gray-600 hover:text-gray-900'
+                  ? 'bg-[#1E2A38] text-[#A0B3C6] hover:bg-[#2A3744]'
+                  : 'bg-white text-gray-600 hover:bg-gray-100'
               }`}
             >
               <MessageCircle className="w-4 h-4 mx-auto" />
@@ -548,21 +566,21 @@ export default function SimpleChat() {
                   key={user.id}
                   onClick={() => startChat(user)}
                   className={`p-3 rounded-lg cursor-pointer ${
-                    darkMode ? 'hover:bg-gray-700' : 'hover:bg-white hover:shadow-sm'
+                    darkMode ? 'hover:bg-[#2A3744]' : 'hover:bg-gray-100'
                   }`}
                 >
                   <div className="flex items-center gap-3">
                     <div className="relative">
-                      <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-medium">
+                      <div className="w-10 h-10 bg-[#2563EB] rounded-full flex items-center justify-center text-white font-medium">
                         {user.first_name[0]}{user.surname[0]}
                       </div>
                       <div className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 ${
                         user.online ? 'bg-green-500' : 'bg-gray-400'
-                      } ${darkMode ? 'border-gray-800' : 'border-white'}`} />
+                      } ${darkMode ? 'border-[#1E2A38]' : 'border-white'}`} />
                     </div>
                     <div>
                       <p className="font-medium">{user.first_name} {user.surname}</p>
-                      <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                      <p className={`text-sm ${darkMode ? 'text-[#A0B3C6]' : 'text-gray-600'}`}>
                         Level {user.level}
                       </p>
                     </div>
@@ -579,21 +597,21 @@ export default function SimpleChat() {
                   onClick={() => setSelectedChat(chat)}
                   className={`p-3 rounded-lg cursor-pointer ${
                     selectedChat?.id === chat.id
-                      ? 'bg-blue-500 text-white'
+                      ? 'bg-[#2563EB] text-white'
                       : darkMode
-                      ? 'hover:bg-gray-700'
-                      : 'hover:bg-white hover:shadow-sm'
+                      ? 'hover:bg-[#2A3744]'
+                      : 'hover:bg-gray-100'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-medium">
+                    <div className="w-10 h-10 bg-[#2563EB] rounded-full flex items-center justify-center text-white font-medium">
                       {chat.user.first_name[0]}{chat.user.surname[0]}
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-medium truncate">{chat.user.first_name} {chat.user.surname}</p>
                       {chat.last_message && (
                         <p className={`text-sm truncate ${
-                          selectedChat?.id === chat.id ? 'text-blue-100' : darkMode ? 'text-gray-400' : 'text-gray-600'
+                          selectedChat?.id === chat.id ? 'text-blue-100' : darkMode ? 'text-[#A0B3C6]' : 'text-gray-600'
                         }`}>
                           {chat.last_message.file_attachment ? (
                             <span className="flex items-center gap-1">
@@ -626,7 +644,7 @@ export default function SimpleChat() {
         {selectedChat ? (
           <>
             <div className={`p-4 border-b flex items-center gap-3 ${
-              darkMode ? 'bg-gray-800 border-gray-700' : 'bg-gray-50 border-gray-200'
+              darkMode ? 'bg-[#1E2A38] border-[#2A3744]' : 'bg-gray-50 border-gray-200'
             }`}>
               <button
                 onClick={() => {
@@ -635,16 +653,16 @@ export default function SimpleChat() {
                     setSidebarOpen(true);
                   }
                 }}
-                className="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700"
+                className="p-2 rounded-lg hover:bg-[#2A3744] dark:hover:bg-[#2A3744]"
               >
                 <ArrowLeft className="w-5 h-5" />
               </button>
-              <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-medium">
+              <div className="w-10 h-10 bg-[#2563EB] rounded-full flex items-center justify-center text-white font-medium">
                 {selectedChat.user.first_name[0]}{selectedChat.user.surname[0]}
               </div>
               <div>
                 <h1 className="font-semibold">{selectedChat.user.first_name} {selectedChat.user.surname}</h1>
-                <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                <p className={`text-sm ${darkMode ? 'text-[#A0B3C6]' : 'text-gray-600'}`}>
                   Level {selectedChat.user.level}
                 </p>
               </div>
@@ -659,9 +677,9 @@ export default function SimpleChat() {
                   <div
                     className={`max-w-xs md:max-w-md px-4 py-2 rounded-lg ${
                       message.sender_id === currentUser.id
-                        ? `bg-blue-500 text-white ${message.isPending ? 'opacity-75' : ''}`
+                        ? `bg-[#2563EB] text-white ${message.isPending ? 'opacity-75' : ''}`
                         : darkMode
-                        ? 'bg-gray-700 text-white'
+                        ? 'bg-[#1E2A38] text-[#E2E8F0]'
                         : 'bg-gray-100 text-gray-900'
                     }`}
                   >
@@ -670,9 +688,9 @@ export default function SimpleChat() {
                     {message.file_attachment && (
                       <div className={`p-2 rounded border ${
                         message.sender_id === currentUser.id
-                          ? 'border-blue-300 bg-blue-400'
+                          ? 'border-[#1E40AF] bg-[#3B82F6]'
                           : darkMode
-                          ? 'border-gray-600 bg-gray-600'
+                          ? 'border-[#2A3744] bg-[#2A3744]'
                           : 'border-gray-300 bg-gray-200'
                       }`}>
                         <div className="flex items-center gap-2 mb-2">
@@ -710,7 +728,7 @@ export default function SimpleChat() {
                       message.sender_id === currentUser.id
                         ? 'text-blue-100'
                         : darkMode
-                        ? 'text-gray-400'
+                        ? 'text-[#A0B3C6]'
                         : 'text-gray-500'
                     }`}>
                       {new Date(message.created_at).toLocaleTimeString([], {
@@ -727,16 +745,16 @@ export default function SimpleChat() {
 
             {selectedFile && (
               <div className={`p-4 border-t ${
-                darkMode ? 'bg-gray-800 border-gray-700' : 'bg-gray-50 border-gray-200'
+                darkMode ? 'bg-[#1E2A38] border-[#2A3744]' : 'bg-gray-50 border-gray-200'
               }`}>
                 <div className={`p-3 rounded-lg border ${
-                  darkMode ? 'border-gray-600 bg-gray-700' : 'border-gray-300 bg-white'
+                  darkMode ? 'border-[#2A3744] bg-[#1E2A38]' : 'border-gray-300 bg-white'
                 }`}>
                   <div className="flex items-center gap-3">
                     {getFileIcon(selectedFile.type)}
                     <div className="flex-1">
                       <p className="font-medium truncate">{selectedFile.name}</p>
-                      <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                      <p className={`text-sm ${darkMode ? 'text-[#A0B3C6]' : 'text-gray-600'}`}>
                         {formatFileSize(selectedFile.size)}
                       </p>
                     </div>
@@ -745,7 +763,7 @@ export default function SimpleChat() {
                         setSelectedFile(null);
                         if (fileInputRef.current) fileInputRef.current.value = '';
                       }}
-                      className="p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-600"
+                      className="p-1 rounded hover:bg-[#2A3744] dark:hover:bg-[#2A3744]"
                     >
                       <X className="w-4 h-4" />
                     </button>
@@ -755,7 +773,7 @@ export default function SimpleChat() {
             )}
 
             <form onSubmit={sendMessage} className={`p-4 border-t ${
-              darkMode ? 'bg-gray-800 border-gray-700' : 'bg-gray-50 border-gray-200'
+              darkMode ? 'bg-[#1E2A38] border-[#2A3744]' : 'bg-gray-50 border-gray-200'
             }`}>
               <div className="flex gap-2">
                 <input
@@ -769,7 +787,8 @@ export default function SimpleChat() {
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700"
+                  className="p-2 rounded-lg hover:bg-[#2A3744] dark:hover:bg-[#2A3744]"
+                  aria-label="Attach file"
                 >
                   <Paperclip className="w-5 h-5" />
                 </button>
@@ -781,14 +800,20 @@ export default function SimpleChat() {
                   placeholder="Type a message..."
                   className={`flex-1 px-4 py-2 rounded-lg border ${
                     darkMode
-                      ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400'
+                      ? 'bg-[#1E2A38] border-[#2A3744] text-[#E2E8F0] placeholder-[#A0B3C6]'
                       : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
-                  } focus:outline-none focus:border-blue-500`}
+                  } focus:outline-none focus:border-[#2563EB]`}
+                  aria-label="Type a message"
                 />
                 <button
                   type="submit"
                   disabled={(!newMessage.trim() && !selectedFile) || sending}
-                  className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 flex items-center gap-2"
+                  className={`px-4 py-2 rounded-lg text-white flex items-center gap-2 ${
+                    darkMode
+                      ? 'bg-[#4B91F1] hover:bg-[#3B82F6]'
+                      : 'bg-[#2563EB] hover:bg-[#1E40AF]'
+                  } disabled:opacity-50`}
+                  aria-label="Send message"
                 >
                   {uploading ? (
                     <>
@@ -808,12 +833,12 @@ export default function SimpleChat() {
           <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
             <MessageCircle className="w-16 h-16 mb-4 text-gray-400" />
             <h2 className="text-xl font-semibold mb-2">Select a Chat</h2>
-            <p className={`${darkMode ? 'text-gray-400' : 'text-gray-600'} mb-6`}>
+            <p className={`${darkMode ? 'text-[#A0B3C6]' : 'text-gray-600'} mb-6`}>
               Choose a conversation or start a new one
             </p>
             <button
               onClick={() => setSidebarOpen(true)}
-              className="md:hidden px-4 py-2 bg-blue-500 text-white rounded-lg"
+              className="md:hidden px-4 py-2 bg-[#2563EB] text-white rounded-lg hover:bg-[#1E40AF]"
             >
               Open Chats
             </button>
