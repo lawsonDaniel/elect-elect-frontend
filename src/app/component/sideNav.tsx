@@ -32,7 +32,7 @@ export default function SideNav({ isMobileOpen }: SideNavProps) {
     }  ${
       isExpanded ? "w-56 sm:w-64" : "w-20 sm:w-[6.25rem]"
     } ${
-      darkMode ? 'bg-[#070E12]' : 'bg-[#EEEFF0]'
+      darkMode ? 'bg-[#070E12] border border-[#EEEFF0]' : 'bg-[#EEEFF0]'
     }`}
   >
     {/* Logo and Toggle */}
@@ -86,7 +86,7 @@ export default function SideNav({ isMobileOpen }: SideNavProps) {
       <Link href="/dashboard" className={`transition-all duration-1000 ease-in-out flex items-center px-3 sm:px-4 py-2 rounded-lg mx-2 mt-1 ${
         pathname === '/dashboard' 
           ? 'bg-navBlue text-white' 
-          : `${darkMode ? 'text-[#EDF3F8] hover:bg-[#101E27]' : 'text-[#6B7280] hover:bg-gray-300'}`
+          : `${darkMode ? 'text-white hover:bg-[#101E27]' : 'text-[#6B7280] hover:bg-gray-300'}`
       } ${isExpanded?'':'justify-center'}`}>
         <div className="min-w-[20px] sm:min-w-[24px] flex justify-center items-center">
           <Image src='/dashboard-square.png' 
@@ -127,7 +127,7 @@ export default function SideNav({ isMobileOpen }: SideNavProps) {
               pathname === '/dashboard/chat' 
                 ? '' 
                 : darkMode 
-                  ? 'invert' 
+                  ? 'text-white ' 
                   : ''
             } ${isExpanded?'':'ml-0'} transition-all duration-700 ease-in-out`}
           />

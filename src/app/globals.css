@@ -37,7 +37,7 @@ html, body {
 }
 
 
-/* Dark mode styles */
+/* Dark mode styles with CSS variables */
 .dark {
   background-color: var(--color-darkBackground);
   color: var(--color-darktextp);
@@ -47,13 +47,53 @@ html, body {
   color: var(--color-darktexth);
 }
 
-/* Smooth transitions */
+/* Global smooth transitions for dark mode switching */
 body, .dark {
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color 1.5s ease, color 0.3s ease;
 }
 
 button, input, a {
   transition: all 0.2s ease;
+}
+
+/* Apply smooth transitions to all elements for seamless mode switching */
+* {
+  transition: background-color 0.4s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Specific elements that commonly change in dark mode */
+div, section, main, header, footer, nav {
+  transition: background-color 0.4s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Text elements get smooth color transitions */
+h1, h2, h3, h4, h5, h6, p, span, label {
+  transition: color 0.3s ease;
+}
+
+/* Smooth shadow transitions for elevated elements */
+[class*="shadow"] {
+  transition: box-shadow 0.3s ease, background-color 0.4s ease, color 0.3s ease;
+}
+
+/* Border transitions for form elements and cards */
+[class*="border"] {
+  transition: border-color 0.3s ease, background-color 0.4s ease;
+}
+
+/* Override for animations and elements that shouldn't transition */
+[class*="animate"], .no-transition, [class*="transform"] {
+  transition: transform 0.3s ease !important;
+}
+
+/* Ensure images transition smoothly */
+img {
+  transition: opacity 0.3s ease;
+}
+
+/* Smooth transitions for Tailwind utility classes */
+[class*="bg-"], [class*="text-"] {
+  transition: background-color 0.4s ease, color 0.3s ease;
 }
 
 /* ===== SCROLL ANIMATIONS ===== */

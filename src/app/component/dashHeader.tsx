@@ -57,7 +57,7 @@ export default function DashHeader({ isMobileOpen, setIsMobileOpen }: DashboardH
             onClick={handleToggle}
             className={`w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center rounded-full ${
               darkMode 
-                ? 'bg-[#101E27] dark:text-[#EDF3F8] shadow' 
+                ? 'bg-gray-600 dark:text-[#EDF3F8] shadow' 
                 : 'text-[#101E27] '
             }`}
           >

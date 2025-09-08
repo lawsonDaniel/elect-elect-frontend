@@ -23,8 +23,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning className={poppins.className}>
-      <body>
+    <html lang="en" suppressHydrationWarning >
+      <body className={poppins.className}>
         <DarkModeProvider>
           {children}
           <Notification.ToastContainer />
