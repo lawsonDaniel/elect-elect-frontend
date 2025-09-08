@@ -27,13 +27,10 @@ export default function SideNav({ isMobileOpen }: SideNavProps) {
   return (
     <>
     <div 
-    className={`z-50 fixed h-[96vh] md:flex ml-2 sm:ml-4 mr-4 sm:mr-10 justify-center flex-col rounded-lg transition-all duration-500 ease-in-out font-light md:translate-x-0 md:relative md:h-[96vh] shadow-lg ${
-      isMobileOpen ? 'translate-x-0 opacity-100' : 'md:translate-x-0 md:opacity-100 -translate-x-full opacity-0'
-    }  ${
-      isExpanded ? "w-56 sm:w-64" : "w-20 sm:w-[6.25rem]"
-    } ${
-      darkMode ? 'bg-[#070E12]' : 'bg-[#EEEFF0]'
-    }`}
+    className={` z-50 fixed h-[96vh] md:flex ml-2 sm:ml-4 mr-4 sm:mr-10 justify-center flex-col rounded-lg transition-all duration-500 ease-in-out font-light md:translate-x-0 md:relative md:h-[96vh] shadow-lg 
+    ${isMobileOpen ? 'translate-x-0 opacity-100' : 'md:translate-x-0 md:opacity-100 -translate-x-full opacity-0'}  
+    ${isExpanded ? "w-56 sm:w-64" : "w-20 sm:w-[6.25rem]"} 
+    ${darkMode ? 'bg-[#070E12] border border-[#EEEFF0]' : 'bg-[#EEEFF0]'}`}
   >
     {/* Logo and Toggle */}
     <div className="relative flex items-center p-3 sm:p-4">
@@ -93,13 +90,11 @@ export default function SideNav({ isMobileOpen }: SideNavProps) {
             width={16} 
             height={16} 
             alt='dashboard'
-            className={`sm:w-5 sm:h-5 ${
-              pathname === '/dashboard' 
-                ? '' 
-                : darkMode 
-                  ? 'invert' 
-                  : 'invert brightness-50'
-            } ${isExpanded?'':'ml-0'} transition-all duration-700 ease-in-out`}
+            className={`sm:w-5 sm:h-5 ${isExpanded?'':'ml-0'} transition-all duration-700 ease-in-out ${
+            pathname === '/dashboard' || darkMode
+              ? '' 
+              : 'brightness-0 opacity-60' 
+          }`}
           />
         </div>
         
@@ -123,14 +118,11 @@ export default function SideNav({ isMobileOpen }: SideNavProps) {
             width={16} 
             height={16} 
             alt='chat room'
-            className={`sm:w-5 sm:h-5 ${
-              pathname === '/dashboard/chat' 
-                ? '' 
-                : darkMode 
-                  ? 'invert' 
-                  : ''
-            } ${isExpanded?'':'ml-0'} transition-all duration-700 ease-in-out`}
-          />
+           className={`sm:w-5 sm:h-5 ${isExpanded?'':'ml-0'} transition-all duration-700 ease-in-out ${
+              pathname === '/dashboard/chat' && darkMode
+                ? 'brightness-0 invert' // White only when active AND in dark mode
+                : '' // Keep original #6B7280 color in all other cases
+            }`}/>
         </div>
         
         <div
@@ -160,13 +152,11 @@ export default function SideNav({ isMobileOpen }: SideNavProps) {
             width={16} 
             height={16} 
             alt='calculator'
-            className={`sm:w-5 sm:h-5 ${
-              pathname === '/dashboard/gpaCalculator' 
-                ? '' 
-                : darkMode 
-                  ? 'invert' 
-                  : ''
-            } ${isExpanded?'':'ml-0'} transition-all duration-700 ease-in-out`}
+            className={`sm:w-5 sm:h-5 ${isExpanded?'':'ml-0'} transition-all duration-700 ease-in-out ${
+              pathname === '/dashboard/gpaCalculator' && darkMode
+                ? 'brightness-0 invert' // White only when active AND in dark mode
+                : '' // Keep original #6B7280 color in all other cases
+            }`}
           />
         </div>
         
@@ -190,13 +180,11 @@ export default function SideNav({ isMobileOpen }: SideNavProps) {
             width={16} 
             height={16} 
             alt='library'
-            className={`sm:w-5 sm:h-5 ${
-              pathname === '/dashboard/mini-library' 
-                ? '' 
-                : darkMode 
-                  ? 'invert' 
-                  : ''
-            } ${isExpanded?'':'ml-0'} transition-all duration-700 ease-in-out`}
+            className={`sm:w-5 sm:h-5 ${isExpanded?'':'ml-0'} transition-all duration-700 ease-in-out ${
+              pathname === '/dashboard/mini-library' && darkMode
+                ? 'brightness-0 invert' // White only when active AND in dark mode
+                : '' // Keep original #6B7280 color in all other cases
+            }`}
           />
         </div>
         
@@ -220,13 +208,11 @@ export default function SideNav({ isMobileOpen }: SideNavProps) {
             width={16} 
             height={16} 
             alt='payment'
-            className={`sm:w-5 sm:h-5 ${
-              pathname === '/dashboard/payment' 
-                ? '' 
-                : darkMode 
-                  ? 'invert' 
-                  : ''
-            } ${isExpanded?'':'ml-0'} transition-all duration-700 ease-in-out`}
+            className={`sm:w-5 sm:h-5 ${isExpanded?'':'ml-0'} transition-all duration-700 ease-in-out ${
+              pathname === '/dashboard/payment' && darkMode
+                ? 'brightness-0 invert' // White only when active AND in dark mode
+                : '' // Keep original #6B7280 color in all other cases
+            }`}
           />
         </div>
        
@@ -253,13 +239,11 @@ export default function SideNav({ isMobileOpen }: SideNavProps) {
             width={16} 
             height={16} 
             alt='settings'
-            className={`sm:w-5 sm:h-5 ${
-              pathname === '/dashboard/settings' 
-                ? 'brightness-0 invert' 
-                : darkMode 
-                  ? 'invert' 
-                  : ''
-            } ${isExpanded?'':'ml-0'} transition-all duration-700 ease-in-out`}
+            className={`sm:w-5 sm:h-5 ${isExpanded?'':'ml-0'} transition-all duration-700 ease-in-out ${
+              pathname === '/dashboard/settings' && darkMode
+                ? 'brightness-0 invert' // White only when active AND in dark mode
+                : '' // Keep original #6B7280 color in all other cases
+            }`}
           />
         </div>
        
@@ -283,13 +267,11 @@ export default function SideNav({ isMobileOpen }: SideNavProps) {
             width={16} 
             height={16} 
             alt='logout'
-            className={`sm:w-5 sm:h-5 ${
-              pathname === '/logout' 
-                ? '' 
-                : darkMode 
-                  ? 'invert' 
-                  : ''
-            } ${isExpanded?'':'ml-0'} transition-all duration-700 ease-in-out`}
+            className={`sm:w-5 sm:h-5 ${isExpanded?'':'ml-0'} transition-all duration-700 ease-in-out ${
+              pathname === '/logout' && darkMode
+                ? 'brightness-0 invert' // White only when active AND in dark mode
+                : '' // Keep original #6B7280 color in all other cases
+            }`}
           />
         </div>
         

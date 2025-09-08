@@ -33,7 +33,7 @@ export default function DashHeader({ isMobileOpen, setIsMobileOpen }: DashboardH
           onClick={() => setIsMobileOpen(!isMobileOpen)}
           className={`md:hidden z-40 text-[#6B7280] flex-shrink-0 ${isMobileOpen ? 'hidden' : ''}`}
         >
-          <Menu size={40} className='bg-white p-2 border text-[#6B7280] rounded-md border-[#6B7280] dark:bg-[#070E12] dark:border-[#EDF3F8]' />
+          <Menu size={40} className={`p-2 border text-[#6B7280]   rounded-md ${darkMode? 'bg-[#070E12] border-[#EDF3F8]':'bg-white border-[#6B7280] '} `} />
         </div>
         
        
@@ -57,7 +57,7 @@ export default function DashHeader({ isMobileOpen, setIsMobileOpen }: DashboardH
             onClick={handleToggle}
             className={`w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center rounded-full ${
               darkMode 
-                ? 'bg-[#101E27] dark:text-[#EDF3F8] shadow' 
+                ? 'bg-gray-600 dark:text-[#EDF3F8] shadow' 
                 : 'text-[#101E27] '
             }`}
           >

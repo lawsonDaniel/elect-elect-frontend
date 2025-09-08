@@ -4,6 +4,8 @@ import Footer from "./component/footer";
 import Image from 'next/image';
 import { useDarkMode } from '@/contexts/DarkModeContext';
 import ScrollAnimationSection from "./component/ScrollAnimationSection"
+import Link from "next/link";
+import { ArrowRight, DotIcon } from "lucide-react";
 
 export default function Home() {
   const { darkMode } = useDarkMode();
@@ -55,8 +57,24 @@ export default function Home() {
   ];
 
   const news = [
-    { images: "/research.png", title: "New Research Initiative Launched", description: "Our department is excited to announce a new research initiative." },
-    { images: "/research.png",  title: "Upcoming Workshop on AI", description: "Join us for an engaging workshop on artificial intelligence applications." }
+    { images: "/research.jpeg", 
+      title: "New Research Initiative Launched", 
+      description: "Our department is excited to announce a new research initiative.",
+      Author: "Dr. Olurotimi O. Awodiiji",
+      DatePosted: "June 25, 2025",
+      TimeRead: "5mins Read" },
+    { images: "/AI_.jpeg",  
+      title: "Upcoming Workshop on AI", 
+      description: "Join us for an engaging workshop on artificial intelligence applications.",
+      Author: "Dr. Olurotimi O. Awodiiji",
+      DatePosted: "June 25, 2025",
+      TimeRead: "5mins Read" },
+    { images: "/AI_.jpeg",  
+      title: "innovation", 
+      description: "Join us for an engaging workshop on artificial intelligence applications.",
+      Author: "Dr. Olurotimi O. Awodiiji",
+      DatePosted: "June 25, 2025",
+      TimeRead: "5mins Read" }
   ];
 
   return (
@@ -93,12 +111,12 @@ export default function Home() {
           &quot;At our department, we are committed to pushing the boundaries of knowledge, preparing students to be industry-ready, and fostering a culture of innovation. Whether you are a prospective student, a researcher, or an industry partner, we invite you to explore our programs and collaborate with us in shaping the future of technology.&quot;
           </p>
           <div className="flex items-center mt-4 mb-5">
-            <Image src="/Ellipse 1.png" alt="HOD" width={48} height={48} className="rounded-full"  layout="intrinsic"/>
+            <Image src="/HOD.jpeg" alt="HOD" width={48} height={48} className="rounded-full"  layout="intrinsic"/>
             <div className="ml-3 flex flex-col">
               <p className={darkMode ? 'text-[#EDF3F8]' : 'text-black'}>HOD</p>
               <p className={`font-bold ${
                 darkMode ? 'text-[#FFFFFF]' : 'text-black'
-              }`}>Dr. O. Awodiji</p>
+              }`}>Dr. Olurotimi O. Awodiji</p>
             </div>
           </div>
         </div>
@@ -202,7 +220,8 @@ export default function Home() {
       </section>
       </ScrollAnimationSection>
 
-      {/* News Section */}
+
+    {/* News Section */}
       <ScrollAnimationSection>
       <section className={`mt-9 ${
         darkMode ? 'bg-[#070E12]' : 'bg-greyText'
@@ -216,21 +235,24 @@ export default function Home() {
               }`}>Latest Department News</h1>
               <p className={darkMode ? 'text-[#EDF3F8]' : 'text-black'}>Stay informed with our latest updates and events.</p>
             </div>
-            <button className={`w-[6.313rem] h-[3rem] bg-transparent border rounded-lg mt-2 ${
+            <Link href='/blog'><button className={`w-[6.313rem] h-[3rem] bg-transparent border rounded-lg mt-2 ${
               darkMode 
                 ? 'border-[#101E27] text-[#EDF3F8]' 
                 : 'border-[#9CA3AF] text-black'
-            }`}>View All</button>
+            }`}>View All</button></Link>
           </div>
-          <div className="mt-6 grid grid-row-1 lg:grid-cols-2 lg:-mx-[1.78%]">
-            {news.map(({ images, title, description }) => (
+          <div className="mt-6 grid grid-row-1 lg:grid-cols-3 lg:-mx-[1.78%]">
+            {news.map(({ images, title, description, Author, DatePosted, TimeRead }) => (
               <div key={title} className="lg:p-4 rounded-lg text-left">
-                <Image 
-                src={images} 
-                alt={title} 
-                width={589} 
-                height={314} 
-                className="m-auto  md:w-full md:h-full rounded-lg" layout="intrinsic" />
+                <div className="relative w-full h-[314px] rounded-lg overflow-hidden">
+                  <Image 
+                    src={images} 
+                    alt={title} 
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                  />
+                </div>
                 <p className={`mt-3 ${
                   darkMode ? 'text-[#EDF3F8]' : 'text-black'
                 }`}>News</p>
@@ -241,19 +263,27 @@ export default function Home() {
                   darkMode ? 'text-[#EDF3F8]' : 'text-black'
                 }`}>{description}</p>
                 <div className="flex items-center mt-4 mb-5">
-                  <Image src="/Ellipse 1.png" 
+                  <Image src="/HOD.jpeg" 
                   alt="HOD" 
-                  width={48} 
-                  height={48} 
-
+                  width={40} 
+                  height={40} 
                   className="rounded-full" />
                   <div className="ml-1 flex flex-col">
-                    <p className={darkMode ? 'text-[#EDF3F8]' : 'text-black'}>HOD</p>
                     <p className={`font-bold ${
                       darkMode ? 'text-[#FFFFFF]' : 'text-black'
-                    }`}>Dr. O. Awodiji</p>
+                    }`}>{Author}</p>
+                    <div className="flex gap-[1px] text-sm">
+                      <p className={darkMode ? 'text-[#EDF3F8]' : 'text-black'}>{DatePosted}</p>
+                      <DotIcon/>
+                      <p className={darkMode ? 'text-[#EDF3F8]' : 'text-black'}>{TimeRead}</p>
+                    </div>
                   </div>
+                  
                 </div>
+                 <div className="flex text-md">
+                      <p className={`${darkMode? 'text-white':'text-black'}`}>Read More</p>
+                      <ArrowRight/>
+                    </div>
               </div>
             ))}
           </div>
