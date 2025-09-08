@@ -32,6 +32,11 @@ html, body {
   scrollbar-width: none;
 }
 
+.font-grotesk {
+  font-family: var(--font-grotesk), sans-serif;
+}
+
+
 /* Dark mode styles */
 .dark {
   background-color: var(--color-darkBackground);

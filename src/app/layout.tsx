@@ -2,6 +2,15 @@
 import "./globals.css"; 
 import Notification from "./component/notification";
 import { DarkModeProvider } from '@/contexts/DarkModeContext';
+import { Poppins } from "next/font/google";
+
+// Load font from Google
+const poppins = Poppins({
+  subsets: ['latin'],        
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-poppins',
+  display: 'swap',            
+});
 
 export const metadata = {
   title: 'Next.js',
@@ -14,7 +23,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={poppins.className}>
       <body>
         <DarkModeProvider>
           {children}

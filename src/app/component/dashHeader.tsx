@@ -36,39 +36,13 @@ export default function DashHeader({ isMobileOpen, setIsMobileOpen }: DashboardH
           <Menu size={40} className='bg-white p-2 border text-[#6B7280] rounded-md border-[#6B7280] dark:bg-[#070E12] dark:border-[#EDF3F8]' />
         </div>
         
-        {/* Mobile: Show only search icon */}
-        <div className="sm:hidden flex-shrink-0">
-          <button className="w-10 h-10 flex items-center justify-center bg-white border border-[#6B7280] rounded-md dark:bg-[#070E12] dark:border-[#EDF3F8]">
-            <Image
-              src='/search.png'
-              width={20}
-              height={20}
-              alt="search"
-              className="dark:invert"
-            />
-          </button>
-        </div>
-
-        {/* Desktop: Show full search bar */}
-        <div className="hidden sm:block relative w-full max-w-sm md:max-w-md lg:w-[31.5rem] lg:max-w-none">
-          <Image
-            src='/search.png'
-            width={24}
-            height={24}
-            alt="search"
-            className="absolute top-1/2 -translate-y-1/2 left-3 flex-shrink-0 dark:invert"
-          />
-          <input
-            type="search"
-            placeholder="Search for Anything"
-            className="w-full text-[#6B7280] pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-black text-sm sm:text-base dark:bg-[#070E12] dark:border-[#EDF3F8] dark:text-[#EDF3F8] dark:focus:ring-[#EDF3F8]"
-          />
-        </div>
+       
+        
       </div>
 
       {/* Right side: toggle + notification */}
       <div className="flex items-center gap-2 sm:gap-4 ml-4 flex-shrink-0">
-        <div className="flex items-center gap-1 sm:gap-2 p-1 rounded-full border dark:border-[#EDF3F8]">
+        <div className={`flex items-center gap-1 sm:gap-2 p-1 rounded-full border ${darkMode? 'border-[#EDF3F8]':'[#101E27]'} `}>
           <button 
             onClick={handleToggle}
             className={`w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center rounded-full ${
@@ -83,8 +57,8 @@ export default function DashHeader({ isMobileOpen, setIsMobileOpen }: DashboardH
             onClick={handleToggle}
             className={`w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center rounded-full ${
               darkMode 
-                ? 'bg-[#101E27] text-[#EDF3F8] shadow' 
-                : 'text-[#6B7280] dark:text-[#EDF3F8]'
+                ? 'bg-[#101E27] dark:text-[#EDF3F8] shadow' 
+                : 'text-[#101E27] '
             }`}
           >
             <Moon size={14} className="sm:w-[18px] sm:h-[18px]" />
@@ -96,7 +70,7 @@ export default function DashHeader({ isMobileOpen, setIsMobileOpen }: DashboardH
           width={20} 
           height={20} 
           alt="notification" 
-          className="sm:w-6 sm:h-6 flex-shrink-0 dark:invert"
+          className={`sm:w-6 sm:h-6 flex-shrink-0 ${darkMode && 'invert'}`}
         />
       </div>
       
@@ -108,9 +82,9 @@ export default function DashHeader({ isMobileOpen, setIsMobileOpen }: DashboardH
           alt="Profile Picture" 
           className="rounded-full"
         />
-        <div className="hidden md:flex flex-col ml-3 dark:text-[#EDF3F8]">
-          <p className="font-bold dark:text-[#FFFFFF]">John Doe</p>
-          <p>student</p>
+        <div className="hidden md:flex flex-col ml-3 text-[#101E27] dark:text-[#EDF3F8]">
+          <p className={`font-bold ${darkMode? 'text-[#FFFFFF]':'text-[#101E27]'}`}>John Doe</p>
+          <p className={` ${darkMode? 'text-[#FFFFFF]':'text-[#101E27]'}`}>student</p>
         </div>
       </div>
 

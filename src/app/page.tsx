@@ -82,6 +82,7 @@ export default function Home() {
         darkMode ? 'bg-[#070E12]' : 'bg-greyText'
       }`}>
         <Image src="/welcome-img.png" alt="welcomeImage" width={592} height={562} className="mx-[4.27%] md:mx-[7.78%] lg:ml-[7.78%] my-[4.5%] md:w-[80%] w-[91%] "  layout="intrinsic"/>
+        <ScrollAnimationSection>
         <div className="lg:mr-[7.78%] lg:mt-[13%] mx-[4.27%] md:mx-[7.78%]">
           <h1 className={`font-bold text-lg md:text-3xl ${
             darkMode ? 'text-[#FFFFFF]' : 'text-black'
@@ -101,30 +102,33 @@ export default function Home() {
             </div>
           </div>
         </div>
+        </ScrollAnimationSection>
       </section>
       </ScrollAnimationSection>
 
       {/* Values Section */}
       <ScrollAnimationSection>
       <section className="bg-navBlue p-6 md:p-12">
-        <h2 className="text-center text-md md:text-2xl font-light text-white">Our Mission and Vision</h2>
-        <h2 className="text-center font-bold text-2xl md:text-4xl max-w-2xl m-auto mt-3 text-white">
+        <ScrollAnimationSection><h2 className="text-center text-md md:text-2xl font-light text-white">Our Mission and Vision</h2></ScrollAnimationSection>
+        <ScrollAnimationSection><h2 className="text-center font-bold text-2xl md:text-4xl max-w-2xl m-auto mt-3 text-white">
           Our Guiding Principles: Innovation, Excellence, and Impact
-        </h2>
+        </h2> </ScrollAnimationSection>
         <div className="mt-6 grid grid-row-1 lg:grid-cols-3 gap-10 -mx-[1%] md:mx-[2.6%] lg:mx-[4.6%]">
           {values.map(({ image, title, description }) => (
             <div key={title} className={`p-6 rounded-lg text-center ${
               darkMode ? 'bg-[#101E27]' : 'bg-gray-800'
             }`}>
-              <Image 
+              <ScrollAnimationSection>
+                <Image 
               src={image} 
               alt={title} 
               width={48} 
               height={48} 
               className="m-auto" 
-              layout="intrinsic" />
-              <h3 className="text-xl font-semibold text-white mt-5">{title}</h3>
+              layout="intrinsic" /> </ScrollAnimationSection>
+              <ScrollAnimationSection><h3 className="text-xl font-semibold text-white mt-5">{title}</h3>
               <p className="mt-2 text-[#D1D5DB] text-sm">{description}</p>
+              </ScrollAnimationSection>
             </div>
           ))}
         </div>
@@ -136,16 +140,18 @@ export default function Home() {
       <section className={`p-6 md:p-12 ${
         darkMode ? 'bg-[#070E12]' : 'bg-greyText'
       }`}>
-        <h2 className={`text-center text-2xl md:text-4xl font-bold mx-[7.78%] ${
+        <ScrollAnimationSection><h2 className={`text-center text-2xl md:text-4xl font-bold mx-[7.78%] ${
           darkMode ? 'text-[#FFFFFF]' : 'text-black'
-        }`}>Academic Programs</h2>
-        <h2 className={`text-center text-md font-light m-auto -mx-[1%] md:mx-[2.2%] lg:mx-[4.6%] mt-3 ${
+        }`}>Academic Programs</h2> </ScrollAnimationSection>
+        <ScrollAnimationSection>
+          <h2 className={`text-center text-md font-light m-auto -mx-[1%] md:mx-[2.2%] lg:mx-[4.6%] mt-3 ${
           darkMode ? 'text-[#EDF3F8]' : 'text-[#6B7280]'
         }`}>
           Our department offers a comprehensive curriculum designed to equip students with cutting-edge knowledge, hands-on experience, and industry-ready skills in electrical and electronics engineering. Whether you&apos;re starting your journey or advancing your expertise, we have the right program for you.
-        </h2>
+        </h2></ScrollAnimationSection>
         <div className="mt-6 grid grid-row-1 lg:grid-cols-3 gap-10 -mx-[1%] md:mx-[2.2%] lg:mx-[4.6%]">
           {Programs.map(({ title, description, points }) => (
+            <ScrollAnimationSection>
             <div key={title} className={`p-6 rounded-lg border h-full flex flex-col mb-8 ${
               darkMode 
                 ? 'bg-[#070E12] border-[#101E27]' 
@@ -190,6 +196,7 @@ export default function Home() {
                 </button>
               </div>
             </div>
+            </ScrollAnimationSection>
           ))}
         </div>
       </section>

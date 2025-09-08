@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { ChevronLeft} from 'lucide-react';
-import {Poppins} from "next/font/google"
+
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useDarkMode } from '@/contexts/DarkModeContext';
@@ -12,12 +12,7 @@ type SideNavProps = {
   setIsMobileOpen: (open: boolean) => void;
 };
 
-const poppins = Poppins({
-  subsets: ['latin'],        
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-poppins', 
-  display: 'swap',            
-});
+
 
 export default function SideNav({ isMobileOpen }: SideNavProps) {
     const [isExpanded, setIsExpanded] = useState(true);
@@ -34,7 +29,7 @@ export default function SideNav({ isMobileOpen }: SideNavProps) {
     <div 
     className={`z-50 fixed h-[96vh] md:flex ml-2 sm:ml-4 mr-4 sm:mr-10 justify-center flex-col rounded-lg transition-all duration-500 ease-in-out font-light md:translate-x-0 md:relative md:h-[96vh] shadow-lg ${
       isMobileOpen ? 'translate-x-0 opacity-100' : 'md:translate-x-0 md:opacity-100 -translate-x-full opacity-0'
-    } ${poppins.className} ${
+    }  ${
       isExpanded ? "w-56 sm:w-64" : "w-20 sm:w-[6.25rem]"
     } ${
       darkMode ? 'bg-[#070E12]' : 'bg-[#EEEFF0]'
@@ -86,7 +81,7 @@ export default function SideNav({ isMobileOpen }: SideNavProps) {
     </div>
 
     {/* Navigation Links */}
-    <div className="flex-1 overflow-y-auto">
+    <div className="">
       {/* Dashboard */}
       <Link href="/dashboard" className={`transition-all duration-1000 ease-in-out flex items-center px-3 sm:px-4 py-2 rounded-lg mx-2 mt-1 ${
         pathname === '/dashboard' 
