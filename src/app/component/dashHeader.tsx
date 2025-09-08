@@ -33,7 +33,7 @@ export default function DashHeader({ isMobileOpen, setIsMobileOpen }: DashboardH
           onClick={() => setIsMobileOpen(!isMobileOpen)}
           className={`md:hidden z-40 text-[#6B7280] flex-shrink-0 ${isMobileOpen ? 'hidden' : ''}`}
         >
-          <Menu size={40} className='bg-white p-2 border text-[#6B7280] rounded-md border-[#6B7280] dark:bg-[#070E12] dark:border-[#EDF3F8]' />
+          <Menu size={40} className={`p-2 border text-[#6B7280]   rounded-md ${darkMode? 'bg-[#070E12] border-[#EDF3F8]':'bg-white border-[#6B7280] '} `} />
         </div>
         
        

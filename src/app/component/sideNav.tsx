@@ -92,8 +92,8 @@ export default function SideNav({ isMobileOpen }: SideNavProps) {
             alt='dashboard'
             className={`sm:w-5 sm:h-5 ${isExpanded?'':'ml-0'} transition-all duration-700 ease-in-out ${
             pathname === '/dashboard' || darkMode
-              ? '' // Keep original (white) color when active OR in dark mode
-              : 'brightness-0 opacity-60' // Make it grayish (#6B7280-like) in light mode when inactive
+              ? '' 
+              : 'brightness-0 opacity-60' 
           }`}
           />
         </div>
