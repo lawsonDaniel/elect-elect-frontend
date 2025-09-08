@@ -9,6 +9,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import endPoints from '@/utils/endpoints.class';
 import { useRouter } from 'next/navigation';
 import { setCookie, parseCookies } from 'nookies';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 // Validation schema using Yup
 const validationSchema = Yup.object({
@@ -28,6 +29,7 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+  const supabase = createClientComponentClient();
 
   // Form submission handler
   interface LoginFormValues {
@@ -39,15 +41,63 @@ export default function Login() {
     setIsLoading(true);
     
     try {
+      // Step 1: Validate credentials with your MongoDB backend
       const response = await endPoints.login({
         email: values.email,
         password: values.password,
       });
 
-      Notification.info('Login successful!');
-      console.log('Login successful:', response);
+      console.log('MongoDB validation successful:', response);
       
-      // Store token in cookies using nookies
+      // Step 2: Authenticate with Supabase using the validated credentials
+      const { data: authData, error: supabaseError } = await supabase.auth.signInWithPassword({
+        email: values.email,
+        password: values.password,
+      });
+
+      if (supabaseError) {
+        // If user doesn't exist in Supabase, create them
+        if (supabaseError.message === 'Invalid login credentials') {
+          console.log('User not found in Supabase, creating account...');
+          
+          const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+            email: values.email,
+            password: values.password,
+            options: {
+              data: {
+                first_name: response.user?.firstName,
+                surname: response.user?.surname,
+                user_type: response.user?.userType,
+                level: response.user?.level,
+                mongo_id: response.user?._id
+              }
+            }
+          });
+
+          if (signUpError) {
+            console.error('Supabase signup error:', signUpError);
+            throw new Error('Failed to create authentication session');
+          }
+
+          console.log('Supabase account created, signing in...');
+          
+          // After signup, sign in
+          const { data: retryData, error: retryError } = await supabase.auth.signInWithPassword({
+            email: values.email,
+            password: values.password,
+          });
+
+          if (retryError) {
+            console.error('Retry Supabase authentication error:', retryError);
+            throw new Error('Authentication failed after account creation');
+          }
+        } else {
+          console.error('Supabase authentication error:', supabaseError);
+          throw new Error('Authentication failed');
+        }
+      }
+
+      // Step 3: Store additional data in cookies for backward compatibility
       if (response.token) {
         // Set auth token cookie with 7 days expiration
         setCookie(null, 'auth-token', response.token, {
@@ -56,7 +106,7 @@ export default function Login() {
           secure: process.env.NODE_ENV === 'production',
           sameSite: 'strict',
         });
-        
+        console.log('Auth token cookie set', response);
         // Also store user info in cookies for easy access
         if (response.user) {
           setCookie(null, 'user-info', JSON.stringify({
@@ -65,14 +115,19 @@ export default function Login() {
             userType: response.user.userType,
             firstName: response.user.firstName,
             surname: response.user.surname,
+            supabase_user_id: response.user.supabase_user_id || null
           }), {
             maxAge: 60 * 60 * 24 * 7,
             path: '/',
           });
         }
       }
+
+      Notification.info('Login successful!');
+      console.log('Full login successful');
       
-    router.push('/dashboard');
+      // Redirect to dashboard
+      router.push('/dashboard');
       
     } catch (error: any) {
       console.error('Login error:', error);

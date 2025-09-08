@@ -31,6 +31,7 @@ export interface IUser extends Document {
   createPasswordResetToken(): string;
   createdAt: Date;
   updatedAt: Date;
+  supabase_user_id?: string; // Made optional in interface
 }
 
 // User Schema
@@ -88,6 +89,12 @@ const userSchema = new Schema<IUser>(
     isEmailVerified: {
       type: Boolean,
       default: false,
+    },
+    supabase_user_id: {
+      type: String,
+      required: false, // ✅ Changed to optional
+      unique: true,    // ✅ Added unique constraint
+      sparse: true,    // ✅ Allow null values to be unique
     },
     emailVerificationToken: {
       type: String,
@@ -226,6 +233,7 @@ userSchema.index({ level: 1 }, { sparse: true });
 userSchema.index({ rank: 1 }, { sparse: true });
 userSchema.index({ department: 1 }, { sparse: true });
 userSchema.index({ faculty: 1 }, { sparse: true });
+userSchema.index({ supabase_user_id: 1 }, { sparse: true }); // ✅ Added index for supabase_user_id
 
 // Compound indexes
 userSchema.index({ userType: 1, level: 1 });

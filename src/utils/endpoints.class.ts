@@ -1,6 +1,6 @@
 import api from "./api";
 
-enum Gender {
+export enum Gender {
   MALE = "Male",
   FEMALE = "Female"
 }
@@ -208,7 +208,7 @@ class EndPoints {
     }
   }
 
-  public updateUser = async (id: string, data: ) => {
+  public updateUser = async (id: string, data:any ) => {
     try {
       const response = await api.put(`/auth/user/${id}`, data);
       return response.data;

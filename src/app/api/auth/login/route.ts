@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/utils/db';
 import User from '@/models/user.model';
 import jwt from 'jsonwebtoken';
-import { supabase } from '@/utils/supabase/client';
 
 export async function POST(request: NextRequest) {
   try {
@@ -57,59 +56,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // ✅ SUPABASE AUTHENTICATION - Sign in user with Supabase
-    const { error: supabaseError } = await supabase.auth.signInWithPassword({
-      email: user.schoolEmail,
-      password: password, // Use the same password or consider a different approach
-    });
-
-    if (supabaseError) {
-      console.error('Supabase authentication error:', supabaseError);
-      
-      // If user doesn't exist in Supabase, create them
-      if (supabaseError.message === 'Invalid login credentials') {
-        const { error: signUpError } = await supabase.auth.signUp({
-          email: user.schoolEmail,
-          password: password,
-          options: {
-            data: {
-              first_name: user.firstName,
-              surname: user.surname,
-              user_type: user.userType,
-              level: user.level
-            }
-          }
-        });
-
-        if (signUpError) {
-          console.error('Supabase signup error:', signUpError);
-          return NextResponse.json(
-            { error: 'Authentication setup failed' },
-            { status: 500 }
-          );
-        }
-
-        // If signup was successful, try to sign in again
-        const { error: retryError } = await supabase.auth.signInWithPassword({
-          email: user.schoolEmail,
-          password: password,
-        });
-
-        if (retryError) {
-          console.error('Retry Supabase authentication error:', retryError);
-          return NextResponse.json(
-            { error: 'Authentication failed' },
-            { status: 500 }
-          );
-        }
-      } else {
-        return NextResponse.json(
-          { error: 'Authentication failed' },
-          { status: 500 }
-        );
-      }
-    }
-
     // Generate JWT token (for your existing auth system)
     const jwtSecret = process.env.JWT_SECRET || 'your-fallback-secret-key-change-in-production';
     const token = jwt.sign(
@@ -144,9 +90,6 @@ export async function POST(request: NextRequest) {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       path: '/',
     });
-
-    // Also set Supabase auth cookie if needed
-    // Note: Supabase usually handles its own cookies automatically
 
     return response;
 

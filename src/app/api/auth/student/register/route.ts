@@ -61,50 +61,59 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // ✅ 1. FIRST CREATE MONGODB USER (without supabase_user_id initially)
-    const user = new User({
-      surname,
-      firstName,
-      gender,
-      dob: new Date(dob),
-      userType: 'student',
-      schoolEmail,
-      mattNumber,
-      password, // This will be hashed by your User model
-      level,
-      // supabase_user_id will be added after Supabase user is created
+    // ✅ 1. CREATE NORMAL SUPABASE USER (not admin)
+    const { data: authData, error: authError } = await supabase.auth.signUp({
+      email: schoolEmail,
+      password: password,
+      options: {
+        data: {
+          user_type: 'student',
+          surname,
+          first_name: firstName
+        }
+      }
     });
 
-    // Save user to MongoDB first
-    await user.save();
+    if (authError) {
+      console.error('Supabase auth creation error:', authError);
+      return NextResponse.json(
+        { error: `Failed to create user account: ${authError.message}` },
+        { status: 400 }
+      );
+    }
 
-    let supabaseSyncStatus = 'completed';
-    let supabaseUserId: string | null = null;
+    if (!authData.user) {
+      return NextResponse.json(
+        { error: 'Failed to create user account' },
+        { status: 500 }
+      );
+    }
+    console.log('Supabase auth user created', authData.user);
+    const supabaseUserId = authData.user.id;
 
     try {
-      // ✅ 2. NOW CREATE SUPABASE AUTH USER (using the already-created MongoDB user._id)
-      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
-        email: schoolEmail,
-        password: password, // Use the actual password provided by user
-        email_confirm: true,
-        user_metadata: {
-          mongo_user_id: user._id.toString(), // Now user is defined
-          user_type: 'student'
-        }
+      // ✅ 2. CREATE MONGODB USER WITH SUPABASE USER ID
+      const user = new User({
+        surname,
+        firstName,
+        gender,
+        dob: new Date(dob),
+        userType: 'student',
+        schoolEmail,
+        mattNumber,
+        password, // This will be hashed by your User model
+        level,
+        supabase_user_id: supabaseUserId // Save Supabase user ID
       });
 
-      if (authError) {
-        console.error('Supabase auth creation error:', authError);
-        throw new Error(`Supabase auth failed: ${authError.message}`);
-      }
-
-      supabaseUserId = authData.user.id;
+      // Save user to MongoDB
+      await user.save();
 
       // ✅ 3. CREATE PROFILE IN SUPABASE
       const { error: profileError } = await supabase
         .from('profiles')
         .insert({
-          id: authData.user.id,
+          id: supabaseUserId,
           mongo_user_id: user._id.toString(), // Reference to MongoDB
           surname,
           first_name: firstName,
@@ -118,60 +127,57 @@ export async function POST(request: NextRequest) {
 
       if (profileError) {
         console.error('Supabase profile creation error:', profileError);
-        // Clean up the auth user if profile creation failed
-        await supabase.auth.admin.deleteUser(authData.user.id);
-        throw new Error(`Supabase profile creation failed: ${profileError.message}`);
+        // Clean up MongoDB user if profile creation failed
+        await User.findByIdAndDelete(user._id);
+        throw new Error(`Profile creation failed: ${profileError.message}`);
       }
 
-      // ✅ 4. UPDATE MONGODB USER WITH SUPABASE USER ID
-      user.supabase_user_id = supabaseUserId;
-      await user.save();
+      // Return success response (exclude password)
+      const userResponse = user.toObject();
+      delete userResponse.password;
 
-    } catch (supabaseError: any) {
-      console.error('Supabase sync error:', supabaseError);
-      supabaseSyncStatus = 'failed';
-      
-      // 🧹 ROLLBACK: Delete the MongoDB user since Supabase creation failed
-      await User.findByIdAndDelete(user._id);
-      
       return NextResponse.json(
-        { error: `Failed to create user in authentication system: ${supabaseError.message}` },
+        { 
+          message: 'Student user created successfully', 
+          user: userResponse,
+          supabase_user_id: supabaseUserId,
+          email_confirmation_sent: !authData.session // If no session, email confirmation is required
+        },
+        { status: 201 }
+      );
+
+    } catch (mongoError: any) {
+      console.error('MongoDB user creation error:', mongoError);
+      
+      // Clean up Supabase user if MongoDB creation failed
+      // Note: For normal users, you might need admin privileges to delete
+      // Or implement a cleanup mechanism
+      
+      if (mongoError.name === 'ValidationError') {
+        const errors = Object.values(mongoError.errors).map((err: any) => err.message);
+        return NextResponse.json(
+          { error: 'Validation failed', details: errors },
+          { status: 400 }
+        );
+      }
+
+      if (mongoError.code === 11000) {
+        const field = Object.keys(mongoError.keyValue)[0];
+        return NextResponse.json(
+          { error: `${field} already exists` },
+          { status: 400 }
+        );
+      }
+
+      return NextResponse.json(
+        { error: 'Failed to save user data' },
         { status: 500 }
       );
     }
 
-    // Return success response (exclude password)
-    const userResponse = user.toObject();
-    delete userResponse.password;
-
-    return NextResponse.json(
-      { 
-        message: 'Student user created successfully', 
-        user: userResponse,
-        supabase_sync: supabaseSyncStatus
-      },
-      { status: 201 }
-    );
-
   } catch (error: any) {
     console.error('Student registration error:', error);
     
-    if (error.name === 'ValidationError') {
-      const errors = Object.values(error.errors).map((err: any) => err.message);
-      return NextResponse.json(
-        { error: 'Validation failed', details: errors },
-        { status: 400 }
-      );
-    }
-
-    if (error.code === 11000) {
-      const field = Object.keys(error.keyValue)[0];
-      return NextResponse.json(
-        { error: `${field} already exists` },
-        { status: 400 }
-      );
-    }
-
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
