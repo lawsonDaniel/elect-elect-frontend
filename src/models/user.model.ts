@@ -97,8 +97,8 @@ const userSchema = new Schema<IUser>(
     },
     supabase_user_id: {
       type: String,
-      required: false, // ✅ Changed to optional
-      unique: true,    // ✅ Added unique constraint
+      required: false, // ✅ Optional
+      unique: true,    // ✅ Creates unique index automatically
       sparse: true,    // ✅ Allow null values to be unique
     },
     emailVerificationToken: {
@@ -243,7 +243,7 @@ userSchema.index({ level: 1 }, { sparse: true });
 userSchema.index({ rank: 1 }, { sparse: true });
 userSchema.index({ department: 1 }, { sparse: true });
 userSchema.index({ faculty: 1 }, { sparse: true });
-userSchema.index({ supabase_user_id: 1 }, { sparse: true }); // ✅ Added index for supabase_user_id
+// ✅ Removed duplicate supabase_user_id index - already created by unique: true
 
 // Compound indexes
 userSchema.index({ userType: 1, level: 1 });
