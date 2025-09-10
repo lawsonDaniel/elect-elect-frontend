@@ -56,6 +56,7 @@ export default function Dashboard() {
   };
 
   return (
+<<<<<<< HEAD
     <div className={`p-4 sm:p-6 lg:p-8 ${darkMode ? 'bg-[#0A1218]' : 'bg-gray-100'} transition-colors duration-200 ${poppins.className}`}>
       <h1
         className={`text-xl sm:text-2xl font-semibold mb-2 ${darkMode ? 'text-[#E2E8F0]' : 'text-gray-900'}`}
@@ -63,6 +64,11 @@ export default function Dashboard() {
         aria-level={1}
       >
         Welcome Back, {profile?.firstName || 'John'}
+=======
+    <div className="p-4 sm:p-6 lg:p-4">
+      <h1 className={`text-xl sm:text-2xl font-semibold  font-grotesk mb-2 ${darkMode ? 'text-[#FFFFFF]' : 'text-gray-900'}`}>
+        Welcome Back, John
+>>>>>>> 1f0ed8c93bcb39bbeb4e995be7bf3f875e3f345e
       </h1>
 
       <div className="w-full flex flex-col lg:flex-row lg:justify-between gap-4 mb-6">
@@ -114,7 +120,7 @@ export default function Dashboard() {
               aria-label="View full profile"
             >
               See More
-            </button>
+            </button></Link>
           </div>
 
           <div className="flex items-center gap-4 mb-6">

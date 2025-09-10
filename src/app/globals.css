@@ -32,6 +32,11 @@ html, body {
   scrollbar-width: none;
 }
 
+.font-grotesk {
+  font-family: var(--font-grotesk), sans-serif;
+}
+
+
 /* Dark mode styles */
 .dark {
   background-color: var(--color-darkBackground);
@@ -49,4 +54,139 @@ body, .dark {
 
 button, input, a {
   transition: all 0.2s ease;
+}
+/* ===== SCROLL ANIMATIONS ===== */
+
+/* Keyframe Animations */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInRight {
+  0% {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes buttonPulse {
+  0%, 100% {
+    background-color: var(--color-gold);
+    box-shadow: 0 0 0 0 rgba(179, 162, 115, 0.4);
+  }
+  50% {
+    background-color: #9A8B5F;
+    box-shadow: 0 0 0 8px rgba(179, 162, 115, 0.1);
+  }
+}
+
+/* Scroll Animation Base Classes */
+.scroll-animation {
+  transition: all 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.scroll-animation.in-view {
+  opacity: 1;
+  transform: translateY(0);
+  animation: fadeInUp 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* Animation Variants */
+.scroll-animation.fade-left {
+  transform: translateX(-30px);
+}
+
+.scroll-animation.fade-left.in-view {
+  transform: translateX(0);
+  animation: fadeInLeft 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.scroll-animation.fade-right {
+  transform: translateX(30px);
+}
+
+.scroll-animation.fade-right.in-view {
+  transform: translateX(0);
+  animation: fadeInRight 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.scroll-animation.fade-only {
+  transform: none;
+}
+
+.scroll-animation.fade-only.in-view {
+  animation: fadeIn 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.scroll-animation.scale-in {
+  transform: scale(0.9);
+}
+
+.scroll-animation.scale-in.in-view {
+  transform: scale(1);
+  animation: scaleIn 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* Button Animation */
+.animate-button-pulse {
+  animation: buttonPulse 2s infinite;
+}
+
+.animate-button-pulse:hover {
+  animation: none;
+  background-color: var(--color-gold) !important;
+  box-shadow: 0 4px 12px rgba(179, 162, 115, 0.3);
+}
+
+/* Dark mode adjustments for animations */
+.dark .animate-button-pulse {
+  box-shadow: 0 0 0 0 rgba(237, 243, 248, 0.2);
+}
+
+.dark .animate-button-pulse:hover {
+  box-shadow: 0 4px 12px rgba(237, 243, 248, 0.2);
 }

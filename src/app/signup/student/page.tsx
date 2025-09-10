@@ -146,11 +146,12 @@ const StudentSignup = () => {
         }}
       />
       
-      <div className="min-h-screen flex flex-col lg:flex-row-reverse bg-[#f8fbfd]">
+      {/* Mobile and Tablet Layout */}
+      <div className="min-h-screen flex flex-col lg:hidden bg-[#f8fbfd]">
         {/* Image Section */}
-        <div className="relative w-full h-[180px] md:h-[220px] lg:h-screen lg:w-1/2 p-2 lg:p-4 flex-shrink-0">
+        <div className="relative w-full h-[180px] md:h-[220px] p-2 flex-shrink-0">
           <Link href="/">
-            <p className="absolute top-4 left-4 md:top-6 md:left-6 text-white text-sm flex items-center space-x-2 lg:hidden cursor-pointer z-10">
+            <p className="absolute top-4 left-4 md:top-6 md:left-6 text-white text-sm flex items-center space-x-2 cursor-pointer z-10">
               <span>←</span> <span>Back to website</span>
             </p>
           </Link>
@@ -161,15 +162,15 @@ const StudentSignup = () => {
               alt="Engineering Students"
               fill
               style={{ objectFit: 'cover' }}
-              className="rounded-2xl lg:rounded-3xl"
+              className="rounded-2xl"
               priority
             />
             
-            <div className="absolute inset-0 bg-[#101E27CC] rounded-2xl lg:rounded-3xl flex flex-col justify-center items-center text-center px-4">
-              <h1 className="block lg:hidden text-white text-lg md:text-xl font-bold mb-2 max-w-md leading-tight">
+            <div className="absolute inset-0 bg-[#101E27CC] rounded-2xl flex flex-col justify-center items-center text-center px-4">
+              <h1 className="text-white text-lg md:text-xl font-bold mb-2 max-w-md leading-tight">
                 Sign Up – Join Our Engineering Community
               </h1>
-              <p className="block lg:hidden text-white text-xs md:text-sm">
+              <p className="text-white text-xs md:text-sm">
                 Create Your Account & Stay Connected!
               </p>
             </div>
@@ -177,24 +178,8 @@ const StudentSignup = () => {
         </div>
 
         {/* Form Section */}
-        <div className="flex-1 flex flex-col justify-start lg:justify-center items-center p-4 md:p-6 lg:p-8 overflow-y-auto min-h-0">
+        <div className="flex-1 flex flex-col justify-start items-center p-4 md:p-6 overflow-y-auto min-h-0">
           <div className="w-full max-w-lg">
-            <Link href="/">
-              <p className="text-sm text-gray-600 mb-4 cursor-pointer flex items-center space-x-2 hidden lg:flex">
-                <span>←</span> <span>Back to website</span>
-              </p>
-            </Link>
-
-            {/* Header for desktop */}
-            <div className="hidden lg:block mb-6">
-              <h1 className="text-2xl font-bold mb-2">
-                Sign Up – Join Our Engineering Community
-              </h1>
-              <p className="text-gray-500">
-                Create Your Account & Stay Connected!
-              </p>
-            </div>
-
             <div className="mb-3 md:mb-4">
               <h2 className="text-base md:text-lg font-semibold">Enter the following details</h2>
             </div>
@@ -422,12 +407,295 @@ const StudentSignup = () => {
             </form>
 
             {/* Login Link */}
-            <p className="text-center text-xs text-gray-600 pb-4 md:pb-0">
+            <p className="text-center text-xs text-gray-600 pb-4">
               Already have an account?{' '}
               <Link href="/login">
                 <span className="underline font-semibold cursor-pointer">Login</span>
               </Link>
             </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Desktop Layout */}
+      <div className="hidden lg:flex h-screen bg-[#f8fbfd]">
+        {/* Fixed Image Section */}
+        <div className="fixed right-0 top-0 w-1/2 h-full p-4">
+          <div className="relative w-full h-full">
+            <Image
+              src="/Frame 172.png"
+              alt="Engineering Students"
+              fill
+              style={{ objectFit: 'cover' }}
+              className="rounded-3xl"
+              priority
+            />
+            
+            <div className="absolute inset-0 bg-[#101E27CC] rounded-3xl flex flex-col justify-center items-center text-center px-4">
+              <h1 className="text-white text-2xl font-bold mb-4 max-w-md leading-tight">
+                Sign Up – Join Our Engineering Community
+              </h1>
+              <p className="text-white text-sm">
+                Create Your Account & Stay Connected!
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Scrollable Form Section */}
+        <div className="w-1/2 overflow-y-auto">
+          <div className="flex flex-col justify-center items-center p-8 min-h-full">
+            <div className="w-full max-w-lg">
+              <Link href="/">
+                <p className="text-sm text-gray-600 mb-4 cursor-pointer flex items-center space-x-2">
+                  <span>←</span> <span>Back to website</span>
+                </p>
+              </Link>
+
+              {/* Header for desktop */}
+              <div className="mb-6">
+                <h1 className="text-2xl font-bold mb-2">
+                  Sign Up – Join Our Engineering Community
+                </h1>
+                <p className="text-gray-500">
+                  Create Your Account & Stay Connected!
+                </p>
+              </div>
+
+              <div className="mb-4">
+                <h2 className="text-lg font-semibold">Enter the following details</h2>
+              </div>
+
+              {/* Form */}
+              <form onSubmit={formik.handleSubmit} className="space-y-4">
+                {/* Name Fields */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">
+                      Surname
+                    </label>
+                    <input
+                      type="text"
+                      name="surname"
+                      value={formik.values.surname}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      placeholder="Enter surname"
+                      disabled={formik.isSubmitting}
+                      className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed ${
+                        hasFieldError('surname') ? 'border-red-500' : 'border-gray-300'
+                      }`}
+                    />
+                    {getFieldError('surname') && (
+                      <p className="text-red-500 text-xs mt-1">{getFieldError('surname')}</p>
+                    )}
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">
+                      First Name
+                    </label>
+                    <input
+                      type="text"
+                      name="firstName"
+                      value={formik.values.firstName}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      placeholder="Enter first name"
+                      disabled={formik.isSubmitting}
+                      className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed ${
+                        hasFieldError('firstName') ? 'border-red-500' : 'border-gray-300'
+                      }`}
+                    />
+                    {getFieldError('firstName') && (
+                      <p className="text-red-500 text-xs mt-1">{getFieldError('firstName')}</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Gender and DOB */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">
+                      Gender
+                    </label>
+                    <select
+                      name="gender"
+                      value={formik.values.gender}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      disabled={formik.isSubmitting}
+                      className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed ${
+                        hasFieldError('gender') ? 'border-red-500' : 'border-gray-300'
+                      }`}
+                    >
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
+                    </select>
+                    {getFieldError('gender') && (
+                      <p className="text-red-500 text-xs mt-1">{getFieldError('gender')}</p>
+                    )}
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">
+                      D.O.B
+                    </label>
+                    <input
+                      type="date"
+                      name="dob"
+                      value={formik.values.dob}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      disabled={formik.isSubmitting}
+                      className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed ${
+                        hasFieldError('dob') ? 'border-red-500' : 'border-gray-300'
+                      }`}
+                    />
+                    {getFieldError('dob') && (
+                      <p className="text-red-500 text-xs mt-1">{getFieldError('dob')}</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* School Email */}
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                    School Email
+                  </label>
+                  <input
+                    type="email"
+                    name="schoolEmail"
+                    value={formik.values.schoolEmail}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    placeholder="Enter school email"
+                    disabled={formik.isSubmitting}
+                    className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed ${
+                      hasFieldError('schoolEmail') ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                  />
+                  {getFieldError('schoolEmail') && (
+                    <p className="text-red-500 text-xs mt-1">{getFieldError('schoolEmail')}</p>
+                  )}
+                </div>
+
+                {/* Matt Number */}
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                    Matt Number
+                  </label>
+                  <input
+                    type="text"
+                    name="mattNumber"
+                    value={formik.values.mattNumber}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    placeholder="Enter matriculation number"
+                    disabled={formik.isSubmitting}
+                    className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed ${
+                      hasFieldError('mattNumber') ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                  />
+                  {getFieldError('mattNumber') && (
+                    <p className="text-red-500 text-xs mt-1">{getFieldError('mattNumber')}</p>
+                  )}
+                </div>
+
+                {/* Password Fields */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">
+                      Create Password
+                    </label>
+                    <input
+                      type="password"
+                      name="password"
+                      value={formik.values.password}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      placeholder="Create password"
+                      disabled={formik.isSubmitting}
+                      className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed ${
+                        hasFieldError('password') ? 'border-red-500' : 'border-gray-300'
+                      }`}
+                    />
+                    {getFieldError('password') && (
+                      <p className="text-red-500 text-xs mt-1">{getFieldError('password')}</p>
+                    )}
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">
+                      Repeat Password
+                    </label>
+                    <input
+                      type="password"
+                      name="repeatPassword"
+                      value={formik.values.repeatPassword}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      placeholder="Repeat password"
+                      disabled={formik.isSubmitting}
+                      className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed ${
+                        hasFieldError('repeatPassword') ? 'border-red-500' : 'border-gray-300'
+                      }`}
+                    />
+                    {getFieldError('repeatPassword') && (
+                      <p className="text-red-500 text-xs mt-1">{getFieldError('repeatPassword')}</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Level */}
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                    Level
+                  </label>
+                  <select
+                    name="level"
+                    value={formik.values.level}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    disabled={formik.isSubmitting}
+                    className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed ${
+                      hasFieldError('level') ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                  >
+                    <option value="100">100</option>
+                    <option value="200">200</option>
+                    <option value="300">300</option>
+                    <option value="400">400</option>
+                    <option value="500">500</option>
+                  </select>
+                  {getFieldError('level') && (
+                    <p className="text-red-500 text-xs mt-1">{getFieldError('level')}</p>
+                  )}
+                </div>
+
+                {/* Continue Button */}
+                <button
+                  type="submit"
+                  disabled={formik.isSubmitting || !formik.isValid}
+                  className="w-full bg-black text-white py-2.5 rounded-lg font-semibold hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed mt-6 mb-4 flex items-center justify-center space-x-2"
+                >
+                  {formik.isSubmitting ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <span>Processing...</span>
+                    </>
+                  ) : (
+                    <span>Continue</span>
+                  )}
+                </button>
+              </form>
+
+              {/* Login Link */}
+              <p className="text-center text-xs text-gray-600 pb-8">
+                Already have an account?{' '}
+                <Link href="/login">
+                  <span className="underline font-semibold cursor-pointer">Login</span>
+                </Link>
+              </p>
+            </div>
           </div>
         </div>
       </div>
