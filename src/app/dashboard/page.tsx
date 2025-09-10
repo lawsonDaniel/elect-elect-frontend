@@ -56,7 +56,6 @@ export default function Dashboard() {
   };
 
   return (
-<<<<<<< HEAD
     <div className={`p-4 sm:p-6 lg:p-8 ${darkMode ? 'bg-[#0A1218]' : 'bg-gray-100'} transition-colors duration-200 ${poppins.className}`}>
       <h1
         className={`text-xl sm:text-2xl font-semibold mb-2 ${darkMode ? 'text-[#E2E8F0]' : 'text-gray-900'}`}
@@ -64,11 +63,6 @@ export default function Dashboard() {
         aria-level={1}
       >
         Welcome Back, {profile?.firstName || 'John'}
-=======
-    <div className="p-4 sm:p-6 lg:p-4">
-      <h1 className={`text-xl sm:text-2xl font-semibold  font-grotesk mb-2 ${darkMode ? 'text-[#FFFFFF]' : 'text-gray-900'}`}>
-        Welcome Back, John
->>>>>>> 1f0ed8c93bcb39bbeb4e995be7bf3f875e3f345e
       </h1>
 
       <div className="w-full flex flex-col lg:flex-row lg:justify-between gap-4 mb-6">
@@ -113,7 +107,7 @@ export default function Dashboard() {
             <h2 className={`text-xl font-semibold ${darkMode ? 'text-[#E2E8F0]' : 'text-white'}`} role="heading" aria-level={2}>
               Your Profile
             </h2>
-            <button
+           <Link href='/dashboard/settings'> <button
               className={`text-sm transition-colors duration-200 ${
                 darkMode ? 'text-[#A0B3C6] hover:text-[#E2E8F0]' : 'text-gray-200 hover:text-white'
               }`}

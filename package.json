@@ -33,11 +33,8 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hot-toast": "^2.5.2",
-<<<<<<< HEAD
-    "supabase": "^2.39.2",
-=======
     "react-intersection-observer": "^9.16.0",
->>>>>>> 1f0ed8c93bcb39bbeb4e995be7bf3f875e3f345e
+    "supabase": "^2.39.2",
     "yup": "^1.6.1"
   },
   "devDependencies": {
