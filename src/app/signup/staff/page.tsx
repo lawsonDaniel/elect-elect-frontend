@@ -6,6 +6,8 @@ import toast, { Toaster } from 'react-hot-toast';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import endPoints from '@/utils/endpoints.class';
+import { useDarkMode } from '@/contexts/DarkModeContext';
+
 // Define the Gender enum to match your API
 enum Gender {
   MALE = "Male",
@@ -53,6 +55,7 @@ const validationSchema = Yup.object({
 
 const StaffSignup = () => {
   const router = useRouter();
+  const { darkMode } = useDarkMode();
 
   const formik = useFormik({
     initialValues: {
@@ -171,13 +174,15 @@ const StaffSignup = () => {
         toastOptions={{
           duration: 4000,
           style: {
-            background: '#333',
+            background: darkMode ? '#101E27' : '#333',
             color: '#fff',
           },
         }}
       />
       
-      <div className="min-h-screen flex flex-col lg:flex-row-reverse bg-[#f8fbfd]">
+      <div className={`min-h-screen flex flex-col lg:flex-row-reverse ${
+        darkMode ? 'bg-[#070E12]' : 'bg-[#f8fbfd]'
+      }`}>
         {/* Image Section */}
         <div className="relative w-full h-[180px] md:h-[220px] lg:h-screen lg:w-1/2 p-2 lg:p-4 flex-shrink-0">
           <Link href="/">
@@ -211,23 +216,31 @@ const StaffSignup = () => {
         <div className="flex-1 flex flex-col justify-start lg:justify-center items-center p-4 md:p-6 lg:p-8 overflow-y-auto min-h-0">
           <div className="w-full max-w-lg">
             <Link href="/">
-              <p className="text-sm text-gray-600 mb-4 cursor-pointer flex items-center space-x-2 hidden lg:flex">
+              <p className={`text-sm mb-4 cursor-pointer flex items-center space-x-2 hidden lg:flex ${
+                darkMode ? 'text-[#EDF3F8] hover:text-white' : 'text-gray-600 hover:text-black'
+              }`}>
                 <span>←</span> <span>Back to website</span>
               </p>
             </Link>
 
             {/* Header for desktop */}
             <div className="hidden lg:block mb-6">
-              <h1 className="text-2xl font-bold mb-2">
-                Staff Registration  Join Our Faculty
+              <h1 className={`text-2xl font-bold mb-2 ${
+                darkMode ? 'text-[#FFFFFF]' : 'text-black'
+              }`}>
+                Staff Registration – Join Our Faculty
               </h1>
-              <p className="text-gray-500">
+              <p className={`${
+                darkMode ? 'text-[#EDF3F8]' : 'text-gray-500'
+              }`}>
                 Create Your Account & Connect with Colleagues!
               </p>
             </div>
 
             <div className="mb-3 md:mb-4">
-              <h2 className="text-base md:text-lg font-semibold">Enter the following details</h2>
+              <h2 className={`text-base md:text-lg font-semibold ${
+                darkMode ? 'text-[#FFFFFF]' : 'text-black'
+              }`}>Enter the following details</h2>
             </div>
 
             {/* Form */}
@@ -235,7 +248,9 @@ const StaffSignup = () => {
               {/* Name Fields */}
               <div className="grid grid-cols-2 gap-2 md:gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                  <label className={`block text-xs font-medium mb-1 ${
+                    darkMode ? 'text-[#EDF3F8]' : 'text-gray-700'
+                  }`}>
                     Surname
                   </label>
                   <input
@@ -246,8 +261,12 @@ const StaffSignup = () => {
                     onBlur={formik.handleBlur}
                     placeholder="Enter surname"
                     disabled={formik.isSubmitting}
-                    className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed ${
-                      hasFieldError('surname') ? 'border-red-500' : 'border-gray-300'
+                    className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed ${
+                      darkMode 
+                        ? 'bg-[#101E27] border-[#101E27] text-[#FFFFFF] placeholder-[#EDF3F8]' 
+                        : 'bg-white border-gray-300 text-black placeholder-gray-500'
+                    } ${
+                      hasFieldError('surname') ? 'border-red-500' : ''
                     }`}
                   />
                   {getFieldError('surname') && (
@@ -255,7 +274,9 @@ const StaffSignup = () => {
                   )}
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                  <label className={`block text-xs font-medium mb-1 ${
+                    darkMode ? 'text-[#EDF3F8]' : 'text-gray-700'
+                  }`}>
                     First Name
                   </label>
                   <input
@@ -266,8 +287,12 @@ const StaffSignup = () => {
                     onBlur={formik.handleBlur}
                     placeholder="Enter first name"
                     disabled={formik.isSubmitting}
-                    className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed ${
-                      hasFieldError('firstName') ? 'border-red-500' : 'border-gray-300'
+                    className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed ${
+                      darkMode 
+                        ? 'bg-[#101E27] border-[#101E27] text-[#FFFFFF] placeholder-[#EDF3F8]' 
+                        : 'bg-white border-gray-300 text-black placeholder-gray-500'
+                    } ${
+                      hasFieldError('firstName') ? 'border-red-500' : ''
                     }`}
                   />
                   {getFieldError('firstName') && (
@@ -279,7 +304,9 @@ const StaffSignup = () => {
               {/* Gender and Rank */}
               <div className="grid grid-cols-2 gap-2 md:gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                  <label className={`block text-xs font-medium mb-1 ${
+                    darkMode ? 'text-[#EDF3F8]' : 'text-gray-700'
+                  }`}>
                     Gender
                   </label>
                   <select
@@ -288,10 +315,15 @@ const StaffSignup = () => {
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     disabled={formik.isSubmitting}
-                    className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed ${
-                      hasFieldError('gender') ? 'border-red-500' : 'border-gray-300'
+                    className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed ${
+                      darkMode 
+                        ? 'bg-[#101E27] border-[#101E27] text-[#FFFFFF]' 
+                        : 'bg-white border-gray-300 text-black'
+                    } ${
+                      hasFieldError('gender') ? 'border-red-500' : ''
                     }`}
                   >
+                    <option value="">Select Gender</option>
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
                   </select>
@@ -300,7 +332,9 @@ const StaffSignup = () => {
                   )}
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                  <label className={`block text-xs font-medium mb-1 ${
+                    darkMode ? 'text-[#EDF3F8]' : 'text-gray-700'
+                  }`}>
                     Rank
                   </label>
                   <select
@@ -309,10 +343,15 @@ const StaffSignup = () => {
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     disabled={formik.isSubmitting}
-                    className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed ${
-                      hasFieldError('rank') ? 'border-red-500' : 'border-gray-300'
+                    className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed ${
+                      darkMode 
+                        ? 'bg-[#101E27] border-[#101E27] text-[#FFFFFF]' 
+                        : 'bg-white border-gray-300 text-black'
+                    } ${
+                      hasFieldError('rank') ? 'border-red-500' : ''
                     }`}
                   >
+                    <option value="">Select Rank</option>
                     <option value="Professor">Professor</option>
                     <option value="Associate Professor">Associate Professor</option>
                     <option value="Senior Lecturer">Senior Lecturer</option>
@@ -329,7 +368,9 @@ const StaffSignup = () => {
 
               {/* School Email */}
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">
+                <label className={`block text-xs font-medium mb-1 ${
+                  darkMode ? 'text-[#EDF3F8]' : 'text-gray-700'
+                }`}>
                   School Email
                 </label>
                 <input
@@ -340,8 +381,12 @@ const StaffSignup = () => {
                   onBlur={formik.handleBlur}
                   placeholder="Enter school email"
                   disabled={formik.isSubmitting}
-                  className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed ${
-                    hasFieldError('schoolEmail') ? 'border-red-500' : 'border-gray-300'
+                  className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed ${
+                    darkMode 
+                      ? 'bg-[#101E27] border-[#101E27] text-[#FFFFFF] placeholder-[#EDF3F8]' 
+                      : 'bg-white border-gray-300 text-black placeholder-gray-500'
+                  } ${
+                    hasFieldError('schoolEmail') ? 'border-red-500' : ''
                   }`}
                 />
                 {getFieldError('schoolEmail') && (
@@ -351,7 +396,9 @@ const StaffSignup = () => {
 
               {/* Staff ID */}
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">
+                <label className={`block text-xs font-medium mb-1 ${
+                  darkMode ? 'text-[#EDF3F8]' : 'text-gray-700'
+                }`}>
                   Staff ID
                 </label>
                 <input
@@ -362,8 +409,12 @@ const StaffSignup = () => {
                   onBlur={formik.handleBlur}
                   placeholder="Enter staff ID"
                   disabled={formik.isSubmitting}
-                  className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed ${
-                    hasFieldError('staffId') ? 'border-red-500' : 'border-gray-300'
+                  className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed ${
+                    darkMode 
+                      ? 'bg-[#101E27] border-[#101E27] text-[#FFFFFF] placeholder-[#EDF3F8]' 
+                      : 'bg-white border-gray-300 text-black placeholder-gray-500'
+                  } ${
+                    hasFieldError('staffId') ? 'border-red-500' : ''
                   }`}
                 />
                 {getFieldError('staffId') && (
@@ -374,7 +425,9 @@ const StaffSignup = () => {
               {/* Password Fields */}
               <div className="grid grid-cols-2 gap-2 md:gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                  <label className={`block text-xs font-medium mb-1 ${
+                    darkMode ? 'text-[#EDF3F8]' : 'text-gray-700'
+                  }`}>
                     Create Password
                   </label>
                   <input
@@ -385,8 +438,12 @@ const StaffSignup = () => {
                     onBlur={formik.handleBlur}
                     placeholder="Create password"
                     disabled={formik.isSubmitting}
-                    className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed ${
-                      hasFieldError('password') ? 'border-red-500' : 'border-gray-300'
+                    className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed ${
+                      darkMode 
+                        ? 'bg-[#101E27] border-[#101E27] text-[#FFFFFF] placeholder-[#EDF3F8]' 
+                        : 'bg-white border-gray-300 text-black placeholder-gray-500'
+                    } ${
+                      hasFieldError('password') ? 'border-red-500' : ''
                     }`}
                   />
                   {getFieldError('password') && (
@@ -394,7 +451,9 @@ const StaffSignup = () => {
                   )}
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                  <label className={`block text-xs font-medium mb-1 ${
+                    darkMode ? 'text-[#EDF3F8]' : 'text-gray-700'
+                  }`}>
                     Repeat Password
                   </label>
                   <input
@@ -405,8 +464,12 @@ const StaffSignup = () => {
                     onBlur={formik.handleBlur}
                     placeholder="Repeat password"
                     disabled={formik.isSubmitting}
-                    className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed ${
-                      hasFieldError('repeatPassword') ? 'border-red-500' : 'border-gray-300'
+                    className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed ${
+                      darkMode 
+                        ? 'bg-[#101E27] border-[#101E27] text-[#FFFFFF] placeholder-[#EDF3F8]' 
+                        : 'bg-white border-gray-300 text-black placeholder-gray-500'
+                    } ${
+                      hasFieldError('repeatPassword') ? 'border-red-500' : ''
                     }`}
                   />
                   {getFieldError('repeatPassword') && (
@@ -419,7 +482,7 @@ const StaffSignup = () => {
               <button
                 type="submit"
                 disabled={formik.isSubmitting || !formik.isValid}
-                className="w-full bg-black text-white py-2.5 rounded-lg font-semibold hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed mt-4 md:mt-6 mb-3 md:mb-4 flex items-center justify-center space-x-2"
+                className="w-full bg-navBlue text-white py-2.5 rounded-lg font-semibold hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed mt-4 md:mt-6 mb-3 md:mb-4 flex items-center justify-center space-x-2"
               >
                 {formik.isSubmitting ? (
                   <>
@@ -433,10 +496,14 @@ const StaffSignup = () => {
             </form>
 
             {/* Login Link */}
-            <p className="text-center text-xs text-gray-600 pb-4 md:pb-0">
+            <p className={`text-center text-xs pb-4 md:pb-0 ${
+              darkMode ? 'text-[#EDF3F8]' : 'text-gray-600'
+            }`}>
               Already have an account?{' '}
               <Link href="/login">
-                <span className="underline font-semibold cursor-pointer">Login</span>
+                <span className={`underline font-semibold cursor-pointer ${
+                  darkMode ? 'text-[#FFFFFF] hover:opacity-75' : 'text-black hover:opacity-75'
+                }`}>Login</span>
               </Link>
             </p>
           </div>

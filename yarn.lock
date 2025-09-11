@@ -602,9 +602,15 @@
   integrity sha512-ORHRQ2tmvnBXc8t/X9Z8IcSbBA4xTLKuN873FopzklHMeqBst7YG0d+AX97inkvDX+NChYtSr+qGfcqGFaI8Zw==
 
 "@babel/runtime@^7.12.5", "@babel/runtime@^7.20.13", "@babel/runtime@^7.26.9":
+<<<<<<< HEAD
   version "7.28.3"
   resolved "https://registry.npmjs.org/@babel/runtime/-/runtime-7.28.3.tgz"
   integrity sha512-9uIQ10o0WGdpP6GDhXcdOJPJuDgFtIDtN/9+ArJQ2NAfAmiuhTQdzkaTGR33v43GYS2UrSA0eX2pPPHoFVvpxA==
+=======
+  version "7.28.4"
+  resolved "https://registry.npmjs.org/@babel/runtime/-/runtime-7.28.4.tgz"
+  integrity sha512-Q/N6JNWvIvPnLDvjlE1OUBLPQHH6l3CltCEsHIujp45zQUSSh8K+gHnaEX45yAT1nyngnINhvWtzN+Nb9D8RAQ==
+>>>>>>> 24683c09844f8bbfa6cacbeaac8d66d97dabb3ce
 
 "@eslint-community/eslint-utils@^4.2.0", "@eslint-community/eslint-utils@^4.4.0":
   version "4.5.1"
