@@ -14,7 +14,7 @@ import { useDarkMode } from '@/contexts/DarkModeContext';
 
 // Validation schema using Yup
 const validationSchema = Yup.object({
-  email: Yup.string()
+  schoolEmail: Yup.string()
     .email('Please enter a valid email address')
     .required('Email is required')
     .matches(
