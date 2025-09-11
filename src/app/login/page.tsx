@@ -28,6 +28,7 @@ const validationSchema = Yup.object({
 export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string>('');
   const router = useRouter();
   const supabase = createClientComponentClient();
 
@@ -39,6 +40,7 @@ export default function Login() {
 
   const handleSubmit = async (values: LoginFormValues): Promise<void> => {
     setIsLoading(true);
+    setError(''); // Clear any previous errors
     
     try {
       // Step 1: Validate credentials with your MongoDB backend
@@ -50,7 +52,7 @@ export default function Login() {
       console.log('MongoDB validation successful:', response);
       
       // Step 2: Authenticate with Supabase using the validated credentials
-      const { data: authData, error: supabaseError } = await supabase.auth.signInWithPassword({
+      let { data: authData, error: supabaseError } = await supabase.auth.signInWithPassword({
         email: values.email,
         password: values.password,
       });
@@ -60,40 +62,75 @@ export default function Login() {
         if (supabaseError.message === 'Invalid login credentials') {
           console.log('User not found in Supabase, creating account...');
           
-          const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-            email: values.email,
-            password: values.password,
-            options: {
-              data: {
-                first_name: response.user?.firstName,
-                surname: response.user?.surname,
-                user_type: response.user?.userType,
-                level: response.user?.level,
-                mongo_id: response.user?._id
+          try {
+            const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+              email: values.email,
+              password: values.password,
+              options: {
+                data: {
+                  first_name: response.user?.firstName,
+                  surname: response.user?.surname,
+                  user_type: response.user?.userType,
+                  level: response.user?.level,
+                  mongo_id: response.user?._id
+                }
               }
+            });
+
+            if (signUpError) {
+              console.error('Supabase signup error:', signUpError);
+              // Show specific Supabase signup error
+              throw new Error(`Account creation failed: ${signUpError.message}`);
             }
-          });
 
-          if (signUpError) {
-            console.error('Supabase signup error:', signUpError);
-            throw new Error('Failed to create authentication session');
-          }
+            console.log('Supabase account created, signing in...');
+            
+            // After signup, sign in
+            const { data: retryData, error: retryError } = await supabase.auth.signInWithPassword({
+              email: values.email,
+              password: values.password,
+            });
 
-          console.log('Supabase account created, signing in...');
-          
-          // After signup, sign in
-          const { data: retryData, error: retryError } = await supabase.auth.signInWithPassword({
-            email: values.email,
-            password: values.password,
-          });
-
-          if (retryError) {
-            console.error('Retry Supabase authentication error:', retryError);
-            throw new Error('Authentication failed after account creation');
+            if (retryError) {
+              console.error('Retry Supabase authentication error:', retryError);
+              // Show specific retry error
+              throw new Error(`Login after account creation failed: ${retryError.message}`);
+            }
+            
+            // Set authData for the rest of the flow
+            authData = retryData;
+          } catch (signupFlowError) {
+            // Re-throw to be caught by outer catch
+            throw signupFlowError;
           }
         } else {
+          // Handle other Supabase authentication errors with specific messages
           console.error('Supabase authentication error:', supabaseError);
-          throw new Error('Authentication failed');
+          
+          // Provide user-friendly error messages based on error type
+          let userFriendlyMessage = 'Authentication failed';
+          
+          switch (supabaseError.message) {
+            case 'Email not confirmed':
+              userFriendlyMessage = 'Please check your email and confirm your account before signing in';
+              break;
+            case 'Invalid login credentials':
+              userFriendlyMessage = 'Invalid email or password. Please check your credentials';
+              break;
+            case 'Too many requests':
+              userFriendlyMessage = 'Too many login attempts. Please try again later';
+              break;
+            case 'Email rate limit exceeded':
+              userFriendlyMessage = 'Too many requests. Please wait before trying again';
+              break;
+            case 'Signup disabled':
+              userFriendlyMessage = 'Account registration is currently disabled';
+              break;
+            default:
+              userFriendlyMessage = `Authentication error: ${supabaseError.message}`;
+          }
+          
+          throw new Error(userFriendlyMessage);
         }
       }
 
@@ -106,7 +143,9 @@ export default function Login() {
           secure: process.env.NODE_ENV === 'production',
           sameSite: 'strict',
         });
+        
         console.log('Auth token cookie set', response);
+        
         // Also store user info in cookies for easy access
         if (response.user) {
           setCookie(null, 'user-info', JSON.stringify({
@@ -115,7 +154,7 @@ export default function Login() {
             userType: response.user.userType,
             firstName: response.user.firstName,
             surname: response.user.surname,
-            supabase_user_id: response.user.supabase_user_id || null
+            supabase_user_id: authData?.user?.id || null
           }), {
             maxAge: 60 * 60 * 24 * 7,
             path: '/',
@@ -131,7 +170,36 @@ export default function Login() {
       
     } catch (error: any) {
       console.error('Login error:', error);
-      Notification.info(error.message || 'Login failed. Please try again.');
+      
+      // Check if it's a network error
+      if (!navigator.onLine) {
+        const errorMsg = 'No internet connection. Please check your network and try again.';
+        setError(errorMsg);
+        Notification.error(errorMsg);
+        return;
+      }
+      
+      // Check if it's a MongoDB backend error
+      if (error.response) {
+        const backendError = error.response.data;
+        let errorMsg = 'Login failed. Please check your credentials.';
+        
+        if (backendError.message) {
+          errorMsg = `Login failed: ${backendError.message}`;
+        } else if (backendError.error) {
+          errorMsg = `Login failed: ${backendError.error}`;
+        }
+        
+        setError(errorMsg);
+        Notification.error(errorMsg);
+        return;
+      }
+      
+      // For other errors (including our custom Supabase errors), show the message
+      const errorMessage = error.message || 'An unexpected error occurred. Please try again.';
+      setError(errorMessage);
+      Notification.error(errorMessage);
+      
     } finally {
       setIsLoading(false);
     }
@@ -186,6 +254,33 @@ export default function Login() {
         </div>
 
         <h2 className=" md:block text-xl mt-1 md:mt-0  font-semibold mb-4">Enter the following details:</h2>
+
+        {/* Error Display */}
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-md">
+            <div className="flex items-start">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <p className="text-sm">{error}</p>
+              </div>
+              <div className="ml-auto pl-3">
+                <button
+                  onClick={() => setError('')}
+                  className="text-red-400 hover:text-red-600"
+                >
+                  <span className="sr-only">Dismiss</span>
+                  <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Form using Formik object */}
         <form onSubmit={formik.handleSubmit}>
@@ -249,6 +344,7 @@ export default function Login() {
             {isLoading ? 'Signing in...' : 'Continue'}
           </button>
         </form>
+        
         <p className="mt-3 text-black  font-medium hover:underline cursor-pointer">Forgot password?</p>
 
         <p className="text-sm text-gray-500 mt-6">
