@@ -10,6 +10,7 @@ import endPoints from '@/utils/endpoints.class';
 import { useRouter } from 'next/navigation';
 import { setCookie, parseCookies } from 'nookies';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { useDarkMode } from '@/contexts/DarkModeContext';
 
 // Validation schema using Yup
 const validationSchema = Yup.object({
@@ -26,6 +27,7 @@ const validationSchema = Yup.object({
 });
 
 export default function Login() {
+  const { darkMode } = useDarkMode();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string>('');
@@ -216,7 +218,9 @@ export default function Login() {
   });
 
   return (
-    <div className="min-h-screen bg-[#EEF4FA] flex flex-col lg:flex-row ">
+    <div className={`min-h-screen flex flex-col lg:flex-row ${
+      darkMode ? 'bg-[#070E12]' : 'bg-[#EEF4FA]'
+    }`}>
       <div className="relative lg:hidden bg-cover bg-center bg-no-repeat h-[198px] bg-[image:var(--bg-Faculty)] mb-14 ">
         <div className=" absolute inset-0 bg-[#101E2799]"></div>
         {/* Hero Section */}
@@ -246,21 +250,31 @@ export default function Login() {
           {/* Back to website link */}
           <Link href="/">
             <div className="text-sm text-right mb-6 translate-y-1/4 hidden lg:block">
-              <p className="text-gray-600 hover:underline ">
+              <p className={`hover:underline ${
+                darkMode ? 'text-[#EDF3F8]' : 'text-gray-600'
+              }`}>
                 Back to website &rarr;
               </p>
             </div>
           </Link>
         </div>
 
-        <h2 className=" md:block text-xl mt-1 md:mt-0  font-semibold mb-4">Enter the following details:</h2>
+        <h2 className={`md:block text-xl mt-1 md:mt-0 font-semibold mb-4 ${
+          darkMode ? 'text-[#FFFFFF]' : 'text-black'
+        }`}>Enter the following details:</h2>
 
         {/* Error Display */}
         {error && (
-          <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-md">
+          <div className={`mb-4 p-3 border rounded-md ${
+            darkMode 
+              ? 'bg-red-900/30 border-red-700 text-red-300' 
+              : 'bg-red-100 border-red-400 text-red-700'
+          }`}>
             <div className="flex items-start">
               <div className="flex-shrink-0">
-                <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                <svg className={`h-5 w-5 ${
+                  darkMode ? 'text-red-400' : 'text-red-400'
+                }`} viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                 </svg>
               </div>
@@ -270,7 +284,9 @@ export default function Login() {
               <div className="ml-auto pl-3">
                 <button
                   onClick={() => setError('')}
-                  className="text-red-400 hover:text-red-600"
+                  className={`hover:opacity-75 ${
+                    darkMode ? 'text-red-400' : 'text-red-400'
+                  }`}
                 >
                   <span className="sr-only">Dismiss</span>
                   <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -285,7 +301,9 @@ export default function Login() {
         {/* Form using Formik object */}
         <form onSubmit={formik.handleSubmit}>
           <div className="mb-4">
-            <label className="text-sm mb-1 block">School Email</label>
+            <label className={`text-sm mb-1 block ${
+              darkMode ? 'text-[#EDF3F8]' : 'text-black'
+            }`}>School Email</label>
             <input
               type="email"
               name="email"
@@ -294,7 +312,11 @@ export default function Login() {
               onBlur={formik.handleBlur}
               disabled={isLoading}
               className={`p-3 rounded-md border w-full focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed ${
-                formik.errors.email && formik.touched.email ? 'border-red-500' : 'border-gray-300'
+                darkMode 
+                  ? 'bg-[#101E27] border-[#101E27] text-[#FFFFFF] placeholder-[#EDF3F8]' 
+                  : 'bg-white border-gray-300 text-black placeholder-gray-500'
+              } ${
+                formik.errors.email && formik.touched.email ? 'border-red-500' : ''
               }`}
               placeholder="Enter your Email"
             />
@@ -304,7 +326,9 @@ export default function Login() {
           </div>
 
           <div className="mb-6">
-            <label className="text-sm mb-1 block">Enter Password</label>
+            <label className={`text-sm mb-1 block ${
+              darkMode ? 'text-[#EDF3F8]' : 'text-black'
+            }`}>Enter Password</label>
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
@@ -314,7 +338,11 @@ export default function Login() {
                 onBlur={formik.handleBlur}
                 disabled={isLoading}
                 className={`p-3 pr-12 rounded-md border w-full focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed ${
-                  formik.errors.password && formik.touched.password ? 'border-red-500' : 'border-gray-300'
+                  darkMode 
+                    ? 'bg-[#101E27] border-[#101E27] text-[#FFFFFF] placeholder-[#EDF3F8]' 
+                    : 'bg-white border-gray-300 text-black placeholder-gray-500'
+                } ${
+                  formik.errors.password && formik.touched.password ? 'border-red-500' : ''
                 }`}
                 placeholder="Password"
               />
@@ -322,7 +350,9 @@ export default function Login() {
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 disabled={isLoading}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                className={`absolute inset-y-0 right-0 pr-3 flex items-center hover:opacity-75 disabled:opacity-50 disabled:cursor-not-allowed ${
+                  darkMode ? 'text-[#EDF3F8]' : 'text-gray-500'
+                }`}
               >
                 {showPassword ? (
                   <EyeOff className="h-5 w-5" />
@@ -345,11 +375,17 @@ export default function Login() {
           </button>
         </form>
         
-        <p className="mt-3 text-black  font-medium hover:underline cursor-pointer">Forgot password?</p>
+        <p className={`mt-3 font-medium hover:underline cursor-pointer ${
+          darkMode ? 'text-[#EDF3F8]' : 'text-black'
+        }`}>Forgot password?</p>
 
-        <p className="text-sm text-gray-500 mt-6">
+        <p className={`text-sm mt-6 ${
+          darkMode ? 'text-[#EDF3F8]' : 'text-gray-500'
+        }`}>
           Don&apos;t Have an account?{' '}
-          <a href="signup" className="text-black font-medium hover:underline">
+          <a href="signup" className={`font-medium hover:underline ${
+            darkMode ? 'text-[#FFFFFF]' : 'text-black'
+          }`}>
             Sign Up
           </a>
         </p>

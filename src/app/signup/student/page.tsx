@@ -7,6 +7,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import endPoints from '@/utils/endpoints.class';
+import { useDarkMode } from '@/contexts/DarkModeContext';
 
 // Validation schema
 const validationSchema = Yup.object({
@@ -66,6 +67,7 @@ const validationSchema = Yup.object({
 
 const StudentSignup = () => {
   const router = useRouter();
+  const { darkMode } = useDarkMode();
 
   const formik = useFormik({
     initialValues: {
@@ -111,10 +113,57 @@ const StudentSignup = () => {
       } catch (error: any) {
         console.error('Registration error:', error);
         
-        // Handle different types of errors
-        if (error.message) {
-          toast.error(error.message);
-        } else {
+        // Handle different types of errors from the backend
+        if (error.response?.data) {
+          const errorData = error.response.data;
+          
+          // Handle validation errors with multiple error messages
+          if (errorData.errors && Array.isArray(errorData.errors)) {
+            // Display the first validation error
+            toast.error(errorData.errors[0] || 'Validation failed');
+          } 
+          // Handle single error messages
+          else if (errorData.message) {
+            // Customize specific error messages for better user experience
+            switch (errorData.message) {
+              case 'User already exists with this email or matriculation number':
+                toast.error('An account with this email or matriculation number already exists. Please use different credentials.');
+                break;
+              case 'schoolEmail already exists':
+                toast.error('This school email is already registered. Please use a different email.');
+                break;
+              case 'mattNumber already exists':
+                toast.error('This matriculation number is already registered. Please check your matriculation number.');
+                break;
+              case 'Passwords do not match':
+                toast.error('The passwords you entered do not match. Please check and try again.');
+                break;
+              case 'All fields are required':
+                toast.error('Please fill in all required fields to continue.');
+                break;
+              case 'Method not allowed':
+                toast.error('Registration service is currently unavailable. Please try again later.');
+                break;
+              case 'Internal server error':
+                toast.error('Something went wrong on our end. Please try again in a few moments.');
+                break;
+              default:
+                toast.error(errorData.message);
+            }
+          } else {
+            toast.error('Registration failed. Please try again.');
+          }
+        } 
+        // Handle network errors or other issues
+        else if (error.message) {
+          if (error.message.includes('Network Error') || error.message.includes('fetch')) {
+            toast.error('Unable to connect to the server. Please check your internet connection and try again.');
+          } else {
+            toast.error(error.message);
+          }
+        } 
+        // Fallback error message
+        else {
           toast.error('An unexpected error occurred. Please try again.');
         }
       } finally {
@@ -140,18 +189,19 @@ const StudentSignup = () => {
         toastOptions={{
           duration: 4000,
           style: {
-            background: '#333',
+            background: darkMode ? '#101E27' : '#333',
             color: '#fff',
           },
         }}
       />
       
-      {/* Mobile and Tablet Layout */}
-      <div className="min-h-screen flex flex-col lg:hidden bg-[#f8fbfd]">
+      <div className={`min-h-screen flex flex-col lg:flex-row-reverse ${
+        darkMode ? 'bg-[#070E12]' : 'bg-[#f8fbfd]'
+      }`}>
         {/* Image Section */}
-        <div className="relative w-full h-[180px] md:h-[220px] p-2 flex-shrink-0">
+        <div className="relative w-full h-[180px] md:h-[220px] lg:h-screen lg:w-1/2 p-2 lg:p-4 flex-shrink-0">
           <Link href="/">
-            <p className="absolute top-4 left-4 md:top-6 md:left-6 text-white text-sm flex items-center space-x-2 cursor-pointer z-10">
+            <p className="absolute top-4 left-4 md:top-6 md:left-6 text-white text-sm flex items-center space-x-2 lg:hidden cursor-pointer z-10">
               <span>←</span> <span>Back to website</span>
             </p>
           </Link>
@@ -162,15 +212,15 @@ const StudentSignup = () => {
               alt="Engineering Students"
               fill
               style={{ objectFit: 'cover' }}
-              className="rounded-2xl"
+              className="rounded-2xl lg:rounded-3xl"
               priority
             />
             
-            <div className="absolute inset-0 bg-[#101E27CC] rounded-2xl flex flex-col justify-center items-center text-center px-4">
-              <h1 className="text-white text-lg md:text-xl font-bold mb-2 max-w-md leading-tight">
+            <div className="absolute inset-0 bg-[#101E27CC] rounded-2xl lg:rounded-3xl flex flex-col justify-center items-center text-center px-4">
+              <h1 className="block lg:hidden text-white text-lg md:text-xl font-bold mb-2 max-w-md leading-tight">
                 Sign Up – Join Our Engineering Community
               </h1>
-              <p className="text-white text-xs md:text-sm">
+              <p className="block lg:hidden text-white text-xs md:text-sm">
                 Create Your Account & Stay Connected!
               </p>
             </div>
@@ -178,10 +228,34 @@ const StudentSignup = () => {
         </div>
 
         {/* Form Section */}
-        <div className="flex-1 flex flex-col justify-start items-center p-4 md:p-6 overflow-y-auto min-h-0">
+        <div className="flex-1 flex flex-col justify-start lg:justify-center items-center p-4 md:p-6 lg:p-8 overflow-y-auto min-h-0">
           <div className="w-full max-w-lg">
+            <Link href="/">
+              <p className={`text-sm mb-4 cursor-pointer flex items-center space-x-2 hidden lg:flex ${
+                darkMode ? 'text-[#EDF3F8] hover:text-white' : 'text-gray-600 hover:text-black'
+              }`}>
+                <span>←</span> <span>Back to website</span>
+              </p>
+            </Link>
+
+            {/* Header for desktop */}
+            <div className="hidden lg:block mb-6">
+              <h1 className={`text-2xl font-bold mb-2 ${
+                darkMode ? 'text-[#FFFFFF]' : 'text-black'
+              }`}>
+                Sign Up – Join Our Engineering Community
+              </h1>
+              <p className={`${
+                darkMode ? 'text-[#EDF3F8]' : 'text-gray-500'
+              }`}>
+                Create Your Account & Stay Connected!
+              </p>
+            </div>
+
             <div className="mb-3 md:mb-4">
-              <h2 className="text-base md:text-lg font-semibold">Enter the following details</h2>
+              <h2 className={`text-base md:text-lg font-semibold ${
+                darkMode ? 'text-[#FFFFFF]' : 'text-black'
+              }`}>Enter the following details</h2>
             </div>
 
             {/* Form */}
@@ -189,7 +263,9 @@ const StudentSignup = () => {
               {/* Name Fields */}
               <div className="grid grid-cols-2 gap-2 md:gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                  <label className={`block text-xs font-medium mb-1 ${
+                    darkMode ? 'text-[#EDF3F8]' : 'text-gray-700'
+                  }`}>
                     Surname
                   </label>
                   <input
@@ -200,8 +276,12 @@ const StudentSignup = () => {
                     onBlur={formik.handleBlur}
                     placeholder="Enter surname"
                     disabled={formik.isSubmitting}
-                    className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed ${
-                      hasFieldError('surname') ? 'border-red-500' : 'border-gray-300'
+                    className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed ${
+                      darkMode 
+                        ? 'bg-[#101E27] border-[#101E27] text-[#FFFFFF] placeholder-[#EDF3F8]' 
+                        : 'bg-white border-gray-300 text-black placeholder-gray-500'
+                    } ${
+                      hasFieldError('surname') ? 'border-red-500' : ''
                     }`}
                   />
                   {getFieldError('surname') && (
@@ -209,7 +289,9 @@ const StudentSignup = () => {
                   )}
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                  <label className={`block text-xs font-medium mb-1 ${
+                    darkMode ? 'text-[#EDF3F8]' : 'text-gray-700'
+                  }`}>
                     First Name
                   </label>
                   <input
@@ -220,8 +302,12 @@ const StudentSignup = () => {
                     onBlur={formik.handleBlur}
                     placeholder="Enter first name"
                     disabled={formik.isSubmitting}
-                    className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed ${
-                      hasFieldError('firstName') ? 'border-red-500' : 'border-gray-300'
+                    className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed ${
+                      darkMode 
+                        ? 'bg-[#101E27] border-[#101E27] text-[#FFFFFF] placeholder-[#EDF3F8]' 
+                        : 'bg-white border-gray-300 text-black placeholder-gray-500'
+                    } ${
+                      hasFieldError('firstName') ? 'border-red-500' : ''
                     }`}
                   />
                   {getFieldError('firstName') && (
@@ -233,7 +319,9 @@ const StudentSignup = () => {
               {/* Gender and DOB */}
               <div className="grid grid-cols-2 gap-2 md:gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                  <label className={`block text-xs font-medium mb-1 ${
+                    darkMode ? 'text-[#EDF3F8]' : 'text-gray-700'
+                  }`}>
                     Gender
                   </label>
                   <select
@@ -242,8 +330,12 @@ const StudentSignup = () => {
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     disabled={formik.isSubmitting}
-                    className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed ${
-                      hasFieldError('gender') ? 'border-red-500' : 'border-gray-300'
+                    className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed ${
+                      darkMode 
+                        ? 'bg-[#101E27] border-[#101E27] text-[#FFFFFF]' 
+                        : 'bg-white border-gray-300 text-black'
+                    } ${
+                      hasFieldError('gender') ? 'border-red-500' : ''
                     }`}
                   >
                     <option value="Male">Male</option>
@@ -255,7 +347,9 @@ const StudentSignup = () => {
                   )}
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                  <label className={`block text-xs font-medium mb-1 ${
+                    darkMode ? 'text-[#EDF3F8]' : 'text-gray-700'
+                  }`}>
                     D.O.B
                   </label>
                   <input
@@ -265,8 +359,12 @@ const StudentSignup = () => {
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     disabled={formik.isSubmitting}
-                    className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed ${
-                      hasFieldError('dob') ? 'border-red-500' : 'border-gray-300'
+                    className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed ${
+                      darkMode 
+                        ? 'bg-[#101E27] border-[#101E27] text-[#FFFFFF]' 
+                        : 'bg-white border-gray-300 text-black'
+                    } ${
+                      hasFieldError('dob') ? 'border-red-500' : ''
                     }`}
                   />
                   {getFieldError('dob') && (
@@ -277,7 +375,9 @@ const StudentSignup = () => {
 
               {/* School Email */}
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">
+                <label className={`block text-xs font-medium mb-1 ${
+                  darkMode ? 'text-[#EDF3F8]' : 'text-gray-700'
+                }`}>
                   School Email
                 </label>
                 <input
@@ -288,8 +388,12 @@ const StudentSignup = () => {
                   onBlur={formik.handleBlur}
                   placeholder="Enter school email"
                   disabled={formik.isSubmitting}
-                  className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed ${
-                    hasFieldError('schoolEmail') ? 'border-red-500' : 'border-gray-300'
+                  className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed ${
+                    darkMode 
+                      ? 'bg-[#101E27] border-[#101E27] text-[#FFFFFF] placeholder-[#EDF3F8]' 
+                      : 'bg-white border-gray-300 text-black placeholder-gray-500'
+                  } ${
+                    hasFieldError('schoolEmail') ? 'border-red-500' : ''
                   }`}
                 />
                 {getFieldError('schoolEmail') && (
@@ -299,7 +403,9 @@ const StudentSignup = () => {
 
               {/* Matt Number */}
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">
+                <label className={`block text-xs font-medium mb-1 ${
+                  darkMode ? 'text-[#EDF3F8]' : 'text-gray-700'
+                }`}>
                   Matt Number
                 </label>
                 <input
@@ -310,8 +416,12 @@ const StudentSignup = () => {
                   onBlur={formik.handleBlur}
                   placeholder="Enter matriculation number"
                   disabled={formik.isSubmitting}
-                  className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed ${
-                    hasFieldError('mattNumber') ? 'border-red-500' : 'border-gray-300'
+                  className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed ${
+                    darkMode 
+                      ? 'bg-[#101E27] border-[#101E27] text-[#FFFFFF] placeholder-[#EDF3F8]' 
+                      : 'bg-white border-gray-300 text-black placeholder-gray-500'
+                  } ${
+                    hasFieldError('mattNumber') ? 'border-red-500' : ''
                   }`}
                 />
                 {getFieldError('mattNumber') && (
@@ -322,7 +432,9 @@ const StudentSignup = () => {
               {/* Password Fields */}
               <div className="grid grid-cols-2 gap-2 md:gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                  <label className={`block text-xs font-medium mb-1 ${
+                    darkMode ? 'text-[#EDF3F8]' : 'text-gray-700'
+                  }`}>
                     Create Password
                   </label>
                   <input
@@ -333,8 +445,12 @@ const StudentSignup = () => {
                     onBlur={formik.handleBlur}
                     placeholder="Create password"
                     disabled={formik.isSubmitting}
-                    className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed ${
-                      hasFieldError('password') ? 'border-red-500' : 'border-gray-300'
+                    className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed ${
+                      darkMode 
+                        ? 'bg-[#101E27] border-[#101E27] text-[#FFFFFF] placeholder-[#EDF3F8]' 
+                        : 'bg-white border-gray-300 text-black placeholder-gray-500'
+                    } ${
+                      hasFieldError('password') ? 'border-red-500' : ''
                     }`}
                   />
                   {getFieldError('password') && (
@@ -342,7 +458,9 @@ const StudentSignup = () => {
                   )}
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                  <label className={`block text-xs font-medium mb-1 ${
+                    darkMode ? 'text-[#EDF3F8]' : 'text-gray-700'
+                  }`}>
                     Repeat Password
                   </label>
                   <input
@@ -353,8 +471,12 @@ const StudentSignup = () => {
                     onBlur={formik.handleBlur}
                     placeholder="Repeat password"
                     disabled={formik.isSubmitting}
-                    className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed ${
-                      hasFieldError('repeatPassword') ? 'border-red-500' : 'border-gray-300'
+                    className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed ${
+                      darkMode 
+                        ? 'bg-[#101E27] border-[#101E27] text-[#FFFFFF] placeholder-[#EDF3F8]' 
+                        : 'bg-white border-gray-300 text-black placeholder-gray-500'
+                    } ${
+                      hasFieldError('repeatPassword') ? 'border-red-500' : ''
                     }`}
                   />
                   {getFieldError('repeatPassword') && (
@@ -365,7 +487,9 @@ const StudentSignup = () => {
 
               {/* Level */}
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">
+                <label className={`block text-xs font-medium mb-1 ${
+                  darkMode ? 'text-[#EDF3F8]' : 'text-gray-700'
+                }`}>
                   Level
                 </label>
                 <select
@@ -374,8 +498,12 @@ const StudentSignup = () => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   disabled={formik.isSubmitting}
-                  className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed ${
-                    hasFieldError('level') ? 'border-red-500' : 'border-gray-300'
+                  className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed ${
+                    darkMode 
+                      ? 'bg-[#101E27] border-[#101E27] text-[#FFFFFF]' 
+                      : 'bg-white border-gray-300 text-black'
+                  } ${
+                    hasFieldError('level') ? 'border-red-500' : ''
                   }`}
                 >
                   <option value="100">100</option>
@@ -393,7 +521,7 @@ const StudentSignup = () => {
               <button
                 type="submit"
                 disabled={formik.isSubmitting || !formik.isValid}
-                className="w-full bg-black text-white py-2.5 rounded-lg font-semibold hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed mt-4 md:mt-6 mb-3 md:mb-4 flex items-center justify-center space-x-2"
+                className="w-full bg-navBlue text-white py-2.5 rounded-lg font-semibold hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed mt-4 md:mt-6 mb-3 md:mb-4 flex items-center justify-center space-x-2"
               >
                 {formik.isSubmitting ? (
                   <>
@@ -407,295 +535,16 @@ const StudentSignup = () => {
             </form>
 
             {/* Login Link */}
-            <p className="text-center text-xs text-gray-600 pb-4">
+            <p className={`text-center text-xs pb-4 md:pb-0 ${
+              darkMode ? 'text-[#EDF3F8]' : 'text-gray-600'
+            }`}>
               Already have an account?{' '}
               <Link href="/login">
-                <span className="underline font-semibold cursor-pointer">Login</span>
+                <span className={`underline font-semibold cursor-pointer ${
+                  darkMode ? 'text-[#FFFFFF] hover:opacity-75' : 'text-black hover:opacity-75'
+                }`}>Login</span>
               </Link>
             </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Desktop Layout */}
-      <div className="hidden lg:flex h-screen bg-[#f8fbfd]">
-        {/* Fixed Image Section */}
-        <div className="fixed right-0 top-0 w-1/2 h-full p-4">
-          <div className="relative w-full h-full">
-            <Image
-              src="/Frame 172.png"
-              alt="Engineering Students"
-              fill
-              style={{ objectFit: 'cover' }}
-              className="rounded-3xl"
-              priority
-            />
-            
-            <div className="absolute inset-0 bg-[#101E27CC] rounded-3xl flex flex-col justify-center items-center text-center px-4">
-              <h1 className="text-white text-2xl font-bold mb-4 max-w-md leading-tight">
-                Sign Up – Join Our Engineering Community
-              </h1>
-              <p className="text-white text-sm">
-                Create Your Account & Stay Connected!
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Scrollable Form Section */}
-        <div className="w-1/2 overflow-y-auto">
-          <div className="flex flex-col justify-center items-center p-8 min-h-full">
-            <div className="w-full max-w-lg">
-              <Link href="/">
-                <p className="text-sm text-gray-600 mb-4 cursor-pointer flex items-center space-x-2">
-                  <span>←</span> <span>Back to website</span>
-                </p>
-              </Link>
-
-              {/* Header for desktop */}
-              <div className="mb-6">
-                <h1 className="text-2xl font-bold mb-2">
-                  Sign Up – Join Our Engineering Community
-                </h1>
-                <p className="text-gray-500">
-                  Create Your Account & Stay Connected!
-                </p>
-              </div>
-
-              <div className="mb-4">
-                <h2 className="text-lg font-semibold">Enter the following details</h2>
-              </div>
-
-              {/* Form */}
-              <form onSubmit={formik.handleSubmit} className="space-y-4">
-                {/* Name Fields */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">
-                      Surname
-                    </label>
-                    <input
-                      type="text"
-                      name="surname"
-                      value={formik.values.surname}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      placeholder="Enter surname"
-                      disabled={formik.isSubmitting}
-                      className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed ${
-                        hasFieldError('surname') ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                    />
-                    {getFieldError('surname') && (
-                      <p className="text-red-500 text-xs mt-1">{getFieldError('surname')}</p>
-                    )}
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">
-                      First Name
-                    </label>
-                    <input
-                      type="text"
-                      name="firstName"
-                      value={formik.values.firstName}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      placeholder="Enter first name"
-                      disabled={formik.isSubmitting}
-                      className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed ${
-                        hasFieldError('firstName') ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                    />
-                    {getFieldError('firstName') && (
-                      <p className="text-red-500 text-xs mt-1">{getFieldError('firstName')}</p>
-                    )}
-                  </div>
-                </div>
-
-                {/* Gender and DOB */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">
-                      Gender
-                    </label>
-                    <select
-                      name="gender"
-                      value={formik.values.gender}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      disabled={formik.isSubmitting}
-                      className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed ${
-                        hasFieldError('gender') ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                    >
-                      <option value="Male">Male</option>
-                      <option value="Female">Female</option>
-                      <option value="Other">Other</option>
-                    </select>
-                    {getFieldError('gender') && (
-                      <p className="text-red-500 text-xs mt-1">{getFieldError('gender')}</p>
-                    )}
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">
-                      D.O.B
-                    </label>
-                    <input
-                      type="date"
-                      name="dob"
-                      value={formik.values.dob}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      disabled={formik.isSubmitting}
-                      className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed ${
-                        hasFieldError('dob') ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                    />
-                    {getFieldError('dob') && (
-                      <p className="text-red-500 text-xs mt-1">{getFieldError('dob')}</p>
-                    )}
-                  </div>
-                </div>
-
-                {/* School Email */}
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
-                    School Email
-                  </label>
-                  <input
-                    type="email"
-                    name="schoolEmail"
-                    value={formik.values.schoolEmail}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    placeholder="Enter school email"
-                    disabled={formik.isSubmitting}
-                    className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed ${
-                      hasFieldError('schoolEmail') ? 'border-red-500' : 'border-gray-300'
-                    }`}
-                  />
-                  {getFieldError('schoolEmail') && (
-                    <p className="text-red-500 text-xs mt-1">{getFieldError('schoolEmail')}</p>
-                  )}
-                </div>
-
-                {/* Matt Number */}
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
-                    Matt Number
-                  </label>
-                  <input
-                    type="text"
-                    name="mattNumber"
-                    value={formik.values.mattNumber}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    placeholder="Enter matriculation number"
-                    disabled={formik.isSubmitting}
-                    className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed ${
-                      hasFieldError('mattNumber') ? 'border-red-500' : 'border-gray-300'
-                    }`}
-                  />
-                  {getFieldError('mattNumber') && (
-                    <p className="text-red-500 text-xs mt-1">{getFieldError('mattNumber')}</p>
-                  )}
-                </div>
-
-                {/* Password Fields */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">
-                      Create Password
-                    </label>
-                    <input
-                      type="password"
-                      name="password"
-                      value={formik.values.password}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      placeholder="Create password"
-                      disabled={formik.isSubmitting}
-                      className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed ${
-                        hasFieldError('password') ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                    />
-                    {getFieldError('password') && (
-                      <p className="text-red-500 text-xs mt-1">{getFieldError('password')}</p>
-                    )}
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">
-                      Repeat Password
-                    </label>
-                    <input
-                      type="password"
-                      name="repeatPassword"
-                      value={formik.values.repeatPassword}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      placeholder="Repeat password"
-                      disabled={formik.isSubmitting}
-                      className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed ${
-                        hasFieldError('repeatPassword') ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                    />
-                    {getFieldError('repeatPassword') && (
-                      <p className="text-red-500 text-xs mt-1">{getFieldError('repeatPassword')}</p>
-                    )}
-                  </div>
-                </div>
-
-                {/* Level */}
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
-                    Level
-                  </label>
-                  <select
-                    name="level"
-                    value={formik.values.level}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    disabled={formik.isSubmitting}
-                    className={`w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed ${
-                      hasFieldError('level') ? 'border-red-500' : 'border-gray-300'
-                    }`}
-                  >
-                    <option value="100">100</option>
-                    <option value="200">200</option>
-                    <option value="300">300</option>
-                    <option value="400">400</option>
-                    <option value="500">500</option>
-                  </select>
-                  {getFieldError('level') && (
-                    <p className="text-red-500 text-xs mt-1">{getFieldError('level')}</p>
-                  )}
-                </div>
-
-                {/* Continue Button */}
-                <button
-                  type="submit"
-                  disabled={formik.isSubmitting || !formik.isValid}
-                  className="w-full bg-black text-white py-2.5 rounded-lg font-semibold hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed mt-6 mb-4 flex items-center justify-center space-x-2"
-                >
-                  {formik.isSubmitting ? (
-                    <>
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      <span>Processing...</span>
-                    </>
-                  ) : (
-                    <span>Continue</span>
-                  )}
-                </button>
-              </form>
-
-              {/* Login Link */}
-              <p className="text-center text-xs text-gray-600 pb-8">
-                Already have an account?{' '}
-                <Link href="/login">
-                  <span className="underline font-semibold cursor-pointer">Login</span>
-                </Link>
-              </p>
-            </div>
           </div>
         </div>
       </div>
