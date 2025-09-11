@@ -83,7 +83,7 @@ const StudentSignup = () => {
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {
         // Transform the form data to match the API interface
-        const apiData = {
+        const apiData:any = {
           surname: values.surname.trim(),
           firstName: values.firstName.trim(),
           gender: values.gender,
@@ -98,7 +98,7 @@ const StudentSignup = () => {
         const response = await endPoints.studentRegister(apiData);
         console.log(response);
         
-        toast.success('Student registration successful! Welcome to our community.');
+        toast.success('Student registration successful! Check your email for verification instructions.');
         
         // Reset form after successful registration
         resetForm();

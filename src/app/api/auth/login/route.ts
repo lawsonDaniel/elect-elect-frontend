@@ -32,14 +32,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if password matches - FIXED with proper error handling
+    // Check if password matches
     let isPasswordValid = false;
     try {
-      // Make sure the comparePassword method exists
       if (typeof user.comparePassword === 'function') {
         isPasswordValid = await user.comparePassword(password);
       } else {
-        // Fallback: compare manually if method doesn't exist
         const bcrypt = await import('bcryptjs');
         isPasswordValid = await bcrypt.compare(password, user.password);
       }
@@ -58,7 +56,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generate JWT token
+    // Generate JWT token (for your existing auth system)
     const jwtSecret = process.env.JWT_SECRET || 'your-fallback-secret-key-change-in-production';
     const token = jwt.sign(
       { 
@@ -98,7 +96,6 @@ export async function POST(request: NextRequest) {
   } catch (error: any) {
     console.error('Login error:', error);
     
-    // More specific error messages
     if (error.name === 'MongoError') {
       return NextResponse.json(
         { error: 'Database error. Please try again later.' },
@@ -107,7 +104,7 @@ export async function POST(request: NextRequest) {
     }
     
     return NextResponse.json(
-      { error: 'Login failed. Please try again.' }, // CHANGED from "Internal server error"
+      { error: 'Login failed. Please try again.' },
       { status: 500 }
     );
   }

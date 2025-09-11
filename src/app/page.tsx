@@ -169,6 +169,7 @@ export default function Home() {
         </h2></ScrollAnimationSection>
         <div className="mt-6 grid grid-row-1 lg:grid-cols-3 gap-10 -mx-[1%] md:mx-[2.2%] lg:mx-[4.6%]">
           {Programs.map(({ title, description, points }) => (
+            // eslint-disable-next-line react/jsx-key
             <ScrollAnimationSection>
             <div key={title} className={`p-6 rounded-lg border h-full flex flex-col mb-8 ${
               darkMode 

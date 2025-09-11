@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema, Model } from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 
@@ -31,6 +31,12 @@ export interface IUser extends Document {
   createPasswordResetToken(): string;
   createdAt: Date;
   updatedAt: Date;
+  notificationPreferences: {
+    emailNotifications: boolean;
+    smsNotifications: boolean;
+    pushNotifications: boolean;
+  };
+  supabase_user_id?: string; // Made optional in interface
 }
 
 // User Schema
@@ -89,6 +95,12 @@ const userSchema = new Schema<IUser>(
       type: Boolean,
       default: false,
     },
+    supabase_user_id: {
+      type: String,
+      required: false, // ✅ Optional
+      unique: true,    // ✅ Creates unique index automatically
+      sparse: true,    // ✅ Allow null values to be unique
+    },
     emailVerificationToken: {
       type: String,
       select: false,
@@ -107,6 +119,11 @@ const userSchema = new Schema<IUser>(
     // Student fields
     dob: {
       type: Date,
+    },
+     notificationPreferences: {
+      emailNotifications: { type: Boolean, default: true },
+      smsNotifications: { type: Boolean, default: false },
+      pushNotifications: { type: Boolean, default: true },
     },
     mattNumber: {
       type: String,
@@ -226,12 +243,13 @@ userSchema.index({ level: 1 }, { sparse: true });
 userSchema.index({ rank: 1 }, { sparse: true });
 userSchema.index({ department: 1 }, { sparse: true });
 userSchema.index({ faculty: 1 }, { sparse: true });
+// ✅ Removed duplicate supabase_user_id index - already created by unique: true
 
 // Compound indexes
 userSchema.index({ userType: 1, level: 1 });
 userSchema.index({ userType: 1, rank: 1 });
 userSchema.index({ userType: 1, department: 1 });
 
-// Export model - FIXED: Check if model already exists to prevent overwrite
+// Register the User model
 const User = mongoose.models.User || mongoose.model<IUser>('User', userSchema);
 export default User;

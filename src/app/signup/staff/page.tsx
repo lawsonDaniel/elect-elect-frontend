@@ -82,7 +82,7 @@ const StaffSignup = () => {
         console.log("Submitting staff registration:", apiData);
         const response = await endPoints.staffRegister(apiData);
         console.log(response)
-        toast.success('Staff registration successful! Welcome to our faculty.');
+        toast.success('Staff registration successful! Check your email for verification instructions.');
         
         // Reset form after successful registration
         resetForm();

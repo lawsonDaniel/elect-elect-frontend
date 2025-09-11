@@ -25,7 +25,7 @@ api.interceptors.request.use(
     }
 
     // Add Content-Type header with a default value of 'application/json'
-    config.headers["Content-Type"] = "application/json";
+    //config.headers["Content-Type"] = "application/json";
 
     // If you have a base64 image field in your form, you can include it in the request
     // For example, if your form has a field named 'image' containing the base64 data:
