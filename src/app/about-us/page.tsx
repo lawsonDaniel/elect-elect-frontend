@@ -78,7 +78,7 @@ export default function AboutUs() {
                         <h1 className={`absolute font-bold text-xl left-4/12  sm:text-2xl  md:text-3xl lg:text-7xl xl:text-8xl opacity-70 md:opacity-70 lg:opacity-20 -top-8 sm:-top-12 md:-top-12  md:left-1/2 md:-translate-x-1/2 lg:-left-4 lg:translate-x-0 z-0 ${ 
                             darkMode ? 'text-[#EDF3F8]' : 'text-[#000]'
                         }`}>
-                            PHILOSOPHY
+                            Philosophy
                         </h1>
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12 xl:gap-16 items-center">
                             <div className="relative z-10 order-2 lg:order-1">
@@ -105,7 +105,7 @@ export default function AboutUs() {
                         <h1 className={`absolute font-bold text-xl left-4/12  sm:text-2xl md:text-3xl lg:text-7xl xl:text-8xl opacity-70 md:opacity-70 lg:opacity-20 -top-6 sm:top-6 md:-top-8 lg:-top-16 md:-right-2 md:left-7/12 md:-translate-x-1/2 lg:-right-4 lg:translate-x-0 z-0 ${
                             darkMode ? 'text-[#EDF3F8]' : 'text-[#000]'
                         }`}>
-                            OBJECTIVES
+                            Objectives
                         </h1>
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12 xl:gap-16 items-start">
                             <div className={`relative z-10 text-sm md:text-base lg:text-lg leading-relaxed ${
