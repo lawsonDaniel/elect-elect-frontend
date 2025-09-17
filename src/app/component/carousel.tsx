@@ -93,6 +93,7 @@ export default function DepartmentCarousel() {
       setIsAtEnd(scrollLeft + clientWidth >= scrollWidth - 1)
     }
   }
+  
   useEffect(() => {
     const container = scrollRef.current
     if (!container) return;
@@ -106,17 +107,38 @@ export default function DepartmentCarousel() {
     }
   }, [])
     
-
-    const scroll = (direction: 'left' | 'right') => {
-      if (scrollRef.current) {
-        const container = scrollRef.current
-        const scrollAmount = container.clientWidth * 0.9 // scroll ~90% width
-        container.scrollBy({
-          left: direction === 'left' ? -scrollAmount : scrollAmount,
-          behavior: 'smooth',
-        })
-      }
+  const getCardWidth = () => {
+    if (!scrollRef.current) return 0;
+    
+    const container = scrollRef.current;
+    const containerWidth = container.clientWidth;
+    const gap = 16; // 4 in Tailwind = 16px
+    
+    // Calculate card width based on viewport
+    let cardWidth;
+    if (window.innerWidth >= 1024) { // lg breakpoint
+      cardWidth = containerWidth * 0.22; // 22vw equivalent
+    } else if (window.innerWidth >= 768) { // md breakpoint  
+      cardWidth = containerWidth * 0.30; // 30vw equivalent
+    } else if (window.innerWidth >= 640) { // sm breakpoint
+      cardWidth = containerWidth * 0.45; // 45vw equivalent
+    } else {
+      cardWidth = containerWidth * 0.80; // 80vw equivalent
     }
+    
+    return cardWidth + gap;
+  }
+
+  const scroll = (direction: 'left' | 'right') => {
+    if (scrollRef.current) {
+      const container = scrollRef.current
+      const scrollAmount = getCardWidth()
+      container.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth',
+      })
+    }
+  }
 
   return (
     <section className={`py-10 px-4 text-center ${
@@ -133,37 +155,37 @@ export default function DepartmentCarousel() {
       </p>
 
       {/* Scroll Buttons */}
-      <div className="relative">
+      <div className="relative mx-4">
       {!isAtStart && (
-  <ArrowLeft 
-    size={60} 
-    color={darkMode ? 'white' : 'black'} 
+  <button
     onClick={() => scroll('left')}
-    className={`hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-10 rounded-full p-4 shadow-md opacity-[82%] ${
+    className={`hidden md:flex absolute -left-8 top-1/2 -translate-y-1/2 z-20 rounded-full p-3 shadow-lg cursor-pointer transition-all duration-200 ${
       darkMode 
-        ? 'bg-[#101E27] text-[#EDF3F8] hover:bg-[#1A2832]' 
-        : 'bg-greyText text-[#4B5563] hover:bg-gray-400'
+        ? 'bg-[#101E27] text-[#EDF3F8] hover:bg-[#1A2832] hover:shadow-xl' 
+        : 'bg-white text-[#4B5563] hover:bg-gray-100 hover:shadow-xl'
     }`}
-  />
+  >
+    <ArrowLeft size={24} />
+  </button>
 )}
 
 {!isAtEnd && (
-  <ArrowRight 
-    size={60} 
-    color={darkMode ? 'white' : 'black'} 
+  <button
     onClick={() => scroll('right')}
-    className={`hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-10 rounded-full p-4 shadow-md opacity-[82%] ${
+    className={`hidden md:flex absolute -right-8 top-1/2 -translate-y-1/2 z-20 rounded-full p-3 shadow-lg cursor-pointer transition-all duration-200 ${
       darkMode 
-        ? 'bg-[#101E27] text-[#EDF3F8] hover:bg-[#1A2832]' 
-        : 'bg-greyText text-[#4B5563] hover:bg-gray-400'
+        ? 'bg-[#101E27] text-[#EDF3F8] hover:bg-[#1A2832] hover:shadow-xl' 
+        : 'bg-white text-[#4B5563] hover:bg-gray-100 hover:shadow-xl'
     }`}
-  />
+  >
+    <ArrowRight size={24} />
+  </button>
 )}
 
         {/* Scrollable Faculty Cards */}
         <div
           ref={scrollRef}
-          className="flex scrollbar-none overflow-x-auto gap-4  snap-x snap-mandatory  scroll-smooth px-1 md:px-10"
+          className="flex scrollbar-none overflow-x-auto gap-4 snap-x snap-mandatory scroll-smooth px-12"
         >
           {DepartmentData.map((member, index) => (
           <div
