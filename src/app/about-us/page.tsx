@@ -50,21 +50,83 @@ export default function AboutUs() {
                     </section>
             </div>
                 
-            <section className={`flex flex-col lg:flex-row w-full gap-5 mt-5 ${
-                darkMode ? 'bg-[#070E12]' : 'bg-greyText'
+            <section className={`w-full mt-5 py-8 sm:py-12 lg:py-16 ${
+            darkMode ? 'bg-[#070E12]' : 'bg-greyText'
             }`}>
-                    <div className=" lg:mt-[13%] mx-[4.27%] lg:ml-[7.47%] lg:mx-0 ">
-                      <h1 className={`font-bold text-center lg:text-left text-3xl md:text-3xl ${
+                {/* Mobile and Tablet Layout */}
+                <div className="flex flex-col gap-4 sm:gap-6 lg:hidden">
+                    {/* Content Container */}
+                    <div className="px-4 sm:px-6 md:px-8">
+                    <h1 className={`font-bold text-center text-2xl sm:text-3xl md:text-4xl mb-4 sm:mb-6 ${
                         darkMode ? 'text-[#FFFFFF]' : 'text-black'
-                      }`}>Our story</h1>
-                      <p className={`mt-4 text-base md:text-lg leading-relaxed ${
+                    }`}>
+                        Our story
+                    </h1>
+                    
+                    <p className={`text-sm sm:text-base md:text-lg leading-relaxed sm:leading-relaxed md:leading-loose text-justify ${
                         darkMode ? 'text-[#EDF3F8]' : 'text-[#6B7280]'
-                      }`}>
-                      Founded with a vision to lead in engineering education and research, our department has grown into a center of excellence known for its cutting-edge curriculum, hands-on learning approach, and impactful research. We are committed to bridging the gap between theory and practice, ensuring our students are prepared for both academia and industry.
-                      </p>
+                    }`}>
+                        The Department of Electrical/Electronic Engineering, University of Jos was established in 2014, amongst the four pioneer Departments in the Faculty of Engineering, under the headship of Dr. Danjuma Dajab. The Department admitted its first set of students in 2014/2015 session. The Department has admitted three sets of students currently. The intake has continued to rise steadily since the first admission in the 2014/2015 session. 
+                        <br /><br />
+                        The Facilities in The Departments of Building and Physics, University of Jos in addition to organizations such as the National Metallurgical Development Centre and the Department of Electrical Engineering, Abubakar Tafawa Balewa University, Bauchi with which the Department has MoUs are sufficient for the essential laboratories for the current Level, while significant progress has been made for our permanent Laboratories. 
+                        <br /><br />
+                        Workshop practices are carried out at the Equipment Maintenance Centre (EMC) of the University of Jos where students participate in all relevant workshops such as the Mechanical and Carpentry workshops. The lecturers and Technologies are very confident, experienced qualified and hard-working personnel. The laboratory staffs are absolute authorities in equipment handling and maintenance as well as practical classes. The Department has also explored its linkage with the Department of Electrical Engineering, Abubakar Tafawa Balewa University, Bauchi for external moderations of examination materials.
+                    </p>
                     </div>
-                    <Image src="/students.jpeg" alt="welcomeImage" width={592} height={404} className="mx-[4.27%] lg:mx-0 my-[4.5%] md:w-[97%] w-[91%] md:mx-auto lg:mr-[7.78%] rounded-lg"  layout="intrinsic"/>
+
+                    {/* Image Container */}
+                    <div className="px-4 sm:px-6 md:px-8">
+                    <div className="relative w-full h-64 sm:h-72 md:h-80">
+                        <Image 
+                        src="/students.jpeg" 
+                        alt="Students at University of Jos Electrical Engineering Department" 
+                        fill
+                        className="object-cover rounded-lg shadow-lg"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 100vw"
+                        />
+                    </div>
+                    </div>
+                </div>
+
+                {/* Desktop Layout with Text Overflow */}
+                <div className="hidden lg:block relative px-12 xl:px-16">
+                    {/* Image positioned on the right */}
+                    <div className="float-right ml-8 mb-6 w-1/2 xl:w-2/5">
+                    <div className="relative h-96 xl:h-[28rem]">
+                        <Image 
+                        src="/students.jpeg" 
+                        alt="Students at University of Jos Electrical Engineering Department" 
+                        fill
+                        className="object-cover rounded-lg shadow-lg"
+                        sizes="(max-width: 1280px) 50vw, 40vw"
+                        />
+                    </div>
+                    </div>
+
+                    {/* Content that flows around and under the image */}
+                    <div className="text-content">
+                    <h1 className={`font-bold text-left text-3xl xl:text-4xl mb-6 ${
+                        darkMode ? 'text-[#FFFFFF]' : 'text-black'
+                    }`}>
+                        Our story
+                    </h1>
+                    
+                    <p className={`text-base xl:text-lg leading-relaxed text-justify ${
+                        darkMode ? 'text-[#EDF3F8]' : 'text-[#6B7280]'
+                    }`}>
+                        The Department of Electrical/Electronic Engineering, University of Jos was established in 2014, amongst the four pioneer Departments in the Faculty of Engineering, under the headship of Dr. Danjuma Dajab. The Department admitted its first set of students in 2014/2015 session. The Department has admitted three sets of students currently. The intake has continued to rise steadily since the first admission in the 2014/2015 session. 
+                        <br /><br />
+                        The Facilities in The Departments of Building and Physics, University of Jos in addition to organizations such as the National Metallurgical Development Centre and the Department of Electrical Engineering, Abubakar Tafawa Balewa University, Bauchi with which the Department has MoUs are sufficient for the essential laboratories for the current Level, while significant progress has been made for our permanent Laboratories. 
+                        <br /><br />
+                        Workshop practices are carried out at the Equipment Maintenance Centre (EMC) of the University of Jos where students participate in all relevant workshops such as the Mechanical and Carpentry workshops. The lecturers and Technologies are very confident, experienced qualified and hard-working personnel. The laboratory staffs are absolute authorities in equipment handling and maintenance as well as practical classes. The Department has also explored its linkage with the Department of Electrical Engineering, Abubakar Tafawa Balewa University, Bauchi for external moderations of examination materials.
+                    </p>
+                    </div>
+
+                    {/* Clear float to prevent layout issues */}
+                    <div className="clear-both"></div>
+                </div>
             </section>
+
             <section className={`py-8 px-4 md:py-16 lg:py-24 max-w-7xl mx-auto flex flex-col lg:mx-[6.47%] ${
                 darkMode ? 'bg-[#070E12]' : 'bg-greyText'
             }`}>
@@ -75,8 +137,8 @@ export default function AboutUs() {
                 <div className="space-y-12 md:space-y-16 lg:space-y-20">
                     {/* Philosophy Section */}
                    <div className="relative">
-                        <h1 className={`absolute font-bold text-xl left-4/12  sm:text-2xl  md:text-3xl lg:text-7xl xl:text-8xl opacity-70 md:opacity-70 lg:opacity-20 -top-8 sm:-top-12 md:-top-12  md:left-1/2 md:-translate-x-1/2 lg:-left-4 lg:translate-x-0 z-0 ${ 
-                            darkMode ? 'text-[#EDF3F8]' : 'text-[#000]'
+                        <h1 className={`absolute font-bold text-xl left-4/12  sm:text-2xl  md:text-3xl lg:text-7xl xl:text-8xl -top-8 sm:-top-12 md:-top-12 lg:-top-16  md:left-1/2 md:-translate-x-1/2 lg:-left-4 lg:translate-x-0 z-0 ${ 
+                            darkMode ? 'text-[#EDF3F8] opacity-70 md:opacity-70 lg:opacity-70' : 'text-[#000] opacity-70 md:opacity-70 lg:opacity-20 '
                         }`}>
                             Philosophy
                         </h1>
@@ -91,7 +153,7 @@ export default function AboutUs() {
                                 />
                             </div>
                             <div className="relative z-10 order-1 lg:order-2">
-                                <p className={`text-sm md:text-base lg:text-lg leading-relaxed ${
+                                <p className={`text-sm md:text-base lg:text-lg leading-relaxed text-justify  ${
                                     darkMode ? 'text-[#EDF3F8]' : 'text-[#6B7280]'
                                 }`}>
                                     To impart Electrical and Electronic Engineering knowledge and skills at all levels to men and women of intellectual, moral, and spiritual grounds and background of all political beliefs in order to serve the needs of the nation and mankind in general.
@@ -102,12 +164,12 @@ export default function AboutUs() {
                     
                     {/* Objectives Section */}
                     <div className="relative">
-                        <h1 className={`absolute font-bold text-xl left-4/12  sm:text-2xl md:text-3xl lg:text-7xl xl:text-8xl opacity-70 md:opacity-70 lg:opacity-20 -top-6 sm:top-6 md:-top-8 lg:-top-16 md:-right-2 md:left-7/12 md:-translate-x-1/2 lg:-right-4 lg:translate-x-0 z-0 ${
-                            darkMode ? 'text-[#EDF3F8]' : 'text-[#000]'
+                        <h1 className={`absolute font-bold text-xl left-4/12  sm:text-2xl md:text-3xl lg:text-7xl xl:text-8xl opacity-70 md:opacity-70 lg:opacity-20 -top-6 sm:top-6 md:-top-8 lg:-top-16 md:-right-2 md:left-7/12 md:-translate-x-1/2 lg:-right-4 lg:translate-x-0 z-0 ${ 
+                            darkMode ? 'text-[#EDF3F8] opacity-70 md:opacity-70 lg:opacity-70' : 'text-[#000] opacity-70 md:opacity-70 lg:opacity-20 '
                         }`}>
                             Objectives
                         </h1>
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12 xl:gap-16 items-start">
+                        <div className="grid grid-cols-1 text-justify  lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12 xl:gap-16 items-start">
                             <div className={`relative z-10 text-sm md:text-base lg:text-lg leading-relaxed ${
                                 darkMode ? 'text-[#EDF3F8]' : 'text-[#6B7280]'
                             }`}>

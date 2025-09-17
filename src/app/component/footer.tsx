@@ -41,7 +41,7 @@ export default function Footer() {
                             <div className="w-[2.75rem] h-[2.75rem] rounded-full bg-[#FFFFFF1A] overflow-hidden flex items-center justify-center ">
                             <Image src="/Vector.png" alt="x" layout='intrinsic' width={30} height={30}/>
                             </div>
-                            put the barcode here
+                           
                         </div>
                     </div>
                 </div>
