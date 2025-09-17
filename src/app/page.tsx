@@ -88,7 +88,7 @@ export default function Home() {
           <div className="px-[4.27%] md:px-[7.78%] h-screen w-full items-center text-white z-20 translate-y-3/12 md:translate-y-1/3">
             <h1 className="max-w-[35rem] text-5xl">Welcome to the Department of Electrical and Electronics Engineering</h1>
             <p className="max-w-[29rem] font-extralight mt-4">At our department, we are committed to excellence in education and research. Join us in shaping the future through knowledge and innovation.</p>
-            <button className="bg-transparent backdrop-blur-md border border-white/20 text-white px-4 py-2 rounded-lg cursor-pointer mt-5">Explore Our Programs</button>
+            
           </div>
         </section>
         </ScrollAnimationSection>

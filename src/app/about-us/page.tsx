@@ -4,6 +4,7 @@ import Footer from "../component/footer";
 import Carousel from "../component/carousel";
 import Image from 'next/image';
 import { useDarkMode } from '@/contexts/DarkModeContext';
+import { DotIcon } from "lucide-react";
 
 export default function AboutUs() {
     const { darkMode } = useDarkMode();
@@ -53,7 +54,7 @@ export default function AboutUs() {
                 darkMode ? 'bg-[#070E12]' : 'bg-greyText'
             }`}>
                     <div className=" lg:mt-[13%] mx-[4.27%] lg:ml-[7.47%] lg:mx-0 ">
-                      <h1 className={`font-bold text-3xl md:text-3xl ${
+                      <h1 className={`font-bold text-center lg:text-left text-3xl md:text-3xl ${
                         darkMode ? 'text-[#FFFFFF]' : 'text-black'
                       }`}>Our story</h1>
                       <p className={`mt-4 text-base md:text-lg leading-relaxed ${
@@ -64,62 +65,83 @@ export default function AboutUs() {
                     </div>
                     <Image src="/students.jpeg" alt="welcomeImage" width={592} height={404} className="mx-[4.27%] lg:mx-0 my-[4.5%] md:w-[97%] w-[91%] md:mx-auto lg:mr-[7.78%] rounded-lg"  layout="intrinsic"/>
             </section>
-            <section className={`py-16 px-4 md:py-24 max-w-7xl mx-auto flex flex-col lg:mx-[6.47%] ${
+            <section className={`py-8 px-4 md:py-16 lg:py-24 max-w-7xl mx-auto flex flex-col lg:mx-[6.47%] ${
                 darkMode ? 'bg-[#070E12]' : 'bg-greyText'
             }`}>
-                <h2 className={`text-3xl md:text-5xl font-bold text-center lg:ml-auto mb-16 ${
+                <h2 className={`text-2xl md:text-4xl lg:text-4xl font-bold text-center lg:ml-auto mb-8 md:mb-14 lg:mb-16 ${
                     darkMode ? 'text-[#FFFFFF]' : 'text-black'
-                }`}>Our Mission & Vision</h2>
+                }`}>Our Philosophy and Objectives</h2>
                 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-16">
-                    {/* Mission Section */}
-                    <div className="relative">
-                    <div className={`absolute -z-10 opacity-10 font-bold text-7xl md:text-9xl top-0 left-0 ${
-                        darkMode ? 'text-[#EDF3F8]' : 'text-[#6B7280]'
-                    }`}>
-                        MISSION
-                    </div>
-                    <div className="mb-6">
-                        <Image 
-                        src="/vision1.jpeg" 
-                        alt="Study area with covered furniture" 
-                        width={592} 
-                        height={279} 
-                        className="rounded-lg shadow-lg w-full h-auto object-cover"
-                        />
-                    </div>
-                    <p className={`text-base md:text-lg leading-relaxed ${
-                        darkMode ? 'text-[#EDF3F8]' : 'text-[#6B7280]'
-                    }`}>
-                        To foster technological advancements, industry-ready education, 
-                        and sustainable engineering solutions through research, 
-                        innovation, and collaboration.
-                    </p>
+                <div className="space-y-12 md:space-y-16 lg:space-y-20">
+                    {/* Philosophy Section */}
+                   <div className="relative">
+                        <h1 className={`absolute font-bold text-xl left-4/12  sm:text-2xl  md:text-3xl lg:text-7xl xl:text-8xl opacity-70 md:opacity-70 lg:opacity-20 -top-8 sm:-top-12 md:-top-12  md:left-1/2 md:-translate-x-1/2 lg:-left-4 lg:translate-x-0 z-0 ${ 
+                            darkMode ? 'text-[#EDF3F8]' : 'text-[#000]'
+                        }`}>
+                            PHILOSOPHY
+                        </h1>
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12 xl:gap-16 items-center">
+                            <div className="relative z-10 order-2 lg:order-1">
+                                <Image 
+                                    src="/vision1.jpeg" 
+                                    alt="Study area with covered furniture" 
+                                    width={592} 
+                                    height={279} 
+                                    className="rounded-lg shadow-lg w-full h-auto object-cover"
+                                />
+                            </div>
+                            <div className="relative z-10 order-1 lg:order-2">
+                                <p className={`text-sm md:text-base lg:text-lg leading-relaxed ${
+                                    darkMode ? 'text-[#EDF3F8]' : 'text-[#6B7280]'
+                                }`}>
+                                    To impart Electrical and Electronic Engineering knowledge and skills at all levels to men and women of intellectual, moral, and spiritual grounds and background of all political beliefs in order to serve the needs of the nation and mankind in general.
+                                </p>
+                            </div>
+                        </div>
                     </div>
                     
-                    {/* Vision Section */}
+                    {/* Objectives Section */}
                     <div className="relative">
-                    <div className={`absolute -z-10 opacity-10 font-bold text-7xl md:text-9xl top-0 right-0 ${
-                        darkMode ? 'text-[#EDF3F8]' : 'text-gray-300'
-                    }`}>
-                        VISION
-                    </div>
-                    <p className={`text-base md:text-lg leading-relaxed mb-6 ${
-                        darkMode ? 'text-[#EDF3F8]' : 'text-[#6B7280]'
-                    }`}>
-                        To be a globally recognized leader in electrical and electronics 
-                        engineering, driving progress through cutting-edge research and 
-                        world-class education.
-                    </p>
-                    <div>
-                        <Image 
-                        src="/vision2.jpeg" 
-                        alt="Library shelves" 
-                        width={592} 
-                        height={279} 
-                        className="rounded-lg shadow-lg w-full h-auto object-cover "
-                        />
-                    </div>
+                        <h1 className={`absolute font-bold text-xl left-4/12  sm:text-2xl md:text-3xl lg:text-7xl xl:text-8xl opacity-70 md:opacity-70 lg:opacity-20 -top-6 sm:top-6 md:-top-8 lg:-top-16 md:-right-2 md:left-7/12 md:-translate-x-1/2 lg:-right-4 lg:translate-x-0 z-0 ${
+                            darkMode ? 'text-[#EDF3F8]' : 'text-[#000]'
+                        }`}>
+                            OBJECTIVES
+                        </h1>
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12 xl:gap-16 items-start">
+                            <div className={`relative z-10 text-sm md:text-base lg:text-lg leading-relaxed ${
+                                darkMode ? 'text-[#EDF3F8]' : 'text-[#6B7280]'
+                            }`}>
+                                <div className="flex items-start gap-2 md:gap-3 mb-3 md:mb-4">
+                                    <DotIcon size={16} className="flex-shrink-0 mt-1 md:hidden" color={darkMode ? "#EDF3F8" : "black"}/>
+                                    <DotIcon size={20} className="hidden md:flex flex-shrink-0 mt-1" color={darkMode ? "#EDF3F8" : "black"}/>
+                                    <span>To design and develop suitable undergraduate programs and courses in all the fields of Electrical and Electronic Engineering of standard comparable to those of best Departments of Universities of similar status elsewhere.</span>
+                                </div>
+                                <div className="flex items-start gap-2 md:gap-3 mb-3 md:mb-4">
+                                    <DotIcon size={16} className="flex-shrink-0 mt-1 md:hidden" color={darkMode ? "#EDF3F8" : "black"}/>
+                                    <DotIcon size={20} className="hidden md:flex flex-shrink-0 mt-1" color={darkMode ? "#EDF3F8" : "black"}/>
+                                    <span>To instruct and equip students with the technical knowledge and skills to understand and appreciate the development and to develop and produce components/systems/engineering products and services for better performance.</span>
+                                </div>
+                                <div className="flex items-start gap-2 md:gap-3 mb-3 md:mb-4">
+                                    <DotIcon size={16} className="flex-shrink-0 mt-1 md:hidden" color={darkMode ? "#EDF3F8" : "black"}/>
+                                    <DotIcon size={20} className="hidden md:flex flex-shrink-0 mt-1" color={darkMode ? "#EDF3F8" : "black"}/>
+                                    <span>To benefit society in the advancement of all fields of Electrical and Electronic Engineering.</span>
+                                </div>
+                                <div className="flex items-start gap-2 md:gap-3">
+                                    <DotIcon size={16} className="flex-shrink-0 mt-1 md:hidden" color={darkMode ? "#EDF3F8" : "black"}/>
+                                    <DotIcon size={20} className="hidden md:flex flex-shrink-0 mt-1" color={darkMode ? "#EDF3F8" : "black"}/>
+                                    <span>To secure the fulfillment of Electrical and Electronic Engineering throughout Nigeria and the world at large.</span>
+                                </div>
+                            </div>
+                            <div className="relative z-10">
+                                <Image 
+                                    src="/vision2.jpeg" 
+                                    alt="Library shelves" 
+                                    width={592} 
+                                    height={279} 
+                                    className="rounded-lg shadow-lg w-full h-auto object-cover"
+                                />
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
