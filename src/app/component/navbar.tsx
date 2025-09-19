@@ -110,7 +110,7 @@ export default function Navbar() {
                             
                             {/* Mobile Dark Mode Toggle */}
                             <li className="flex justify-center items-center pt-4">
-                                <div className={`hidden md:flex items-center gap-1 p-1 bg-transparent rounded-full border transition-colors duration-900  ${darkMode? 'border-[#EDF3F8]':'border-[#6B7280]'} `}>
+                                <div className={`md:hidden flex items-center gap-1 p-1 bg-transparent rounded-full border transition-colors duration-900  ${darkMode? 'border-[#EDF3F8]':'border-[#6B7280]'} `}>
                                     <button 
                                         onClick={handleToggle}
                                         className={`w-6 h-6 flex items-center justify-center rounded-full transition-all duration-1000 ease-in-out transform hover:scale-110 ${

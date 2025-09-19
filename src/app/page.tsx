@@ -86,7 +86,7 @@ export default function Home() {
         <ScrollAnimationSection>
         <section className="bg-no-repeat bg-cover flex flex-col">
           <div className="px-[4.27%] md:px-[7.78%] h-screen w-full items-center text-white z-20 translate-y-3/12 md:translate-y-1/3">
-            <h1 className="max-w-[35rem] text-5xl">Welcome to the Department of Electrical and Electronics Engineering</h1>
+            <h1 className="max-w-[35rem] text-3xl md:text-5xl">Welcome to the Department of Electrical and Electronics Engineering</h1>
             <p className="max-w-[29rem] font-extralight mt-4">At our department, we are committed to excellence in education and research. Join us in shaping the future through knowledge and innovation.</p>
             
           </div>
