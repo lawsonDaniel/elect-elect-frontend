@@ -10,11 +10,11 @@ export default function Footer() {
             <div className=" py-[4.5%]  ">
                 <div className="">
                     <Image src="/logo.png" alt="logo" className="w-12 h-12" width={48} height={48} />
-                    <p className="text-greyText max-w-[24rem] mt-4">Subscribe to our newsletter for the latest updates on features and releases.</p>
-                    <div className="flex flex-col md:flex-row mt-4 gap-3">
+                    <p className="text-greyText max-w-[50rem] mt-4 text-justify">At the Department of Electrical and Electronics Engineering, Faculty of Engineering, University of Jos, we are committed to advancing knowledge through innovative teaching, cutting-edge research, and practical applications of engineering principles. Our focus is on nurturing creative problem-solvers, fostering technological innovation, and preparing graduates to meet the challenges of an ever-evolving global society.</p>
+                    {/* <div className="flex flex-col md:flex-row mt-4 gap-3">
                         <input type="text" placeholder="     Your email here" className="bg-white font-medium w-[100%]  md:w-[30.875rem] h-[2.5rem] min-w-[15rem] rounded-lg" />
                         <button className="bg-gold text-white w-[9.75rem] h-[2.5rem] rounded-lg">Subscribe</button>
-                    </div>
+                    </div> */}
                     <hr className="bg-[#9CA3AF] h-[0.15rem] mt-14"/>
                     <ul className="list-none flex flex-col md:flex-row mt-5 text-[#D1D5DB] text-md md:text-[1.10rem] gap-5 md:gap-14">
                     <Link href="/">

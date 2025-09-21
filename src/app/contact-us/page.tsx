@@ -81,7 +81,7 @@ export default function ContactUs() {
             }`}> 
               <span className={`font-semibold ${
                 darkMode ? 'text-[#FFFFFF]' : 'text-black'
-              }`}>Email:</span> department.email@university.edu
+              }`}>Email:</span> electrical.engineering@unijos@edu.ng
             </p>
             <p className={`text-sm pt-3 ${
               darkMode ? 'text-[#EDF3F8]' : 'text-[#6B7280]'
