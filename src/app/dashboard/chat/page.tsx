@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/utils/supabase/client';
-import { Send, Users, MessageCircle, Loader2, ArrowLeft, Paperclip, X, Download, FileText, Image as ImageIcon, Video, Music, Menu, Plus } from 'lucide-react';
+import { Send, Users, MessageCircle, Loader2, ArrowLeft, Paperclip, X, Download, FileText, Image as ImageIcon, Video, Music, Menu } from 'lucide-react';
 import { useDarkMode } from '@/contexts/DarkModeContext';
 import { parseCookies } from 'nookies';
 import { v4 as uuidv4 } from 'uuid';
@@ -15,7 +15,6 @@ interface User {
   school_email: string;
   level: string;
   online: boolean;
-  user_type: string;
 }
 
 interface FileAttachment {
@@ -30,8 +29,7 @@ interface Message {
   id: string;
   text: string;
   sender_id: string;
-  receiver_id?: string;
-  group_id?: string;
+  receiver_id: string;
   created_at: string;
   file_attachment?: FileAttachment;
   sender?: User;
@@ -40,36 +38,23 @@ interface Message {
 
 interface Chat {
   id: string;
-  user?: User;
-  group?: Group;
+  user: User;
   last_message?: Message;
-}
-
-interface Group {
-  id: string;
-  name: string;
-  creator_id: string;
-  members: string[];
-  created_at: string;
 }
 
 export default function SimpleChat() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [chats, setChats] = useState<Chat[]>([]);
-  const [groups, setGroups] = useState<any[]>([]);
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
   const [messages, setMessages] = useState<any[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
-  const [view, setView] = useState<'chats' | 'users' | 'groups'>('users');
+  const [view, setView] = useState<'chats' | 'users'>('users');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [showGroupCreator, setShowGroupCreator] = useState(false);
-  const [newGroupName, setNewGroupName] = useState('');
-  const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -102,30 +87,30 @@ export default function SimpleChat() {
           return;
         }
 
-        let { data: profile }: any = await supabase
+        let { data: profile }:any = await supabase
           .from('profiles')
           .select('*')
           .eq('id', userId)
           .single();
 
         if (!profile) {
-          const { data: newProfile } = await supabase
-            .from('profiles')
-            .insert({
-              id: userId,
-              first_name: userMetadata?.first_name || 'User',
-              surname: userMetadata?.surname || '',
-              school_email: userEmail || '',
-              level: userMetadata?.level || '100',
-              user_type: userMetadata?.user_type || 'student',
-              online: true,
-              mongo_user_id: userId
-            }as any)
-            .select()
-            .single();
-          
-          profile = newProfile;
-        }
+  const { data: newProfile } = await supabase
+    .from('profiles')
+    .insert({
+      id: userId,
+      first_name: userMetadata?.first_name || 'User',
+      surname: userMetadata?.surname || '',
+      school_email: userEmail || '',
+      level: userMetadata?.level || '100',
+      user_type: 'student',
+      online: true,
+      mongo_user_id: userId // Add this required field
+    })
+    .select()
+    .single();
+  
+  profile = newProfile;
+}
 
         if (profile) {
           setCurrentUser(profile);
@@ -149,9 +134,10 @@ export default function SimpleChat() {
     if (!currentUser) return;
 
     const loadUsers = async () => {
-      const { data }: any = await supabase
+      const { data }:any = await supabase
         .from('profiles')
         .select('*')
+        .eq('user_type', 'student')
         .neq('id', currentUser.id);
       
       setUsers(data || []);
@@ -160,12 +146,11 @@ export default function SimpleChat() {
     loadUsers();
   }, [currentUser]);
 
-  // Load user's chats and groups
+  // Load user's chats
   useEffect(() => {
     if (!currentUser) return;
 
-    const loadChatsAndGroups = async () => {
-      // Load individual chats
+    const loadChats = async () => {
       const { data: userMessages } = await supabase
         .from('messages')
         .select(`
@@ -174,90 +159,49 @@ export default function SimpleChat() {
           receiver:profiles!messages_receiver_id_fkey(*)
         `)
         .or(`sender_id.eq.${currentUser.id},receiver_id.eq.${currentUser.id}`)
-        .is('group_id', null)
         .order('created_at', { ascending: false });
+
+      if (!userMessages) return;
 
       const chatMap = new Map<string, Chat>();
       
-      if (userMessages) {
-        userMessages.forEach((message: any) => {
-          const partnerId = message.sender_id === currentUser.id 
-            ? message.receiver_id 
-            : message.sender_id;
-          
-          const partner = message.sender_id === currentUser.id 
-            ? message.receiver 
-            : message.sender;
+      userMessages.forEach((message: any) => {
+        const partnerId = message.sender_id === currentUser.id 
+          ? message.receiver_id 
+          : message.sender_id;
+        
+        const partner = message.sender_id === currentUser.id 
+          ? message.receiver 
+          : message.sender;
 
-          if (!chatMap.has(partnerId)) {
-            chatMap.set(partnerId, {
-              id: partnerId,
-              user: partner,
-              last_message: message
-            });
-          }
-        });
-      }
-
-      // Load groups
-      const { data: groupData } = await supabase
-        .from('groups')
-        .select(`
-          *,
-          messages (
-            *,
-            sender:profiles!messages_sender_id_fkey(*)
-          )
-        `)
-        .contains('members', [currentUser.id]);
-
-      if (groupData) {
-        groupData.forEach((group: any) => {
-          const lastMessage = group.messages?.length > 0 
-            ? group.messages[group.messages.length - 1]
-            : undefined;
-          
-          chatMap.set(group.id, {
-            id: group.id,
-            group: {
-              id: group.id,
-              name: group.name,
-              creator_id: group.creator_id,
-              members: group.members,
-              created_at: group.created_at
-            },
-            last_message: lastMessage
+        if (!chatMap.has(partnerId)) {
+          chatMap.set(partnerId, {
+            id: partnerId,
+            user: partner,
+            last_message: message
           });
-        });
-      }
+        }
+      });
 
       setChats(Array.from(chatMap.values()));
-      setGroups(groupData || []);
     };
 
-    loadChatsAndGroups();
+    loadChats();
   }, [currentUser]);
 
-  // Load messages for selected chat or group
+  // Load messages for selected chat
   useEffect(() => {
     if (!currentUser || !selectedChat) return;
 
     const loadMessages = async () => {
-      let query = supabase
+      const { data }:any = await supabase
         .from('messages')
         .select(`
           *,
           sender:profiles!messages_sender_id_fkey(*)
         `)
+        .or(`and(sender_id.eq.${currentUser.id},receiver_id.eq.${selectedChat.id}),and(sender_id.eq.${selectedChat.id},receiver_id.eq.${currentUser.id})`)
         .order('created_at', { ascending: true });
-
-      if (selectedChat.group) {
-        query = query.eq('group_id', selectedChat.id);
-      } else {
-        query = query.or(`and(sender_id.eq.${currentUser.id},receiver_id.eq.${selectedChat.id}),and(sender_id.eq.${selectedChat.id},receiver_id.eq.${currentUser.id})`);
-      }
-
-      const { data }: any = await query;
 
       setMessages(data || []);
     };
@@ -281,18 +225,12 @@ export default function SimpleChat() {
         async (payload) => {
           const newMessage = payload.new as Message;
           
-          // Handle group messages
-          if (newMessage.group_id) {
-            const isGroupMember = groups.some(group => 
-              group.id === newMessage.group_id && group.members.includes(currentUser.id)
-            );
-            if (!isGroupMember) return;
-          } else if (newMessage.sender_id !== currentUser.id && newMessage.receiver_id !== currentUser.id) {
+          if (newMessage.sender_id !== currentUser.id && newMessage.receiver_id !== currentUser.id) {
             return;
           }
 
           // Create notification for incoming message
-          if (newMessage.receiver_id === currentUser.id || newMessage.group_id) {
+          if (newMessage.receiver_id === currentUser.id) {
             try {
               const { data: sender } = await supabase
                 .from('profiles')
@@ -300,14 +238,10 @@ export default function SimpleChat() {
                 .eq('id', newMessage.sender_id)
                 .single();
 
-              const title = newMessage.group_id 
-                ? `New Group Message in ${groups.find(g => g.id === newMessage.group_id)?.name || 'Group'}`
-                : `New Chat Message from ${sender?.first_name} ${sender?.surname}`;
-
               await endPoints.createNotification({
                 userId: currentUser.id,
                 type: 'message',
-                title,
+                title: `New Chat Message from ${sender?.first_name} ${sender?.surname}`,
                 content: newMessage.file_attachment
                   ? `Sent a file: ${newMessage.file_attachment.file_name}`
                   : newMessage.text || 'New message received',
@@ -326,10 +260,8 @@ export default function SimpleChat() {
           const messageWithSender = { ...newMessage, sender };
 
           if (selectedChat && 
-              ((newMessage.group_id && newMessage.group_id === selectedChat.id) ||
-               (!newMessage.group_id && 
-                ((newMessage.sender_id === selectedChat.id && newMessage.receiver_id === currentUser.id) ||
-                 (newMessage.sender_id === currentUser.id && newMessage.receiver_id === selectedChat.id))))) {
+              ((newMessage.sender_id === selectedChat.id && newMessage.receiver_id === currentUser.id) ||
+               (newMessage.sender_id === currentUser.id && newMessage.receiver_id === selectedChat.id))) {
             setMessages(prev => {
               if (prev.some(msg => msg.id === newMessage.id)) return prev;
               return [...prev, messageWithSender];
@@ -337,40 +269,28 @@ export default function SimpleChat() {
           }
 
           setChats(prev => {
-            const partnerId = newMessage.group_id || 
-              (newMessage.sender_id === currentUser.id 
-                ? newMessage.receiver_id 
-                : newMessage.sender_id);
+            const partnerId = newMessage.sender_id === currentUser.id 
+              ? newMessage.receiver_id 
+              : newMessage.sender_id;
             
             const existingChatIndex = prev.findIndex(chat => chat.id === partnerId);
             
             if (existingChatIndex >= 0) {
-              const updatedChats: any = [...prev];
+              const updatedChats:any= [...prev];
               updatedChats[existingChatIndex].last_message = messageWithSender;
               const updatedChat = updatedChats.splice(existingChatIndex, 1)[0];
               return [updatedChat, ...updatedChats];
             } else {
-              if (newMessage.group_id) {
-                const group = groups.find(g => g.id === newMessage.group_id);
-                if (group) {
-                  return [{
-                    id: newMessage.group_id,
-                    group,
-                    last_message: messageWithSender
-                  }, ...prev];
-                }
-              } else {
-                const partner = newMessage.sender_id === currentUser.id 
-                  ? users.find(u => u.id === newMessage.receiver_id)
-                  : users.find(u => u.id === newMessage.sender_id);
-                
-                if (partner) {
-                  return [{
-                    id: partnerId,
-                    user: partner,
-                    last_message: messageWithSender
-                  }, ...prev];
-                }
+              const partner = newMessage.sender_id === currentUser.id 
+                ? users.find(u => u.id === newMessage.receiver_id)
+                : users.find(u => u.id === newMessage.sender_id);
+              
+              if (partner) {
+                return [{
+                  id: partnerId,
+                  user: partner,
+                  last_message: messageWithSender
+                }, ...prev];
               }
               return prev;
             }
@@ -382,7 +302,7 @@ export default function SimpleChat() {
     return () => {
       subscription.unsubscribe();
     };
-  }, [currentUser, selectedChat, users, groups]);
+  }, [currentUser, selectedChat, users]);
 
   // Auto scroll to bottom
   useEffect(() => {
@@ -442,29 +362,7 @@ export default function SimpleChat() {
   // Send message with optimistic update
   const sendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Validate inputs
-    if (!currentUser || !selectedChat || (!newMessage.trim() && !selectedFile) || sending) {
-      console.error('Invalid input:', { currentUser, selectedChat, newMessage, selectedFile, sending });
-      return;
-    }
-
-    // Validate chat type and ID
-    if (!selectedChat.user && !selectedChat.group) {
-      console.error('Invalid chat type: Must be user or group chat', selectedChat);
-      alert('Cannot send message: Invalid chat type');
-      return;
-    }
-    if (selectedChat.user && !selectedChat.id) {
-      console.error('Invalid receiver_id for user chat', selectedChat);
-      alert('Cannot send message: Invalid recipient');
-      return;
-    }
-    if (selectedChat.group && !selectedChat.id) {
-      console.error('Invalid group_id for group chat', selectedChat);
-      alert('Cannot send message: Invalid group');
-      return;
-    }
+    if (!currentUser || !selectedChat || (!newMessage.trim() && !selectedFile) || sending) return;
 
     setSending(true);
     setUploading(!!selectedFile);
@@ -474,28 +372,27 @@ export default function SimpleChat() {
       id: tempId,
       text: newMessage.trim() || (selectedFile ? `Sent a file: ${selectedFile.name}` : ''),
       sender_id: currentUser.id,
-      receiver_id: selectedChat.user ? selectedChat.id : undefined,
-      group_id: selectedChat.group ? selectedChat.id : undefined,
+      receiver_id: selectedChat.id,
       created_at: new Date().toISOString(),
       sender: currentUser,
-      isPending: true,
+      isPending: true
     };
 
     if (selectedFile) {
+      const fileExt = selectedFile.name.split('.').pop();
       optimisticMessage.file_attachment = {
         id: tempId,
         file_name: selectedFile.name,
         file_size: selectedFile.size,
         file_type: selectedFile.type,
-        file_url: URL.createObjectURL(selectedFile),
+        file_url: URL.createObjectURL(selectedFile)
       };
     }
 
-    // Optimistic UI updates
-    setMessages((prev: Message[]) => [...prev, optimisticMessage]);
-    setChats((prev: Chat[]) => {
+    setMessages(prev => [...prev, optimisticMessage]);
+    setChats(prev => {
       const updatedChats = [...prev];
-      const chatIndex = updatedChats.findIndex((chat) => chat.id === selectedChat.id);
+      const chatIndex = updatedChats.findIndex(chat => chat.id === selectedChat.id);
       if (chatIndex >= 0) {
         updatedChats[chatIndex].last_message = optimisticMessage;
         const updatedChat = updatedChats.splice(chatIndex, 1)[0];
@@ -504,7 +401,6 @@ export default function SimpleChat() {
       return prev;
     });
 
-    // Reset input fields
     setNewMessage('');
     setSelectedFile(null);
     if (fileInputRef.current) {
@@ -513,7 +409,7 @@ export default function SimpleChat() {
 
     try {
       let fileAttachment: FileAttachment | null = null;
-
+      
       if (selectedFile) {
         fileAttachment = await uploadFile(selectedFile);
         if (!fileAttachment) {
@@ -521,125 +417,37 @@ export default function SimpleChat() {
         }
       }
 
-      // Debug: Log selectedChat to verify its structure
-      console.log('Selected chat:', {
-        selectedChatId: selectedChat.id,
-        hasUser: !!selectedChat.user,
-        hasGroup: !!selectedChat.group,
-        receiverId: selectedChat.user ? selectedChat.id : null,
-        groupId: selectedChat.group ? selectedChat.id : null,
-      });
+ const { data, error } = await supabase
+  .from('messages')
+  .insert({
+    text: optimisticMessage.text,
+    sender_id: currentUser.id,
+    receiver_id: selectedChat.id,
+    file_attachment: fileAttachment ? JSON.parse(JSON.stringify(fileAttachment)) : null
+  })
+  .select()
+  .single();
 
-      // Prepare message data based on chat type
-      const messageData: any = {
-        text: optimisticMessage.text,
-        sender_id: currentUser.id,
-        file_attachment: fileAttachment || null as any,
-        receiver_id: selectedChat.user ? selectedChat.id : null as any,
-        group_id: selectedChat.group ? selectedChat.id : null as any,
-      };
+      if (error) throw error;
 
-      console.log('Inserting message:', messageData); // Debug log
-
-      const { data, error } = await supabase
-        .from('messages')
-        .insert(messageData)
-        .select()
-        .single();
-
-      if (error) {
-        console.error('Supabase error:', error);
-        if (error.code === '23502') {
-          console.error('Not-null constraint violation. Message data:', messageData);
-          alert('Cannot send message: Recipient or group is missing');
-        } else {
-          alert('Failed to send message: ' + error.message);
-        }
-        throw error;
-      }
-
-      // Update message with server data
-      setMessages((prev: Message[]) =>
-        prev.map((msg) =>
-          msg.id === tempId ? { ...data, sender: currentUser, isPending: false } : msg
-        )
-      );
+      setMessages(prev => prev.map(msg => 
+        msg.id === tempId 
+          ? { ...data, sender: currentUser, isPending: false }
+          : msg
+      ));
     } catch (error) {
       console.error('Error sending message:', error);
-      // Roll back optimistic update
-      setMessages((prev: Message[]) => prev.filter((msg) => msg.id !== tempId));
-      if (error instanceof Error && error.message !== 'Failed to upload file') {
-        alert('Failed to send message');
-      }
+      setMessages(prev => prev.filter(msg => msg.id !== tempId));
+      alert('Failed to send message');
     } finally {
       setSending(false);
       setUploading(false);
     }
   };
 
-  // Create new group
-  const createGroup = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!currentUser || currentUser.user_type !== 'staff' || !newGroupName.trim() || selectedMembers.length === 0) return;
-
-    try {
-      const groupId = uuidv4();
-      const { error } = await supabase
-        .from('groups')
-        .insert({
-          id: groupId,
-          name: newGroupName.trim(),
-          creator_id: currentUser.id,
-          members: [...selectedMembers, currentUser.id],
-          created_at: new Date().toISOString()
-        });
-
-      if (error) throw error;
-
-      const newGroup: Group = {
-        id: groupId,
-        name: newGroupName.trim(),
-        creator_id: currentUser.id,
-        members: [...selectedMembers, currentUser.id],
-        created_at: new Date().toISOString()
-      };
-
-      setGroups(prev => [...prev, newGroup]);
-      setChats(prev => [{
-        id: groupId,
-        group: newGroup
-      }, ...prev]);
-      setNewGroupName('');
-      setSelectedMembers([]);
-      setShowGroupCreator(false);
-      setSelectedChat({ id: groupId, group: newGroup });
-    } catch (error) {
-      console.error('Error creating group:', error);
-      alert('Failed to create group');
-    }
-  };
-
-  // Toggle member selection for group
-  const toggleMember = (userId: string) => {
-    setSelectedMembers(prev => 
-      prev.includes(userId) 
-        ? prev.filter(id => id !== userId)
-        : [...prev, userId]
-    );
-  };
-
   // Start chat with user
   const startChat = (user: User) => {
-    console.log('Starting chat with user:', { userId: user.id, user });
     setSelectedChat({ id: user.id, user });
-    setView('chats');
-    setMessages([]);
-  };
-
-  // Start group chat
-  const startGroupChat = (group: Group) => {
-    console.log('Starting group chat:', { groupId: group.id, group });
-    setSelectedChat({ id: group.id, group });
     setView('chats');
     setMessages([]);
   };
@@ -698,7 +506,7 @@ export default function SimpleChat() {
       )}
 
       {/* Sidebar */}
-      <div className={`w-full md:w-80 lg:w-96 border-r ${darkMode ? 'bg-[#1E2A38] border-[#2A3744]' : 'bg-gray-50 border-gray-200'} 
+      <div className={`w-80 border-r ${darkMode ? 'bg-[#1E2A38] border-[#2A3744]' : 'bg-gray-50 border-gray-200'} 
         fixed md:relative h-full z-40 transition-transform duration-300 ease-in-out
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
         
@@ -707,9 +515,9 @@ export default function SimpleChat() {
             <div className="w-10 h-10 bg-[#2563EB] rounded-full flex items-center justify-center text-white font-bold">
               {currentUser.first_name[0]}{currentUser.surname[0]}
             </div>
-            <div className="flex-1 min-w-0">
-              <h2 className="font-semibold truncate">{currentUser.first_name} {currentUser.surname}</h2>
-              <p className={`text-sm ${darkMode ? 'text-[#A0B3C6]' : 'text-gray-600'} truncate`}>
+            <div>
+              <h2 className="font-semibold">{currentUser.first_name} {currentUser.surname}</h2>
+              <p className={`text-sm ${darkMode ? 'text-[#A0B3C6]' : 'text-gray-600'}`}>
                 Level {currentUser.level}
               </p>
             </div>
@@ -746,25 +554,13 @@ export default function SimpleChat() {
             >
               <MessageCircle className="w-4 h-4 mx-auto" />
             </button>
-            <button
-              onClick={() => setView('groups')}
-              className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium ${
-                view === 'groups'
-                  ? 'bg-[#2563EB] text-white'
-                  : darkMode
-                  ? 'bg-[#1E2A38] text-[#A0B3C6] hover:bg-[#2A3744]'
-                  : 'bg-white text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              <Users className="w-4 h-4 mx-auto" />
-            </button>
           </div>
         </div>
 
         <div className="flex-1 overflow-y-auto p-4">
           {view === 'users' ? (
             <div className="space-y-2">
-              <h3 className="font-semibold mb-3 text-sm md:text-base">All Users</h3>
+              <h3 className="font-semibold mb-3">All Users</h3>
               {users.map(user => (
                 <div
                   key={user.id}
@@ -774,17 +570,17 @@ export default function SimpleChat() {
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="relative flex-shrink-0">
-                      <div className="w-8 h-8 md:w-10 md:h-10 bg-[#2563EB] rounded-full flex items-center justify-center text-white font-medium text-xs md:text-sm">
+                    <div className="relative">
+                      <div className="w-10 h-10 bg-[#2563EB] rounded-full flex items-center justify-center text-white font-medium">
                         {user.first_name[0]}{user.surname[0]}
                       </div>
-                      <div className={`absolute -bottom-1 -right-1 w-2 h-2 md:w-3 md:h-3 rounded-full border-2 ${
+                      <div className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 ${
                         user.online ? 'bg-green-500' : 'bg-gray-400'
                       } ${darkMode ? 'border-[#1E2A38]' : 'border-white'}`} />
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium truncate text-sm md:text-base">{user.first_name} {user.surname}</p>
-                      <p className={`text-xs md:text-sm ${darkMode ? 'text-[#A0B3C6]' : 'text-gray-600'} truncate`}>
+                    <div>
+                      <p className="font-medium">{user.first_name} {user.surname}</p>
+                      <p className={`text-sm ${darkMode ? 'text-[#A0B3C6]' : 'text-gray-600'}`}>
                         Level {user.level}
                       </p>
                     </div>
@@ -792,111 +588,13 @@ export default function SimpleChat() {
                 </div>
               ))}
             </div>
-          ) : view === 'groups' ? (
-            <div className="space-y-2">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="font-semibold text-sm md:text-base">Groups</h3>
-                {currentUser.user_type === 'staff' && (
-                  <button
-                    onClick={() => setShowGroupCreator(true)}
-                    className="p-2 rounded-lg bg-[#2563EB] text-white hover:bg-[#1E40AF]"
-                  >
-                    <Plus className="w-4 h-4" />
-                  </button>
-                )}
-              </div>
-              {showGroupCreator && currentUser.user_type === 'staff' ? (
-                <div className="p-3 rounded-lg bg-[#2A3744]">
-                  <form onSubmit={createGroup}>
-                    <input
-                      type="text"
-                      value={newGroupName}
-                      onChange={(e) => setNewGroupName(e.target.value)}
-                      placeholder="Group name"
-                      className={`w-full px-3 py-2 mb-2 rounded-lg border text-sm ${
-                        darkMode
-                          ? 'bg-[#1E2A38] border-[#2A3744] text-[#E2E8F0] placeholder-[#A0B3C6]'
-                          : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
-                      } focus:outline-none focus:border-[#2563EB]`}
-                    />
-                    <div className="mb-2 max-h-40 overflow-y-auto">
-                      {users.map(user => (
-                        <div
-                          key={user.id}
-                          className="flex items-center gap-2 p-2 hover:bg-[#3B82F6] cursor-pointer"
-                          onClick={() => toggleMember(user.id)}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={selectedMembers.includes(user.id)}
-                            onChange={() => toggleMember(user.id)}
-                            className="w-4 h-4"
-                          />
-                          <span className="text-sm">{user.first_name} {user.surname}</span>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="flex gap-2">
-                      <button
-                        type="submit"
-                        disabled={!newGroupName.trim() || selectedMembers.length === 0}
-                        className="flex-1 py-2 px-3 rounded-lg bg-[#2563EB] text-white disabled:opacity-50 hover:bg-[#1E40AF]"
-                      >
-                        Create Group
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setShowGroupCreator(false);
-                          setNewGroupName('');
-                          setSelectedMembers([]);
-                        }}
-                        className="flex-1 py-2 px-3 rounded-lg bg-gray-500 text-white hover:bg-gray-600"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              ) : (
-                groups.map(group => (
-                  <div
-                    key={group.id}
-                    onClick={() => startGroupChat(group)}
-                    className={`p-3 rounded-lg cursor-pointer ${
-                      selectedChat?.id === group.id
-                        ? 'bg-[#2563EB] text-white'
-                        : darkMode
-                        ? 'hover:bg-[#2A3744]'
-                        : 'hover:bg-gray-100'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 md:w-10 md:h-10 bg-[#2563EB] rounded-full flex items-center justify-center text-white font-medium text-xs md:text-sm flex-shrink-0">
-                        {group.name[0].toUpperCase()}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium truncate text-sm md:text-base">{group.name}</p>
-                        {group.members && (
-                          <p className={`text-xs truncate ${
-                            selectedChat?.id === group.id ? 'text-blue-100' : darkMode ? 'text-[#A0B3C6]' : 'text-gray-600'
-                          }`}>
-                            {group.members.length} members
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
           ) : (
             <div className="space-y-2">
-              <h3 className="font-semibold mb-3 text-sm md:text-base">Your Chats</h3>
+              <h3 className="font-semibold mb-3">Your Chats</h3>
               {chats.map(chat => (
                 <div
                   key={chat.id}
-                  onClick={() => chat.group ? startGroupChat(chat.group) : startChat(chat.user!)}
+                  onClick={() => setSelectedChat(chat)}
                   className={`p-3 rounded-lg cursor-pointer ${
                     selectedChat?.id === chat.id
                       ? 'bg-[#2563EB] text-white'
@@ -906,24 +604,22 @@ export default function SimpleChat() {
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 md:w-10 md:h-10 bg-[#2563EB] rounded-full flex items-center justify-center text-white font-medium text-xs md:text-sm flex-shrink-0">
-                      {chat.group ? chat.group.name[0].toUpperCase() : `${chat.user!.first_name[0]}${chat.user!.surname[0]}`}
+                    <div className="w-10 h-10 bg-[#2563EB] rounded-full flex items-center justify-center text-white font-medium">
+                      {chat.user.first_name[0]}{chat.user.surname[0]}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium truncate text-sm md:text-base">
-                        {chat.group ? chat.group.name : `${chat.user!.first_name} ${chat.user!.surname}`}
-                      </p>
+                      <p className="font-medium truncate">{chat.user.first_name} {chat.user.surname}</p>
                       {chat.last_message && (
-                        <p className={`text-xs truncate ${
+                        <p className={`text-sm truncate ${
                           selectedChat?.id === chat.id ? 'text-blue-100' : darkMode ? 'text-[#A0B3C6]' : 'text-gray-600'
                         }`}>
                           {chat.last_message.file_attachment ? (
                             <span className="flex items-center gap-1">
-                              <Paperclip className="w-3 h-3 flex-shrink-0" />
-                              <span className="truncate">{chat.last_message.file_attachment.file_name}</span>
+                              <Paperclip className="w-3 h-3" />
+                              {chat.last_message.file_attachment.file_name}
                             </span>
                           ) : (
-                            <span className="truncate">{chat.last_message.text}</span>
+                            chat.last_message.text
                           )}
                         </p>
                       )}
@@ -947,7 +643,7 @@ export default function SimpleChat() {
       <div className="flex-1 flex flex-col w-full">
         {selectedChat ? (
           <>
-            <div className={`p-3 md:p-4 border-b flex items-center gap-3 ${
+            <div className={`p-4 border-b flex items-center gap-3 ${
               darkMode ? 'bg-[#1E2A38] border-[#2A3744]' : 'bg-gray-50 border-gray-200'
             }`}>
               <button
@@ -957,31 +653,29 @@ export default function SimpleChat() {
                     setSidebarOpen(true);
                   }
                 }}
-                className="p-1 md:p-2 rounded-lg hover:bg-[#2A3744] dark:hover:bg-[#2A3744]"
+                className="p-2 rounded-lg hover:bg-[#2A3744] dark:hover:bg-[#2A3744]"
               >
                 <ArrowLeft className="w-5 h-5" />
               </button>
-              <div className="w-8 h-8 md:w-10 md:h-10 bg-[#2563EB] rounded-full flex items-center justify-center text-white font-medium text-xs md:text-sm flex-shrink-0">
-                {selectedChat.group ? selectedChat.group.name[0].toUpperCase() : `${selectedChat.user!.first_name[0]}${selectedChat.user!.surname[0]}`}
+              <div className="w-10 h-10 bg-[#2563EB] rounded-full flex items-center justify-center text-white font-medium">
+                {selectedChat.user.first_name[0]}{selectedChat.user.surname[0]}
               </div>
-              <div className="flex-1 min-w-0">
-                <h1 className="font-semibold text-sm md:text-base truncate">
-                  {selectedChat.group ? selectedChat.group.name : `${selectedChat.user!.first_name} ${selectedChat.user!.surname}`}
-                </h1>
-                <p className={`text-xs md:text-sm ${darkMode ? 'text-[#A0B3C6]' : 'text-gray-600'} truncate`}>
-                  {selectedChat.group ? `${selectedChat.group.members.length} members` : `Level ${selectedChat.user!.level}`}
+              <div>
+                <h1 className="font-semibold">{selectedChat.user.first_name} {selectedChat.user.surname}</h1>
+                <p className={`text-sm ${darkMode ? 'text-[#A0B3C6]' : 'text-gray-600'}`}>
+                  Level {selectedChat.user.level}
                 </p>
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-3 md:p-4 space-y-3">
+            <div className="flex-1 overflow-y-auto p-4 space-y-3">
               {messages.map(message => (
                 <div
                   key={message.id}
                   className={`flex ${message.sender_id === currentUser.id ? 'justify-end' : 'justify-start'}`}
                 >
                   <div
-                    className={`max-w-[85%] md:max-w-md px-3 py-2 md:px-4 md:py-2 rounded-lg ${
+                    className={`max-w-xs md:max-w-md px-4 py-2 rounded-lg ${
                       message.sender_id === currentUser.id
                         ? `bg-[#2563EB] text-white ${message.isPending ? 'opacity-75' : ''}`
                         : darkMode
@@ -989,8 +683,7 @@ export default function SimpleChat() {
                         : 'bg-gray-100 text-gray-900'
                     }`}
                   >
-                    <p className="text-xs font-medium">{message.sender?.first_name} {message.sender?.surname}</p>
-                    {message.text && <p className="mb-2 break-words text-sm md:text-base">{message.text}</p>}
+                    {message.text && <p className="mb-2 break-words">{message.text}</p>}
                     
                     {message.file_attachment && (
                       <div className={`p-2 rounded border ${
@@ -1003,7 +696,7 @@ export default function SimpleChat() {
                         <div className="flex items-center gap-2 mb-2">
                           {getFileIcon(message.file_attachment.file_type)}
                           <div className="flex-1 min-w-0">
-                            <p className="text-xs md:text-sm font-medium truncate">
+                            <p className="text-sm font-medium truncate">
                               {message.file_attachment.file_name}
                             </p>
                             <p className="text-xs opacity-75">
@@ -1051,7 +744,7 @@ export default function SimpleChat() {
             </div>
 
             {selectedFile && (
-              <div className={`p-3 md:p-4 border-t ${
+              <div className={`p-4 border-t ${
                 darkMode ? 'bg-[#1E2A38] border-[#2A3744]' : 'bg-gray-50 border-gray-200'
               }`}>
                 <div className={`p-3 rounded-lg border ${
@@ -1059,9 +752,9 @@ export default function SimpleChat() {
                 }`}>
                   <div className="flex items-center gap-3">
                     {getFileIcon(selectedFile.type)}
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-sm md:text-base truncate">{selectedFile.name}</p>
-                      <p className={`text-xs md:text-sm ${darkMode ? 'text-[#A0B3C6]' : 'text-gray-600'}`}>
+                    <div className="flex-1">
+                      <p className="font-medium truncate">{selectedFile.name}</p>
+                      <p className={`text-sm ${darkMode ? 'text-[#A0B3C6]' : 'text-gray-600'}`}>
                         {formatFileSize(selectedFile.size)}
                       </p>
                     </div>
@@ -1070,7 +763,7 @@ export default function SimpleChat() {
                         setSelectedFile(null);
                         if (fileInputRef.current) fileInputRef.current.value = '';
                       }}
-                      className="p-1 rounded hover:bg-[#2A3744] dark:hover:bg-[#2A3744] flex-shrink-0"
+                      className="p-1 rounded hover:bg-[#2A3744] dark:hover:bg-[#2A3744]"
                     >
                       <X className="w-4 h-4" />
                     </button>
@@ -1079,7 +772,7 @@ export default function SimpleChat() {
               </div>
             )}
 
-            <form onSubmit={sendMessage} className={`p-3 md:p-4 border-t ${
+            <form onSubmit={sendMessage} className={`p-4 border-t ${
               darkMode ? 'bg-[#1E2A38] border-[#2A3744]' : 'bg-gray-50 border-gray-200'
             }`}>
               <div className="flex gap-2">
@@ -1094,10 +787,10 @@ export default function SimpleChat() {
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="p-2 rounded-lg hover:bg-[#2A3744] dark:hover:bg-[#2A3744] flex-shrink-0"
+                  className="p-2 rounded-lg hover:bg-[#2A3744] dark:hover:bg-[#2A3744]"
                   aria-label="Attach file"
                 >
-                  <Paperclip className="w-4 h-4 md:w-5 md:h-5" />
+                  <Paperclip className="w-5 h-5" />
                 </button>
                 
                 <input
@@ -1105,7 +798,7 @@ export default function SimpleChat() {
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                   placeholder="Type a message..."
-                  className={`flex-1 px-3 py-2 md:px-4 md:py-2 rounded-lg border text-sm md:text-base ${
+                  className={`flex-1 px-4 py-2 rounded-lg border ${
                     darkMode
                       ? 'bg-[#1E2A38] border-[#2A3744] text-[#E2E8F0] placeholder-[#A0B3C6]'
                       : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
@@ -1115,11 +808,11 @@ export default function SimpleChat() {
                 <button
                   type="submit"
                   disabled={(!newMessage.trim() && !selectedFile) || sending}
-                  className={`px-3 py-2 md:px-4 md:py-2 rounded-lg text-white flex items-center gap-1 md:gap-2 ${
+                  className={`px-4 py-2 rounded-lg text-white flex items-center gap-2 ${
                     darkMode
                       ? 'bg-[#4B91F1] hover:bg-[#3B82F6]'
                       : 'bg-[#2563EB] hover:bg-[#1E40AF]'
-                  } disabled:opacity-50 flex-shrink-0`}
+                  } disabled:opacity-50`}
                   aria-label="Send message"
                 >
                   {uploading ? (
@@ -1138,14 +831,14 @@ export default function SimpleChat() {
           </>
         ) : (
           <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
-            <MessageCircle className="w-12 h-12 md:w-16 md:h-16 mb-4 text-gray-400" />
-            <h2 className="text-lg md:text-xl font-semibold mb-2">Select a Chat</h2>
-            <p className={`${darkMode ? 'text-[#A0B3C6]' : 'text-gray-600'} mb-6 text-sm md:text-base`}>
+            <MessageCircle className="w-16 h-16 mb-4 text-gray-400" />
+            <h2 className="text-xl font-semibold mb-2">Select a Chat</h2>
+            <p className={`${darkMode ? 'text-[#A0B3C6]' : 'text-gray-600'} mb-6`}>
               Choose a conversation or start a new one
             </p>
             <button
               onClick={() => setSidebarOpen(true)}
-              className="md:hidden px-4 py-2 bg-[#2563EB] text-white rounded-lg hover:bg-[#1E40AF] text-sm md:text-base"
+              className="md:hidden px-4 py-2 bg-[#2563EB] text-white rounded-lg hover:bg-[#1E40AF]"
             >
               Open Chats
             </button>
