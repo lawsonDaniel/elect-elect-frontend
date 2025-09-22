@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useDarkMode } from '@/contexts/DarkModeContext';
 import ScrollAnimationSection from "./component/ScrollAnimationSection"
 import Link from "next/link";
+import GallerySlideshow from "./component/gallery";
 
 import { ArrowRight, DotIcon } from "lucide-react";
 
@@ -97,29 +98,37 @@ export default function Home() {
 
       {/* Welcome Message */}
       <ScrollAnimationSection>
-      <section className={`flex flex-col lg:flex-row w-full gap-5 ${
+   <section className={`flex flex-col lg:flex-row gap-5 w-full ${
         darkMode ? 'bg-[#070E12]' : 'bg-greyText'
       }`}>
-        <Image src="/HOD.jpeg" alt="welcomeImage" width={592} height={562} className="mx-[4.27%] md:mx-[7.78%] lg:ml-[7.78%] my-[4.5%] md:w-[80%] w-[91%] rounded-xl"  layout="intrinsic"/>
-        <ScrollAnimationSection>
-        <div className="lg:mr-[7.78%] lg:mt-[13%] mx-[4.27%] md:mx-[7.78%]">
-          <h1 className={`font-bold text-lg md:text-3xl ${
-            darkMode ? 'text-[#FFFFFF]' : 'text-black'
-          }`}>Welcome Message from the HOD</h1>
-          <p className={`mt-4 text-sm md:text-lg leading-relaxed text-justify ${
-            darkMode ? 'text-[#EDF3F8]' : 'text-black'
-          }`}>
-          &quot;At our department, we are committed to pushing the boundaries of knowledge, preparing students to be industry-ready, and fostering a culture of innovation. Whether you are a prospective student, a researcher, or an industry partner, we invite you to explore our programs and collaborate with us in shaping the future of technology.&quot;
-          </p>
-
-            <div className="flex flex-col mt-4 mb-5">
-              <p className={darkMode ? 'text-[#EDF3F8]' : 'text-black'}>HOD</p>
-              <p className={`font-bold ${
+        <div className="w-[92%] md:w-[85%] mx-auto flex flex-col lg:flex-row gap-5 py-6 md:py-8">
+          <Image 
+            src="/HOD.jpeg" 
+            alt="welcomeImage" 
+            width={592} 
+            height={562} 
+            className="w-full md:w-[98%] lg:w-[50%] rounded-xl mx-auto lg:mx-0"  
+            layout="intrinsic"
+          />
+          <ScrollAnimationSection>
+            <div className="lg:mt-[13%] w-full">
+              <h1 className={`font-bold text-lg md:text-3xl ${
                 darkMode ? 'text-[#FFFFFF]' : 'text-black'
-              }`}>Dr. Olurotimi O. Awodiji</p>
+              }`}>Welcome Message from the HOD</h1>
+              <p className={`mt-4 text-sm md:text-lg leading-relaxed text-justify ${
+                darkMode ? 'text-[#EDF3F8]' : 'text-black'
+              }`}>
+              &quot;At our department, we are committed to pushing the boundaries of knowledge, preparing students to be industry-ready, and fostering a culture of innovation. Whether you are a prospective student, a researcher, or an industry partner, we invite you to explore our programs and collaborate with us in shaping the future of technology.&quot;
+              </p>
+                <div className="flex flex-col mt-4 mb-5">
+                  <p className={darkMode ? 'text-[#EDF3F8]' : 'text-black'}>HOD</p>
+                  <p className={`font-bold ${
+                    darkMode ? 'text-[#FFFFFF]' : 'text-black'
+                  }`}>Dr. Olurotimi O. Awodiji</p>
+                </div>
             </div>
+          </ScrollAnimationSection>
         </div>
-        </ScrollAnimationSection>
       </section>
       </ScrollAnimationSection>
 
@@ -153,28 +162,37 @@ export default function Home() {
       </ScrollAnimationSection>
 
        <ScrollAnimationSection>
-      <section className={`flex flex-col lg:flex-row w-full gap-5 ${
+       <section className={`flex flex-col lg:flex-row gap-5 w-full ${
         darkMode ? 'bg-[#070E12]' : 'bg-greyText'
       }`}>
-        <Image src="/DEAN.PNG" alt="welcomeImage" width={592} height={562} className="mx-[4.27%] md:mx-[7.78%] lg:ml-[7.78%] my-[4.5%] md:w-[80%] w-[91%] rounded-xl"  layout="intrinsic"/>
-        <ScrollAnimationSection>
-        <div className="lg:mr-[7.78%] lg:mt-[13%] mx-[4.27%] md:mx-[7.78%]">
-          <h1 className={`font-bold text-lg md:text-3xl ${
-            darkMode ? 'text-[#FFFFFF]' : 'text-black'
-          }`}>Welcome Message from the DEAN</h1>
-          <p className={`mt-4 text-sm md:text-lg leading-relaxed text-justify ${
-            darkMode ? 'text-[#EDF3F8]' : 'text-black'
-          }`}>
-          &quot;Welcome to the Faculty of Engineering, University of Jos. Our mission is to cultivate excellence in engineering education, research, and innovation across all disciplines. We take pride in producing graduates who are not only academically grounded but also equipped with the practical skills and leadership qualities needed to drive progress in society. As you explore our programs and initiatives, we invite you to join us in building a future where engineering solutions transform lives and power sustainable development.&quot;
-          </p>
-            <div className="flex flex-col mt-4 mb-5">
-              <p className={darkMode ? 'text-[#EDF3F8]' : 'text-black'}>DEAN</p>
-              <p className={`font-bold ${
+        <div className="w-[92%] md:w-[85%] mx-auto flex flex-col lg:flex-row gap-5 py-6 md:py-8">
+          <Image 
+            src="/DEAN.PNG" 
+            alt="welcomeImage" 
+            width={592} 
+            height={562} 
+            className="w-full md:w-[98%] lg:w-[50%] rounded-xl mx-auto lg:mx-0"  
+            layout="intrinsic"
+          />
+          <ScrollAnimationSection>
+            <div className="lg:mt-[13%] w-full">
+              <h1 className={`font-bold text-lg md:text-3xl ${
                 darkMode ? 'text-[#FFFFFF]' : 'text-black'
-              }`}>PROF. ROSE DAFFI</p>
+              }`}>Welcome Message from the DEAN</h1>
+              <p className={`mt-4 text-sm md:text-lg leading-relaxed text-justify ${
+                darkMode ? 'text-[#EDF3F8]' : 'text-black'
+              }`}>
+              &quot;Welcome to the Faculty of Engineering, University of Jos. Our mission is to cultivate excellence in engineering education, research, and innovation across all disciplines. We take pride in producing graduates who are not only academically grounded but also equipped with the practical skills and leadership qualities needed to drive progress in society. As you explore our programs and initiatives, we invite you to join us in building a future where engineering solutions transform lives and power sustainable development.&quot;
+              </p>
+                <div className="flex flex-col mt-4 mb-5">
+                  <p className={darkMode ? 'text-[#EDF3F8]' : 'text-black'}>DEAN</p>
+                  <p className={`font-bold ${
+                    darkMode ? 'text-[#FFFFFF]' : 'text-black'
+                  }`}>PROF. ROSE DAFFI</p>
+                </div>
             </div>
+          </ScrollAnimationSection>
         </div>
-        </ScrollAnimationSection>
       </section>
       </ScrollAnimationSection>
 
@@ -247,29 +265,42 @@ export default function Home() {
       </ScrollAnimationSection>
 
              <ScrollAnimationSection>
-      <section className={`flex flex-col lg:flex-row w-full gap-5 ${
+       <section className={`flex flex-col lg:flex-row gap-5 w-full ${
         darkMode ? 'bg-[#070E12]' : 'bg-greyText'
       }`}>
-        <Image src="/welcome-img.png" alt="welcomeImage" width={592} height={562} className="mx-[4.27%] md:mx-[7.78%] lg:ml-[7.78%] my-[4.5%] md:w-[80%] w-[91%] "  layout="intrinsic"/>
-        <ScrollAnimationSection>
-        <div className="lg:mr-[7.78%] lg:mt-[13%] mx-[4.27%] md:mx-[7.78%]">
-          <h1 className={`font-bold text-lg md:text-3xl ${
-            darkMode ? 'text-[#FFFFFF]' : 'text-black'
-          }`}>Welcome Message from the NIEEES PRESIDENT</h1>
-          <p className={`mt-4 text-sm md:text-lg leading-relaxed text-justify ${
-            darkMode ? 'text-[#EDF3F8]' : 'text-black'
-          }`}>
-          &quot;On behalf of the Nigerian Institution of Electrical and Electronics Engineers Students (NIEEES), University of Jos Chapter, I warmly welcome you to our department’s platform. As student engineers, we are passionate about creativity, teamwork, and innovation that solve real-world challenges. Our community is dedicated to fostering collaboration among students, staff, and industry partners, while also ensuring that every member grows academically, professionally, and socially. We invite you to engage with us as we shape the future of engineering together.&quot;
-          </p>
-            <div className="flex flex-col mt-4 mb-5">
-              <p className={darkMode ? 'text-[#EDF3F8]' : 'text-black'}>NIEEES UNIJOS PRESIDENT</p>
-              <p className={`font-bold ${
+        <div className="w-[92%] md:w-[85%] mx-auto flex flex-col lg:flex-row gap-5 py-6 md:py-8">
+          <Image 
+            src="/Dave.jpg" 
+            alt="welcomeImage" 
+            width={592} 
+            height={562} 
+            className="w-full md:w-[98%] lg:w-[50%] rounded-xl mx-auto lg:mx-0"  
+            layout="intrinsic"
+          />
+          <ScrollAnimationSection>
+            <div className="lg:mt-[13%] w-full">
+              <h1 className={`font-bold text-lg md:text-3xl ${
                 darkMode ? 'text-[#FFFFFF]' : 'text-black'
-              }`}>HOITITOU DAVID GODWIN</p>
+              }`}>Welcome Message from the NIEEES PRESIDENT</h1>
+              <p className={`mt-4 text-sm md:text-lg leading-relaxed text-justify ${
+                darkMode ? 'text-[#EDF3F8]' : 'text-black'
+              }`}>
+              &quot;On behalf of the Nigerian Institution of Electrical and Electronics Engineers Students (NIEEES), University of Jos Chapter, I warmly welcome you to our department's platform. As student engineers, we are passionate about creativity, teamwork, and innovation that solve real-world challenges. Our community is dedicated to fostering collaboration among students, staff, and industry partners, while also ensuring that every member grows academically, professionally, and socially. We invite you to engage with us as we shape the future of engineering together.&quot;
+              </p>
+                <div className="flex flex-col mt-4 mb-5">
+                  <p className={darkMode ? 'text-[#EDF3F8]' : 'text-black'}>NIEEES UNIJOS PRESIDENT</p>
+                  <p className={`font-bold ${
+                    darkMode ? 'text-[#FFFFFF]' : 'text-black'
+                  }`}>HOITITOU DAVID GODWIN</p>
+                </div>
             </div>
+          </ScrollAnimationSection>
         </div>
-        </ScrollAnimationSection>
       </section>
+      </ScrollAnimationSection>
+
+       <ScrollAnimationSection>
+        <GallerySlideshow darkMode={darkMode} />
       </ScrollAnimationSection>
 
 

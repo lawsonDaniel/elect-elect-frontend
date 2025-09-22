@@ -7,7 +7,7 @@ import { useDarkMode } from '@/contexts/DarkModeContext';
 
 const DepartmentData = [
   {
-    rank: 'Senoir Lecturer', // Highest administrative position
+    rank: 'Senoir Lecturer', 
     role: 'HOD',
     name:'Dr. Olurotimi O. Awodiji',
     image: '/HOD.jpeg',
