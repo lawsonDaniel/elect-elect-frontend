@@ -69,14 +69,15 @@ export default function SimpleChat() {
         let userMetadata = null;
 
         const { data: { user } } = await supabase.auth.getUser();
-        
+         const cookies = parseCookies();
+          const userInfo = cookies['user-info'] ? JSON.parse(cookies['user-info']) : null;
+          console.log("this is the userId",userInfo)
         if (user) {
           userId = user.id;
           userEmail = user.email;
           userMetadata = user.user_metadata;
         } else {
-          const cookies = parseCookies();
-          const userInfo = cookies['user-info'] ? JSON.parse(cookies['user-info']) : null;
+         
           userId = userInfo?.supabase_user_id;
           userEmail = userInfo?.email;
           userMetadata = userInfo?.user_metadata;
@@ -86,13 +87,13 @@ export default function SimpleChat() {
           setLoading(false);
           return;
         }
-
+        console.log("the userid from the profile")
         let { data: profile }:any = await supabase
           .from('profiles')
           .select('*')
           .eq('id', userId)
           .single();
-
+        console.log("this is the profile",profile)
         if (!profile) {
   const { data: newProfile } = await supabase
     .from('profiles')
@@ -105,7 +106,7 @@ export default function SimpleChat() {
       user_type: 'student',
       online: true,
       mongo_user_id: userId // Add this required field
-    })
+    } as any)
     .select()
     .single();
   
@@ -127,6 +128,7 @@ export default function SimpleChat() {
     };
 
     getCurrentUser();
+    console.log("this is the user")
   }, []);
 
   // Load all users

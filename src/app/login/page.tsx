@@ -55,7 +55,7 @@ export default function Login() {
         throw new Error('Invalid response from server');
       }
 
-      console.log('MongoDB validation successful:', response);
+      console.log('MongoDB validation successful:', response?.user?.supabase_user_id);
       
       // Step 2: Authenticate with Supabase
       let { data: authData, error: supabaseError } = await supabase.auth.signInWithPassword({
@@ -147,7 +147,7 @@ export default function Login() {
           userType: response.user.userType,
           firstName: response.user.firstName,
           surname: response.user.surname,
-          supabase_user_id: authData.user.id
+          supabase_user_id: response?.user.supabase_user_id
         }), {
           maxAge: 60 * 60 * 24 * 7,
           path: '/',
