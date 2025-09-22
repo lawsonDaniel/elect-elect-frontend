@@ -8,15 +8,15 @@ import { useDarkMode } from '@/contexts/DarkModeContext';
 import endPoints from '@/utils/endpoints.class';
 
 const poppins = Poppins({
-  subsets: ['latin'],        
+  subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
   variable: '--font-poppins',
-  display: 'swap',            
+  display: 'swap',
 });
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
-  weight: ['400', '500', '700'], 
+  weight: ['400', '500', '700'],
 });
 
 // Validation schema for upload form
@@ -37,14 +37,29 @@ export default function Page() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [userRole, setUserRole] = useState('lecturer'); // 'student' or 'lecturer'
+  const [userRole, setUserRole] = useState<string | null>(null); // Initialize as null until fetched
   const { darkMode } = useDarkMode();
 
   const levels = ['All Resources', '100', '200', '300', '400', '500'];
   const materialTypes = ['Lecture Notes (PDF)', 'Past Questions (PDF)', 'Handout (DOCX)', 'Textbook (PDF)', 'Assignment (PDF)'];
 
+  // Fetch user profile to determine userRole
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const profile = await endPoints.getUserProfile();
+        setUserRole(profile.userType === 'staff' ? 'lecturer' : 'student');
+      } catch (error) {
+        console.error('Failed to fetch user profile:', error);
+        setError('Failed to load user profile');
+        setUserRole('student'); // Fallback to 'student' if profile fetch fails
+      }
+    };
+    fetchUserProfile();
+  }, []);
+
   // Formik form for upload
-  const formik:any= useFormik({
+  const formik: any = useFormik({
     initialValues: {
       courseTitle: '',
       courseCode: '',
@@ -73,20 +88,22 @@ export default function Page() {
 
   // Fetch materials on component mount or when selectedLevel changes
   useEffect(() => {
-    fetchMaterials();
-  }, [selectedLevel]);
+    if (userRole) {
+      fetchMaterials();
+    }
+  }, [selectedLevel, userRole]);
 
   const fetchMaterials = async () => {
     try {
       setLoading(true);
       const params = selectedLevel !== 'All Resources' ? { level: selectedLevel } : {};
-      console.log("Fetching materials with params:", params); // Debug log
+      console.log("Fetching materials with params:", params);
       const response = await endPoints.getMaterials(params);
-      console.log("Fetched materials:", response); // Debug log
+      console.log("Fetched materials:", response);
       setMaterials(response.data || response);
     } catch (error: any) {
       setError(error.message || 'Failed to fetch materials');
-      console.error("Fetch materials error:", error); // Debug log
+      console.error("Fetch materials error:", error);
     } finally {
       setLoading(false);
     }
@@ -96,11 +113,9 @@ export default function Page() {
     try {
       await endPoints.downloadMaterial(materialId);
       setSuccess('Download started successfully');
-      
-      // Update download count in UI
-      setMaterials(materials.map((material: any) => 
-        material.id === materialId 
-          ? { ...material, downloads: material.downloads + 1 } 
+      setMaterials(materials.map((material: any) =>
+        material.id === materialId
+          ? { ...material, downloads: material.downloads + 1 }
           : material
       ));
     } catch (error: any) {
@@ -126,9 +141,6 @@ export default function Page() {
     }
   };
 
-  // Rely on backend filtering instead of client-side filtering
-  const filteredMaterials = materials;
-
   // Clear messages after 3 seconds
   useEffect(() => {
     if (error || success) {
@@ -140,9 +152,13 @@ export default function Page() {
     }
   }, [error, success]);
 
+  // Show loading state until userRole is fetched
+  if (userRole === null) {
+    return <div>Loading user profile...</div>;
+  }
+
   return (
     <>
-      {/* Page Content Area */}
       <div className={`w-full ${poppins.className}`}>
         {/* Error and Success Messages */}
         {error && (
@@ -167,15 +183,15 @@ export default function Page() {
             <p className={`text-sm sm:text-base ${
               darkMode ? 'text-[#EDF3F8]' : 'text-gray-600'
             }`}>
-              {userRole === 'lecturer' 
+              {userRole === 'lecturer'
                 ? 'Upload, organize, and manage your course materials.'
                 : 'Browse, download, or upload course materials organized by level and course. Stay ahead with handouts, textbooks, past questions, and more.'
               }
             </p>
           </div>
-          
+
           {userRole === 'lecturer' && (
-            <button 
+            <button
               onClick={() => setShowUploadModal(true)}
               className="mt-4 sm:mt-0 bg-navBlue text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700 transition-colors flex-shrink-0"
             >
@@ -191,14 +207,12 @@ export default function Page() {
             <label className={`text-sm font-medium mb-2 ${
               darkMode ? 'text-[#FFFFFF]' : 'text-gray-700'
             }`}>Browse Materials by Level</label>
-            <select 
+            <select
               value={selectedLevel}
-              onChange={(e) => {
-                setSelectedLevel(e.target.value);
-              }}
+              onChange={(e) => setSelectedLevel(e.target.value)}
               className={`border rounded-lg px-3 py-2 min-w-[200px] text-sm ${
-                darkMode 
-                  ? 'bg-[#070E12] border-[#101E27] text-[#EDF3F8]' 
+                darkMode
+                  ? 'bg-[#070E12] border-[#101E27] text-[#EDF3F8]'
                   : 'bg-white border-gray-300 text-gray-900'
               }`}
             >
@@ -207,25 +221,19 @@ export default function Page() {
               ))}
             </select>
           </div>
-{/*           
-          <div className="flex items-end">
-            <button className="bg-navBlue text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm">
-              Generate Materials
-            </button>
-          </div> */}
         </div>
 
         {/* Materials Table */}
         <div className={`rounded-lg shadow-sm border overflow-hidden ${
-          darkMode 
-            ? 'bg-[#070E12] border-[#101E27]' 
+          darkMode
+            ? 'bg-[#070E12] border-[#101E27]'
             : 'bg-white border-gray-200'
         }`}>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className={`border-b ${
-                darkMode 
-                  ? 'bg-[#101E27] border-[#101E27]' 
+                darkMode
+                  ? 'bg-[#101E27] border-[#101E27]'
                   : 'bg-gray-50 border-gray-200'
               }`}>
                 <tr>
@@ -258,17 +266,17 @@ export default function Page() {
                       Loading materials...
                     </td>
                   </tr>
-                ) : filteredMaterials.length === 0 ? (
+                ) : materials.length === 0 ? (
                   <tr>
                     <td colSpan={userRole === 'lecturer' ? 6 : 5} className="py-4 text-center">
                       No materials found
                     </td>
                   </tr>
                 ) : (
-                  filteredMaterials.map((material: any, index: number) => (
+                  materials.map((material: any, index: number) => (
                     <tr key={material.id} className={`border-b ${
-                      darkMode 
-                        ? `border-[#101E27] ${index % 2 === 0 ? 'bg-[#070E12]' : 'bg-[#0A1117]'}` 
+                      darkMode
+                        ? `border-[#101E27] ${index % 2 === 0 ? 'bg-[#070E12]' : 'bg-[#0A1117]'}`
                         : `border-gray-100 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`
                     }`}>
                       <td className={`py-3 px-4 text-sm ${
@@ -291,7 +299,7 @@ export default function Page() {
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-2">
                           {userRole === 'student' ? (
-                            <button 
+                            <button
                               onClick={() => handleDownload(material.id)}
                               className="bg-navBlue text-white px-3 py-1 rounded-md text-sm flex items-center gap-1 hover:bg-blue-700 transition-colors"
                             >
@@ -300,33 +308,33 @@ export default function Page() {
                             </button>
                           ) : (
                             <>
-                              <button 
+                              <button
                                 onClick={() => handleView(material.id)}
                                 className={`p-1 transition-colors ${
-                                  darkMode 
-                                    ? 'text-[#EDF3F8] hover:text-[#FFFFFF]' 
+                                  darkMode
+                                    ? 'text-[#EDF3F8] hover:text-[#FFFFFF]'
                                     : 'text-gray-500 hover:text-gray-700'
                                 }`}
                                 title="View"
                               >
                                 <Eye className="w-4 h-4" />
                               </button>
-                              <button 
+                              <button
                                 onClick={() => handleEdit(material.id)}
                                 className={`p-1 transition-colors ${
-                                  darkMode 
-                                    ? 'text-[#EDF3F8] hover:text-blue-400' 
+                                  darkMode
+                                    ? 'text-[#EDF3F8] hover:text-blue-400'
                                     : 'text-gray-500 hover:text-blue-600'
                                 }`}
                                 title="Edit"
                               >
                                 <Edit className="w-4 h-4" />
                               </button>
-                              <button 
+                              <button
                                 onClick={() => handleDelete(material.id)}
                                 className={`p-1 transition-colors ${
-                                  darkMode 
-                                    ? 'text-[#EDF3F8] hover:text-red-400' 
+                                  darkMode
+                                    ? 'text-[#EDF3F8] hover:text-red-400'
                                     : 'text-gray-500 hover:text-red-600'
                                 }`}
                                 title="Delete"
@@ -345,41 +353,6 @@ export default function Page() {
           </div>
         </div>
 
-        {/* Role Toggle for Demo */}
-        <div className={`mt-6 p-4 rounded-lg ${
-          darkMode ? 'bg-[#101E27]' : 'bg-blue-50'
-        }`}>
-          <h3 className={`font-medium mb-2 text-sm ${
-            darkMode ? 'text-[#FFFFFF]' : 'text-blue-900'
-          }`}>Demo: Toggle User Role</h3>
-          <div className="flex gap-2">
-            <button 
-              onClick={() => setUserRole('student')}
-              className={`px-3 py-1 rounded text-sm ${
-                userRole === 'student' 
-                  ? 'bg-blue-600 text-white' 
-                  : darkMode 
-                    ? 'bg-[#070E12] text-[#EDF3F8] border border-[#101E27]' 
-                    : 'bg-white text-blue-600'
-              }`}
-            >
-              Student View
-            </button>
-            <button 
-              onClick={() => setUserRole('lecturer')}
-              className={`px-3 py-1 rounded text-sm ${
-                userRole === 'lecturer' 
-                  ? 'bg-blue-600 text-white' 
-                  : darkMode 
-                    ? 'bg-[#070E12] text-[#EDF3F8] border border-[#101E27]' 
-                    : 'bg-white text-blue-600'
-              }`}
-            >
-              Lecturer View
-            </button>
-          </div>
-        </div>
-
         {/* Upload Modal */}
         {showUploadModal && (
           <div className="fixed inset-0 bg-transparent backdrop-blur-xl flex items-center justify-center z-50 p-4">
@@ -389,21 +362,21 @@ export default function Page() {
               <h2 className={`text-xl font-bold mb-4 ${
                 darkMode ? 'text-[#FFFFFF]' : 'text-gray-900'
               }`}>Upload Course Material</h2>
-              
+
               <form onSubmit={formik.handleSubmit} className="space-y-4">
                 <div>
                   <label className={`block text-sm font-medium mb-1 ${
                     darkMode ? 'text-[#FFFFFF]' : 'text-gray-700'
                   }`}>Course Title *</label>
-                  <input 
+                  <input
                     type="text"
                     name="courseTitle"
                     value={formik.values.courseTitle}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     className={`w-full border rounded-lg px-3 py-2 text-sm ${
-                      darkMode 
-                        ? 'bg-[#101E27] border-[#101E27] text-[#EDF3F8] placeholder-[#6B7280]' 
+                      darkMode
+                        ? 'bg-[#101E27] border-[#101E27] text-[#EDF3F8] placeholder-[#6B7280]'
                         : 'bg-white border-gray-300 text-gray-900'
                     } ${
                       formik.touched.courseTitle && formik.errors.courseTitle ? 'border-red-500' : ''
@@ -411,23 +384,23 @@ export default function Page() {
                     placeholder="e.g., Power Systems Analysis"
                   />
                   {formik.touched.courseTitle && formik.errors.courseTitle && (
-                    <div className="text-red-500 text-xs mt-1">{formik?.errors?.courseTitle}</div>
+                    <div className="text-red-500 text-xs mt-1">{formik.errors.courseTitle}</div>
                   )}
                 </div>
-                
+
                 <div>
                   <label className={`block text-sm font-medium mb-1 ${
                     darkMode ? 'text-[#FFFFFF]' : 'text-gray-700'
                   }`}>Course Code *</label>
-                  <input 
+                  <input
                     type="text"
                     name="courseCode"
                     value={formik.values.courseCode}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     className={`w-full border rounded-lg px-3 py-2 text-sm ${
-                      darkMode 
-                        ? 'bg-[#101E27] border-[#101E27] text-[#EDF3F8] placeholder-[#6B7280]' 
+                      darkMode
+                        ? 'bg-[#101E27] border-[#101E27] text-[#EDF3F8] placeholder-[#6B7280]'
                         : 'bg-white border-gray-300 text-gray-900'
                     } ${
                       formik.touched.courseCode && formik.errors.courseCode ? 'border-red-500' : ''
@@ -443,14 +416,14 @@ export default function Page() {
                   <label className={`block text-sm font-medium mb-1 ${
                     darkMode ? 'text-[#FFFFFF]' : 'text-gray-700'
                   }`}>Level *</label>
-                  <select 
+                  <select
                     name="level"
                     value={formik.values.level}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     className={`w-full border rounded-lg px-3 py-2 text-sm ${
-                      darkMode 
-                        ? 'bg-[#101E27] border-[#101E27] text-[#EDF3F8]' 
+                      darkMode
+                        ? 'bg-[#101E27] border-[#101E27] text-[#EDF3F8]'
                         : 'bg-white border-gray-300 text-gray-900'
                     } ${
                       formik.touched.level && formik.errors.level ? 'border-red-500' : ''
@@ -465,19 +438,19 @@ export default function Page() {
                     <div className="text-red-500 text-xs mt-1">{formik.errors.level}</div>
                   )}
                 </div>
-                
+
                 <div>
                   <label className={`block text-sm font-medium mb-1 ${
                     darkMode ? 'text-[#FFFFFF]' : 'text-gray-700'
                   }`}>Material Type *</label>
-                  <select 
+                  <select
                     name="materialType"
                     value={formik.values.materialType}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     className={`w-full border rounded-lg px-3 py-2 text-sm ${
-                      darkMode 
-                        ? 'bg-[#101E27] border-[#101E27] text-[#EDF3F8]' 
+                      darkMode
+                        ? 'bg-[#101E27] border-[#101E27] text-[#EDF3F8]'
                         : 'bg-white border-gray-300 text-gray-900'
                     } ${
                       formik.touched.materialType && formik.errors.materialType ? 'border-red-500' : ''
@@ -492,19 +465,19 @@ export default function Page() {
                     <div className="text-red-500 text-xs mt-1">{formik.errors.materialType}</div>
                   )}
                 </div>
-                
+
                 <div>
                   <label className={`block text-sm font-medium mb-1 ${
                     darkMode ? 'text-[#FFFFFF]' : 'text-gray-700'
                   }`}>Description *</label>
-                  <textarea 
+                  <textarea
                     name="description"
                     value={formik.values.description}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     className={`w-full border rounded-lg px-3 py-2 h-20 text-sm ${
-                      darkMode 
-                        ? 'bg-[#101E27] border-[#101E27] text-[#EDF3F8] placeholder-[#6B7280]' 
+                      darkMode
+                        ? 'bg-[#101E27] border-[#101E27] text-[#EDF3F8] placeholder-[#6B7280]'
                         : 'bg-white border-gray-300 text-gray-900'
                     } ${
                       formik.touched.description && formik.errors.description ? 'border-red-500' : ''
@@ -515,12 +488,12 @@ export default function Page() {
                     <div className="text-red-500 text-xs mt-1">{formik.errors.description}</div>
                   )}
                 </div>
-                
+
                 <div>
                   <label className={`block text-sm font-medium mb-1 ${
                     darkMode ? 'text-[#FFFFFF]' : 'text-gray-700'
                   }`}>File *</label>
-                  <input 
+                  <input
                     type="file"
                     name="file"
                     onChange={(event) => {
@@ -528,8 +501,8 @@ export default function Page() {
                     }}
                     onBlur={formik.handleBlur}
                     className={`w-full border rounded-lg px-3 py-2 text-sm ${
-                      darkMode 
-                        ? 'bg-[#101E27] border-[#101E27] text-[#EDF3F8]' 
+                      darkMode
+                        ? 'bg-[#101E27] border-[#101E27] text-[#EDF3F8]'
                         : 'bg-white border-gray-300 text-gray-900'
                     } ${
                       formik.touched.file && formik.errors.file ? 'border-red-500' : ''
@@ -540,24 +513,24 @@ export default function Page() {
                     <div className="text-red-500 text-xs mt-1">{formik.errors.file}</div>
                   )}
                 </div>
-                
+
                 <div className="flex gap-2 pt-4">
-                  <button 
+                  <button
                     type="submit"
                     disabled={formik.isSubmitting}
                     className="flex-1 bg-navBlue text-white py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm disabled:opacity-50"
                   >
                     {formik.isSubmitting ? 'Uploading...' : 'Upload'}
                   </button>
-                  <button 
+                  <button
                     type="button"
                     onClick={() => {
                       setShowUploadModal(false);
                       formik.resetForm();
                     }}
                     className={`flex-1 border py-2 rounded-lg transition-colors text-sm ${
-                      darkMode 
-                        ? 'border-[#101E27] text-[#EDF3F8] hover:bg-[#101E27]' 
+                      darkMode
+                        ? 'border-[#101E27] text-[#EDF3F8] hover:bg-[#101E27]'
                         : 'border-gray-300 text-gray-700 hover:bg-gray-50'
                     }`}
                   >
@@ -569,6 +542,6 @@ export default function Page() {
           </div>
         )}
       </div>
-    </> 
+    </>
   );
 }
