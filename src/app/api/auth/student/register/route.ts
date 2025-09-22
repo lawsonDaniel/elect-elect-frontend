@@ -165,7 +165,7 @@ export async function POST(request: NextRequest) {
           date_of_birth: dateOfBirth.toISOString(),
           matt_number: mattNumber,
           level: parseInt(level) // Ensure level is stored as number
-        });
+        } as any);
 
       if (profileError) {
         console.error('Supabase profile creation error:', profileError);

@@ -57,9 +57,9 @@ export default function SimpleChat() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [chats, setChats] = useState<Chat[]>([]);
-  const [groups, setGroups] = useState<Group[]>([]);
+  const [groups, setGroups] = useState<any[]>([]);
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<any[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
@@ -120,7 +120,7 @@ export default function SimpleChat() {
               user_type: userMetadata?.user_type || 'student',
               online: true,
               mongo_user_id: userId
-            })
+            }as any)
             .select()
             .single();
           
@@ -531,12 +531,12 @@ export default function SimpleChat() {
       });
 
       // Prepare message data based on chat type
-      const messageData: Partial<Message> = {
+      const messageData: any = {
         text: optimisticMessage.text,
         sender_id: currentUser.id,
-        file_attachment: fileAttachment || null,
-        receiver_id: selectedChat.user ? selectedChat.id : null,
-        group_id: selectedChat.group ? selectedChat.id : null,
+        file_attachment: fileAttachment || null as any,
+        receiver_id: selectedChat.user ? selectedChat.id : null as any,
+        group_id: selectedChat.group ? selectedChat.id : null as any,
       };
 
       console.log('Inserting message:', messageData); // Debug log

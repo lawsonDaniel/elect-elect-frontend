@@ -16,7 +16,7 @@ type SideNavProps = {
 export default function SideNav({ isMobileOpen }: SideNavProps) {
   const [isExpanded, setIsExpanded] = useState(true);
   const [userRole, setUserRole] = useState('student'); // State for user role
-  const [error, setError] = useState(null); // State for error handling
+  const [error, setError] = useState<any>(null); // State for error handling
   const { darkMode } = useDarkMode();
   const pathname = usePathname();
 

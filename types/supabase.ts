@@ -14,90 +14,72 @@ export type Database = {
   }
   public: {
     Tables: {
-      conversation_members: {
+      groups: {
         Row: {
-          conversation_id: string
-          joined_at: string | null
-          user_id: string
+          created_at: string | null
+          creator_id: string
+          id: string
+          members: string[]
+          name: string
         }
         Insert: {
-          conversation_id: string
-          joined_at?: string | null
-          user_id: string
+          created_at?: string | null
+          creator_id: string
+          id?: string
+          members: string[]
+          name: string
         }
         Update: {
-          conversation_id?: string
-          joined_at?: string | null
-          user_id?: string
+          created_at?: string | null
+          creator_id?: string
+          id?: string
+          members?: string[]
+          name?: string
         }
         Relationships: [
           {
-            foreignKeyName: "conversation_members_conversation_id_fkey"
-            columns: ["conversation_id"]
+            foreignKeyName: "groups_creator_id_fkey"
+            columns: ["creator_id"]
             isOneToOne: false
-            referencedRelation: "conversations"
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
       }
-      conversations: {
-        Row: {
-          created_at: string | null
-          id: string
-          level: string | null
-          name: string | null
-          type: string
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string
-          level?: string | null
-          name?: string | null
-          type: string
-        }
-        Update: {
-          created_at?: string | null
-          id?: string
-          level?: string | null
-          name?: string | null
-          type?: string
-        }
-        Relationships: []
-      }
       messages: {
         Row: {
-          conversation_id: string | null
           created_at: string | null
           file_attachment: Json | null
+          group_id: string | null
           id: string
-          receiver_id: string | null
-          sender_id: string | null
+          receiver_id: string
+          sender_id: string
           text: string | null
         }
         Insert: {
-          conversation_id?: string | null
           created_at?: string | null
           file_attachment?: Json | null
+          group_id?: string | null
           id?: string
-          receiver_id?: string | null
-          sender_id?: string | null
+          receiver_id: string
+          sender_id: string
           text?: string | null
         }
         Update: {
-          conversation_id?: string | null
           created_at?: string | null
           file_attachment?: Json | null
+          group_id?: string | null
           id?: string
-          receiver_id?: string | null
-          sender_id?: string | null
+          receiver_id?: string
+          sender_id?: string
           text?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "messages_conversation_id_fkey"
-            columns: ["conversation_id"]
+            foreignKeyName: "messages_group_id_fkey"
+            columns: ["group_id"]
             isOneToOne: false
-            referencedRelation: "conversations"
+            referencedRelation: "groups"
             referencedColumns: ["id"]
           },
           {
@@ -120,102 +102,64 @@ export type Database = {
         Row: {
           created_at: string | null
           date_of_birth: string | null
+          department: string | null
+          faculty: string | null
           first_name: string
-          gender: string | null
+          gender: string
           id: string
           last_seen: string | null
-          level: string | null
+          level: number | null
           matt_number: string | null
           mongo_user_id: string
           online: boolean | null
+          rank: string | null
           school_email: string
+          staff_id: string | null
           surname: string
+          updated_at: string | null
           user_type: string
         }
         Insert: {
           created_at?: string | null
           date_of_birth?: string | null
+          department?: string | null
+          faculty?: string | null
           first_name: string
-          gender?: string | null
+          gender: string
           id: string
           last_seen?: string | null
-          level?: string | null
+          level?: number | null
           matt_number?: string | null
           mongo_user_id: string
           online?: boolean | null
+          rank?: string | null
           school_email: string
+          staff_id?: string | null
           surname: string
+          updated_at?: string | null
           user_type: string
         }
         Update: {
           created_at?: string | null
           date_of_birth?: string | null
+          department?: string | null
+          faculty?: string | null
           first_name?: string
-          gender?: string | null
+          gender?: string
           id?: string
           last_seen?: string | null
-          level?: string | null
+          level?: number | null
           matt_number?: string | null
           mongo_user_id?: string
           online?: boolean | null
+          rank?: string | null
           school_email?: string
+          staff_id?: string | null
           surname?: string
+          updated_at?: string | null
           user_type?: string
         }
         Relationships: []
-      }
-      reactions: {
-        Row: {
-          created_at: string | null
-          emoji: string
-          id: string
-          message_id: string | null
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          emoji: string
-          id?: string
-          message_id?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          emoji?: string
-          id?: string
-          message_id?: string | null
-          user_id?: string | null
-        }
-        Relationships: []
-      }
-      typing_indicators: {
-        Row: {
-          conversation_id: string
-          typing: boolean
-          updated_at: string | null
-          user_id: string
-        }
-        Insert: {
-          conversation_id: string
-          typing?: boolean
-          updated_at?: string | null
-          user_id: string
-        }
-        Update: {
-          conversation_id?: string
-          typing?: boolean
-          updated_at?: string | null
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "typing_indicators_conversation_id_fkey"
-            columns: ["conversation_id"]
-            isOneToOne: false
-            referencedRelation: "conversations"
-            referencedColumns: ["id"]
-          },
-        ]
       }
     }
     Views: {
@@ -232,7 +176,8 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      gender_enum: "Male" | "Female" | "Other"
+      user_type_enum: "student" | "staff"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -359,6 +304,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      gender_enum: ["Male", "Female", "Other"],
+      user_type_enum: ["student", "staff"],
+    },
   },
 } as const

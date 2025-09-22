@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (supabaseUsers && supabaseUsers.length > 0) {
-      const existingUser = supabaseUsers[0];
+      const existingUser:any = supabaseUsers[0];
       const field = existingUser.school_email === schoolEmail ? 'email' : 'staff ID';
       return NextResponse.json(
         { error: `User with this ${field} already exists in the system` },
