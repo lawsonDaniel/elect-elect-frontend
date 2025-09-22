@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import endPoints from '@/utils/endpoints.class';
 import { useRouter } from 'next/navigation';
-import { setCookie, parseCookies } from 'nookies';
+import { setCookie } from 'nookies';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useDarkMode } from '@/contexts/DarkModeContext';
 
@@ -30,86 +30,76 @@ export default function Login() {
   const { darkMode } = useDarkMode();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState<string>('');
+  const [error, setError] = useState('');
   const router = useRouter();
   const supabase = createClientComponentClient();
 
   // Form submission handler
   interface LoginFormValues {
-    email: string;
+    schoolEmail: string;
     password: string;
   }
 
   const handleSubmit = async (values: LoginFormValues): Promise<void> => {
     setIsLoading(true);
-    setError(''); // Clear any previous errors
+    setError('');
     
     try {
       // Step 1: Validate credentials with your MongoDB backend
       const response = await endPoints.login({
-        email: values.email,
+        email: values.schoolEmail,
         password: values.password,
       });
 
+      if (!response?.user) {
+        throw new Error('Invalid response from server');
+      }
+
       console.log('MongoDB validation successful:', response);
       
-      // Step 2: Authenticate with Supabase using the validated credentials
+      // Step 2: Authenticate with Supabase
       let { data: authData, error: supabaseError } = await supabase.auth.signInWithPassword({
-        email: values.email,
+        email: values.schoolEmail,
         password: values.password,
       });
 
       if (supabaseError) {
-        // If user doesn't exist in Supabase, create them
         if (supabaseError.message === 'Invalid login credentials') {
           console.log('User not found in Supabase, creating account...');
           
-          try {
-            const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-              email: values.email,
-              password: values.password,
-              options: {
-                data: {
-                  first_name: response.user?.firstName,
-                  surname: response.user?.surname,
-                  user_type: response.user?.userType,
-                  level: response.user?.level,
-                  mongo_id: response.user?._id
-                }
+          const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+            email: values.schoolEmail,
+            password: values.password,
+            options: {
+              data: {
+                first_name: response.user?.firstName || '',
+                surname: response.user?.surname || '',
+                user_type: response.user?.userType || '',
+                level: response.user?.level || '',
+                mongo_id: response.user?._id || ''
               }
-            });
-
-            if (signUpError) {
-              console.error('Supabase signup error:', signUpError);
-              // Show specific Supabase signup error
-              throw new Error(`Account creation failed: ${signUpError.message}`);
             }
+          });
 
-            console.log('Supabase account created, signing in...');
-            
-            // After signup, sign in
-            const { data: retryData, error: retryError } = await supabase.auth.signInWithPassword({
-              email: values.email,
-              password: values.password,
-            });
-
-            if (retryError) {
-              console.error('Retry Supabase authentication error:', retryError);
-              // Show specific retry error
-              throw new Error(`Login after account creation failed: ${retryError.message}`);
-            }
-            
-            // Set authData for the rest of the flow
-            authData = retryData;
-          } catch (signupFlowError) {
-            // Re-throw to be caught by outer catch
-            throw signupFlowError;
+          if (signUpError) {
+            console.error('Supabase signup error:', signUpError);
+            throw new Error(`Account creation failed: ${signUpError.message}`);
           }
-        } else {
-          // Handle other Supabase authentication errors with specific messages
-          console.error('Supabase authentication error:', supabaseError);
+
+          console.log('Supabase account created, signing in...');
           
-          // Provide user-friendly error messages based on error type
+          const { data: retryData, error: retryError } = await supabase.auth.signInWithPassword({
+            email: values.schoolEmail,
+            password: values.password,
+          });
+
+          if (retryError) {
+            console.error('Retry Supabase authentication error:', retryError);
+            throw new Error(`Login after account creation failed: ${retryError.message}`);
+          }
+          
+          authData = retryData;
+        } else {
           let userFriendlyMessage = 'Authentication failed';
           
           switch (supabaseError.message) {
@@ -136,11 +126,14 @@ export default function Login() {
         }
       }
 
-      // Step 3: Store additional data in cookies for backward compatibility
+      if (!authData?.user) {
+        throw new Error('Authentication failed: No user data returned');
+      }
+
+      // Step 3: Store additional data in cookies
       if (response.token) {
-        // Set auth token cookie with 7 days expiration
         setCookie(null, 'auth-token', response.token, {
-          maxAge: 60 * 60 * 24 * 7, // 7 days in seconds
+          maxAge: 60 * 60 * 24 * 7,
           path: '/',
           secure: process.env.NODE_ENV === 'production',
           sameSite: 'strict',
@@ -148,32 +141,27 @@ export default function Login() {
         
         console.log('Auth token cookie set', response);
         
-        // Also store user info in cookies for easy access
-        if (response.user) {
-          setCookie(null, 'user-info', JSON.stringify({
-            id: response.user._id,
-            email: response.user.schoolEmail,
-            userType: response.user.userType,
-            firstName: response.user.firstName,
-            surname: response.user.surname,
-            supabase_user_id: authData?.user?.id || null
-          }), {
-            maxAge: 60 * 60 * 24 * 7,
-            path: '/',
-          });
-        }
+        setCookie(null, 'user-info', JSON.stringify({
+          id: response.user._id,
+          email: response.user.schoolEmail,
+          userType: response.user.userType,
+          firstName: response.user.firstName,
+          surname: response.user.surname,
+          supabase_user_id: authData.user.id
+        }), {
+          maxAge: 60 * 60 * 24 * 7,
+          path: '/',
+        });
       }
 
       Notification.info('Login successful!');
       console.log('Full login successful');
       
-      // Redirect to dashboard
       router.push('/dashboard');
       
     } catch (error: any) {
       console.error('Login error:', error);
       
-      // Check if it's a network error
       if (!navigator.onLine) {
         const errorMsg = 'No internet connection. Please check your network and try again.';
         setError(errorMsg);
@@ -181,8 +169,7 @@ export default function Login() {
         return;
       }
       
-      // Check if it's a MongoDB backend error
-      if (error.response) {
+      if (error.response?.data) {
         const backendError = error.response.data;
         let errorMsg = 'Login failed. Please check your credentials.';
         
@@ -197,7 +184,6 @@ export default function Login() {
         return;
       }
       
-      // For other errors (including our custom Supabase errors), show the message
       const errorMessage = error.message || 'An unexpected error occurred. Please try again.';
       setError(errorMessage);
       Notification.error(errorMessage);
@@ -207,10 +193,9 @@ export default function Login() {
     }
   };
 
-  // Formik object
   const formik = useFormik({
     initialValues: {
-      email: '',
+      schoolEmail: '',
       password: ''
     },
     validationSchema: validationSchema,
@@ -221,33 +206,29 @@ export default function Login() {
     <div className={`min-h-screen flex flex-col lg:flex-row ${
       darkMode ? 'bg-[#070E12]' : 'bg-[#EEF4FA]'
     }`}>
-      <div className="relative lg:hidden bg-cover bg-center bg-no-repeat h-[198px] bg-[image:var(--bg-Faculty)] mb-14 ">
-        <div className=" absolute inset-0 bg-[#101E2799]"></div>
-        {/* Hero Section */}
-        <section className="bg-no-repeat bg-cover flex flex-col ">
+      <div className="relative lg:hidden bg-cover bg-center bg-no-repeat h-[198px] bg-[image:var(--bg-Faculty)] mb-14">
+        <div className="absolute inset-0 bg-[#101E2799]"></div>
+        <section className="bg-no-repeat bg-cover flex flex-col">
           <div className="px-[4.27%] md:px-[7.78%] h-[8.6rem] md:h-[10.438rem] w-full items-center mt-10 z-20 text-left md:text-center">
             <Link href="/">
-              <div className="text-sm text-left mb-6 ">
+              <div className="text-sm text-left mb-6">
                 <p className="text-white hover:underline text-left text-lg">
                   &larr; Back to website
                 </p>
               </div>
             </Link>
-            <h1 className=" text-center text-2xl md:text-3xl text-white font-bold ">LOGIN</h1>
+            <h1 className="text-center text-2xl md:text-3xl text-white font-bold">LOGIN</h1>
           </div>
         </section>
       </div>
 
-      {/* Left Side - Form */}
       <div className="w-full lg:w-1/2 flex flex-col justify-center px-8 md:px-20 lg:px-28">
         <div className="flex lg:flex-row flex-row-reverse justify-between">
-          {/* Logo */}
           <Link href="/"> 
             <div className="lg:mb-6 hidden lg:block">
               <Image src="/logo.png" alt="Logo" width={40} height={40} />
             </div>
           </Link>
-          {/* Back to website link */}
           <Link href="/">
             <div className="text-sm text-right mb-6 translate-y-1/4 hidden lg:block">
               <p className={`hover:underline ${
@@ -263,7 +244,6 @@ export default function Login() {
           darkMode ? 'text-[#FFFFFF]' : 'text-black'
         }`}>Enter the following details:</h2>
 
-        {/* Error Display */}
         {error && (
           <div className={`mb-4 p-3 border rounded-md ${
             darkMode 
@@ -272,9 +252,7 @@ export default function Login() {
           }`}>
             <div className="flex items-start">
               <div className="flex-shrink-0">
-                <svg className={`h-5 w-5 ${
-                  darkMode ? 'text-red-400' : 'text-red-400'
-                }`} viewBox="0 0 20 20" fill="currentColor">
+                <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                 </svg>
               </div>
@@ -284,9 +262,7 @@ export default function Login() {
               <div className="ml-auto pl-3">
                 <button
                   onClick={() => setError('')}
-                  className={`hover:opacity-75 ${
-                    darkMode ? 'text-red-400' : 'text-red-400'
-                  }`}
+                  className="text-red-400 hover:opacity-75"
                 >
                   <span className="sr-only">Dismiss</span>
                   <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -298,7 +274,6 @@ export default function Login() {
           </div>
         )}
 
-        {/* Form using Formik object */}
         <form onSubmit={formik.handleSubmit}>
           <div className="mb-4">
             <label className={`text-sm mb-1 block ${
@@ -306,8 +281,8 @@ export default function Login() {
             }`}>School Email</label>
             <input
               type="email"
-              name="email"
-              value={formik.values.email}
+              name="schoolEmail"
+              value={formik.values.schoolEmail}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               disabled={isLoading}
@@ -316,12 +291,12 @@ export default function Login() {
                   ? 'bg-[#101E27] border-[#101E27] text-[#FFFFFF] placeholder-[#EDF3F8]' 
                   : 'bg-white border-gray-300 text-black placeholder-gray-500'
               } ${
-                formik.errors.email && formik.touched.email ? 'border-red-500' : ''
+                formik.errors.schoolEmail && formik.touched.schoolEmail ? 'border-red-500' : ''
               }`}
               placeholder="Enter your Email"
             />
-            {formik.errors.email && formik.touched.email && (
-              <div className="text-red-500 text-sm mt-1">{formik.errors.email}</div>
+            {formik.errors.schoolEmail && formik.touched.schoolEmail && (
+              <div className="text-red-500 text-sm mt-1">{formik.errors.schoolEmail}</div>
             )}
           </div>
 
@@ -369,7 +344,11 @@ export default function Login() {
           <button
             type="submit"
             disabled={formik.isSubmitting || isLoading}
-            className="bg-navBlue text-white py-3 rounded-md font-medium hover:bg-gray-800 transition duration-300 cursor-pointer w-full disabled:opacity-50 disabled:cursor-not-allowed"
+            className={`py-3 rounded-md font-medium transition duration-300 w-full disabled:opacity-50 disabled:cursor-not-allowed ${
+              darkMode 
+                ? 'bg-navBlue text-white hover:bg-gray-800' 
+                : 'bg-navBlue text-white hover:bg-blue-600'
+            }`}
           >
             {isLoading ? 'Signing in...' : 'Continue'}
           </button>
@@ -382,23 +361,22 @@ export default function Login() {
         <p className={`text-sm mt-6 ${
           darkMode ? 'text-[#EDF3F8]' : 'text-gray-500'
         }`}>
-          Don&apos;t Have an account?{' '}
-          <a href="signup" className={`font-medium hover:underline ${
+          Don&apos;t have an account?{' '}
+          <Link href="/signup" className={`font-medium hover:underline ${
             darkMode ? 'text-[#FFFFFF]' : 'text-black'
           }`}>
             Sign Up
-          </a>
+          </Link>
         </p>
       </div>
 
-      {/* Right Side - Image */}
-      <div className="hidden lg:block w-1/2 h-[95vh] relative my-auto mx-4 ">
+      <div className="hidden lg:block w-1/2 h-[95vh] relative my-auto mx-4">
         <div className="absolute inset-0 bg-[#101E274D] z-20 rounded-xl"></div>
         <Image
           src="/FacultyIMG3.jpg"
           alt="Students working"
           fill
-          className="rounded-xl"
+          className="rounded-xl object-cover"
         />
       </div>
     </div>

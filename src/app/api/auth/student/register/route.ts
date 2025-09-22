@@ -22,38 +22,15 @@ export async function POST(request: NextRequest) {
       level 
     } = body;
 
-    // Check if user already exists with email or mattNumber in MongoDB
-    const existingUserByEmail = await User.findOne({ schoolEmail });
-    if (existingUserByEmail) {
+    // Validate required fields
+    if (!surname || !firstName || !gender || !dob || !schoolEmail || !mattNumber || !password || !level) {
       return NextResponse.json(
-        { error: 'User with this email already exists' },
+        { error: 'All fields are required' },
         { status: 400 }
       );
     }
 
-    const existingUserByMattNumber = await User.findOne({ mattNumber });
-    if (existingUserByMattNumber) {
-      return NextResponse.json(
-        { error: 'User with this matriculation number already exists' },
-        { status: 400 }
-      );
-    }
-
-    // Check if user exists in Supabase
-    const { data: supabaseUser } = await supabase
-      .from('profiles')
-      .select('id')
-      .eq('school_email', schoolEmail)
-      .single();
-
-    if (supabaseUser) {
-      return NextResponse.json(
-        { error: 'User with this email already exists in the system' },
-        { status: 400 }
-      );
-    }
-
-    // Validate password length
+    // Validate password length before any operations
     if (password.length < 6) {
       return NextResponse.json(
         { error: 'Password must be at least 6 characters' },
@@ -61,7 +38,64 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // ✅ 1. CREATE NORMAL SUPABASE USER (not admin)
+    // Validate date format
+    const dateOfBirth = new Date(dob);
+    if (isNaN(dateOfBirth.getTime())) {
+      return NextResponse.json(
+        { error: 'Invalid date of birth format' },
+        { status: 400 }
+      );
+    }
+
+    // Validate email format (basic check)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(schoolEmail)) {
+      return NextResponse.json(
+        { error: 'Invalid email format' },
+        { status: 400 }
+      );
+    }
+
+    // Check if user already exists in MongoDB (combined query)
+    const existingUser = await User.findOne({ 
+      $or: [
+        { schoolEmail },
+        { mattNumber }
+      ]
+    });
+    
+    if (existingUser) {
+      const field = existingUser.schoolEmail === schoolEmail ? 'email' : 'matriculation number';
+      return NextResponse.json(
+        { error: `User with this ${field} already exists` },
+        { status: 400 }
+      );
+    }
+
+    // Check if user exists in Supabase (both email and mattNumber)
+    const { data: supabaseUsers, error: supabaseCheckError } = await supabase
+      .from('profiles')
+      .select('id, school_email, matt_number')
+      .or(`school_email.eq.${schoolEmail},matt_number.eq.${mattNumber}`);
+
+    if (supabaseCheckError) {
+      console.error('Supabase check error:', supabaseCheckError);
+      return NextResponse.json(
+        { error: 'Failed to validate user data' },
+        { status: 500 }
+      );
+    }
+
+    if (supabaseUsers && supabaseUsers.length > 0) {
+      const existingUser = supabaseUsers[0];
+      const field = existingUser.school_email === schoolEmail ? 'email' : 'matriculation number';
+      return NextResponse.json(
+        { error: `User with this ${field} already exists in the system` },
+        { status: 400 }
+      );
+    }
+
+    // ✅ 1. CREATE SUPABASE AUTH USER
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email: schoolEmail,
       password: password,
@@ -69,7 +103,8 @@ export async function POST(request: NextRequest) {
         data: {
           user_type: 'student',
           surname,
-          first_name: firstName
+          first_name: firstName,
+          matt_number: mattNumber
         }
       }
     });
@@ -82,14 +117,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!authData.user) {
+    if (!authData?.user?.id) {
       return NextResponse.json(
-        { error: 'Failed to create user account' },
+        { error: 'Failed to create user account - no user ID returned' },
         { status: 500 }
       );
     }
-    console.log('Supabase auth user created', authData.user);
+
+    console.log('Supabase auth user created:', authData.user.id);
     const supabaseUserId = authData.user.id;
+
+    // Variables to track creation status
+    let mongoUser: any = null;
+    let profileCreated = false;
 
     try {
       // ✅ 2. CREATE MONGODB USER WITH SUPABASE USER ID
@@ -97,44 +137,59 @@ export async function POST(request: NextRequest) {
         surname,
         firstName,
         gender,
-        dob: new Date(dob),
+        dob: dateOfBirth,
         userType: 'student',
         schoolEmail,
         mattNumber,
         password, // This will be hashed by your User model
         level,
-        supabase_user_id: supabaseUserId // Save Supabase user ID
+        supabase_user_id: supabaseUserId
       });
 
       // Save user to MongoDB
       await user.save();
+      mongoUser = user;
+      console.log('MongoDB user created:', user._id);
 
       // ✅ 3. CREATE PROFILE IN SUPABASE
       const { error: profileError } = await supabase
         .from('profiles')
         .insert({
           id: supabaseUserId,
-          mongo_user_id: user._id.toString(), // Reference to MongoDB
+          mongo_user_id: user._id.toString(),
           surname,
           first_name: firstName,
           gender,
           user_type: 'student',
           school_email: schoolEmail,
-         date_of_birth: new Date(dob).toISOString(), // Convert to ISO string
+          date_of_birth: dateOfBirth.toISOString(),
           matt_number: mattNumber,
-          level
+          level: parseInt(level) // Ensure level is stored as number
         });
 
       if (profileError) {
         console.error('Supabase profile creation error:', profileError);
-        // Clean up MongoDB user if profile creation failed
-        await User.findByIdAndDelete(user._id);
         throw new Error(`Profile creation failed: ${profileError.message}`);
       }
 
-      // Return success response (exclude password)
-      const userResponse = user.toObject();
-      delete userResponse.password;
+      profileCreated = true;
+      console.log('Supabase profile created successfully');
+
+      // Return success response with explicit field selection
+      const userResponse = {
+        _id: user._id,
+        surname: user.surname,
+        firstName: user.firstName,
+        gender: user.gender,
+        dob: user.dob,
+        userType: user.userType,
+        schoolEmail: user.schoolEmail,
+        mattNumber: user.mattNumber,
+        level: user.level,
+        supabase_user_id: user.supabase_user_id,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt
+      };
 
       return NextResponse.json(
         { 
@@ -146,25 +201,57 @@ export async function POST(request: NextRequest) {
         { status: 201 }
       );
 
-    } catch (mongoError: any) {
-      console.error('MongoDB user creation error:', mongoError);
+    } catch (createError: any) {
+      console.error('User creation error:', createError);
       
-      // Clean up Supabase user if MongoDB creation failed
-      // Note: For normal users, you might need admin privileges to delete
-      // Or implement a cleanup mechanism
-      
-      if (mongoError.name === 'ValidationError') {
-        const errors = Object.values(mongoError.errors).map((err: any) => err.message);
+      // 🧹 COMPREHENSIVE CLEANUP
+      const cleanupPromises = [];
+
+      // Clean up MongoDB user if it was created
+      if (mongoUser) {
+        cleanupPromises.push(
+          User.findByIdAndDelete(mongoUser._id).catch(err => 
+            console.error('Failed to cleanup MongoDB user:', err)
+          )
+        );
+      }
+
+      // Clean up Supabase profile if it was created
+      if (profileCreated) {
+        cleanupPromises.push(
+          supabase
+            .from('profiles')
+            .delete()
+            .eq('id', supabaseUserId)
+            .then(({ error }) => {
+              if (error) console.error('Failed to cleanup Supabase profile:', error);
+            })
+        );
+      }
+
+      // Note: Cleaning up Supabase auth user is tricky with signUp
+      // You might need admin privileges or implement a background cleanup job
+      // For now, we'll log it for manual cleanup if needed
+      console.warn(`Supabase auth user ${supabaseUserId} may need manual cleanup`);
+
+      // Wait for cleanup operations
+      await Promise.allSettled(cleanupPromises);
+
+      // Handle specific error types
+      if (createError.name === 'ValidationError') {
+        const errors = Object.values(createError.errors).map((err: any) => err.message);
         return NextResponse.json(
           { error: 'Validation failed', details: errors },
           { status: 400 }
         );
       }
 
-      if (mongoError.code === 11000) {
-        const field = Object.keys(mongoError.keyValue)[0];
+      if (createError.code === 11000) {
+        const field = Object.keys(createError.keyValue)[0];
+        const fieldName = field === 'schoolEmail' ? 'email' : 
+                         field === 'mattNumber' ? 'matriculation number' : field;
         return NextResponse.json(
-          { error: `${field} already exists` },
+          { error: `${fieldName} already exists` },
           { status: 400 }
         );
       }
@@ -177,6 +264,14 @@ export async function POST(request: NextRequest) {
 
   } catch (error: any) {
     console.error('Student registration error:', error);
+    
+    // Handle JSON parsing errors
+    if (error instanceof SyntaxError) {
+      return NextResponse.json(
+        { error: 'Invalid JSON format in request body' },
+        { status: 400 }
+      );
+    }
     
     return NextResponse.json(
       { error: 'Internal server error' },
