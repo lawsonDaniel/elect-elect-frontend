@@ -678,7 +678,7 @@ export default function Home() {
           )}
         </div>
       </motion.section>
-      {/* Welcome Message from NIEEES President */}
+      {/* Welcome Message from the developers*/}
       <motion.section 
         className={`py-20 ${darkMode ? 'bg-[#070E12]' : 'bg-gray-50'}`}
         initial="hidden"
@@ -694,7 +694,7 @@ export default function Home() {
             >
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-3xl blur-lg opacity-20 group-hover:opacity-30 transition-opacity"></div>
               <img 
-                src="/logo.png" 
+                src="/gallery17.jpg" 
                 alt="NIEEES " 
                 className="relative w-full h-[500px] object-cover rounded-3xl shadow-2xl group-hover:scale-[1.02] transition-transform duration-500" 
               />
