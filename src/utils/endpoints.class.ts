@@ -165,7 +165,6 @@ class EndPoints {
       throw new Error(error.response?.data?.error || 'Failed to update password');
     }
   }
-
   public updateNotificationPreferences = async (data: UPDATE_NOTIFICATION_DATA) => {
     try {
       const response = await api.put('/auth/notifications', data);
