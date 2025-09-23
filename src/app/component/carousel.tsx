@@ -157,6 +157,25 @@ const DepartmentData = [
     bio: null
   },
   {
+    rank: 'Lecturer I', 
+    role: null,
+    name:'Engr. Izuagbe Solomon Momoh',
+    image: '/momoh.png',
+    email: 'momohi@unijos.edu.ng',
+    qualifications: ['M.Eng. Telecommunications and Electronic Engineering from the Sheffield Hallam University, United Kingdom.', 'B.Eng. Computer Engineering from the Houdegbe North American University, Republic of Benin'],
+    specialization: ' Software Engineering, Informatics and Computer systems',
+    researchInterests: [
+      ' Software Engineering',
+      'Informatics',
+      ' Computer systems',
+    ],
+    profileLinks: {
+      googleScholar: 'https://scholar.google.com/citations?user=nwUnHrMAAAAJ&hl=en',
+      researchGate: 'https://www.researchgate.net/profile/Izuagbe-Momoh',
+    },
+    bio: 'Engr. Momoh obtained a Bachelor of Computer Engineering from the Houdegbe North American University, Republic of Benin and a Master of Science in Telecommunications and Electronic Engineering from the Sheffield Hallam University, United Kingdom. He is a member of Institute for Systems and Technologies of Information, Control and Communication and the International Association of Engineers.',
+  },
+  {
     rank: 'Lecturer II', // Junior academic position
     role: null,
     name:'Dr. Geraldine Rangmoen Rimven',
