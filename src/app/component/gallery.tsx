@@ -86,7 +86,7 @@ export default function GallerySlideshow({ darkMode }: { darkMode: boolean }) {
       caption: "Celebrating our graduates"
     },
     {
-      src: "/gallery917.jpg",
+      src: "/gallery17.jpg",
       alt: "Graduation Ceremony",
       caption: "Celebrating our graduates"
     },

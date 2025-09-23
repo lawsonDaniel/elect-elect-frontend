@@ -722,7 +722,7 @@ export default function Home() {
               >
                 &quot; Welcome to the official website of the Department of Electrical and Electronics Engineering, University of Jos. This platform was designed and implemented to enhance communication, accessibility of resources, and overall digital experience for students, staff, and visitors.
 
-                This web application was developed by the project team as part of our academic work, under the supervision of Dr. [Supervisor&apos;s Name].
+                This web application was developed by the project team as part of our academic work, under the supervision of Engr. Izuagbe Solomon Momoh.
 
                 We believe this system will serve as a valuable resource and contribute positively to the growth and visibility of the Department.&quot;
               </motion.blockquote>
