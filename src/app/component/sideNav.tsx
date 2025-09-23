@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react'; // Add useEffect to imports
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ChevronLeft } from 'lucide-react';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useDarkMode } from '@/contexts/DarkModeContext';
 import endPoints from '@/utils/endpoints.class';
 
@@ -15,21 +15,22 @@ type SideNavProps = {
 
 export default function SideNav({ isMobileOpen }: SideNavProps) {
   const [isExpanded, setIsExpanded] = useState(true);
-  const [userRole, setUserRole] = useState('student'); // State for user role
-  const [error, setError] = useState<any>(null); // State for error handling
+  const [userRole, setUserRole] = useState('student');
+  const [error, setError] = useState<any>(null);
   const { darkMode } = useDarkMode();
   const pathname = usePathname();
+  const router = useRouter();
 
   // Fetch user profile to determine user type
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const profile = await endPoints.getUserProfile(); // Assuming endPoints is defined
+        const profile = await endPoints.getUserProfile();
         setUserRole(profile.userType === 'staff' ? 'lecturer' : 'student');
       } catch (error) {
         console.error('Failed to fetch user profile:', error);
         setError('Failed to load user profile');
-        setUserRole('student'); // Fallback to 'student' if profile fetch fails
+        setUserRole('student');
       }
     };
     fetchUserProfile();
@@ -39,6 +40,32 @@ export default function SideNav({ isMobileOpen }: SideNavProps) {
     setIsExpanded(!isExpanded);
   };
 
+  // Handle logout functionality
+// Handle logout functionality
+const handleLogout = (e: React.MouseEvent) => {
+  e.preventDefault();
+  
+  try {
+    // Clear all cookies
+    document.cookie.split(";").forEach((c) => {
+      const eqPos = c.indexOf("=");
+      const name = eqPos > -1 ? c.substr(0, eqPos) : c;
+      document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+      document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=" + window.location.hostname;
+    });
+
+    // Clear localStorage and sessionStorage
+    localStorage.clear();
+    sessionStorage.clear();
+
+    // Redirect to login page
+    router.push('/login');
+  } catch (error) {
+    console.error('Logout failed:', error);
+    // Force redirect even if logout process fails
+    router.push('/login');
+  }
+};
   return (
     <div
       className={`z-50 fixed h-[96vh] md:flex ml-2 sm:ml-4 mr-4 sm:mr-10 justify-center flex-col rounded-lg transition-all duration-500 ease-in-out font-light md:translate-x-0 md:relative md:h-[96vh] shadow-lg 
@@ -225,34 +252,36 @@ export default function SideNav({ isMobileOpen }: SideNavProps) {
           </div>
         </Link>
 
-        {/* Payments */}
-        <Link
-          href="/dashboard/payment"
-          className={`transition-all duration-1000 ease-in-out flex items-center px-3 sm:px-4 py-2 rounded-lg mx-2 mt-1 ${
-            pathname === '/dashboard/payment'
-              ? 'bg-navBlue text-white'
-              : `${darkMode ? 'text-[#EDF3F8] hover:bg-[#101E27]' : 'text-[#6B7280] hover:bg-gray-300'}`
-          } ${isExpanded ? '' : 'justify-center'}`}
-        >
-          <div className="min-w-[20px] sm:min-w-[24px] flex justify-center items-center">
-            <Image
-              src="/elements.png"
-              width={16}
-              height={16}
-              alt="payment"
-              className={`sm:w-5 sm:h-5 ${isExpanded ? '' : 'ml-0'} transition-all duration-700 ease-in-out ${
-                pathname === '/dashboard/payment' && darkMode ? 'brightness-0 invert' : ''
-              }`}
-            />
-          </div>
-          <div
-            className={`ml-2 sm:ml-3 overflow-hidden text-sm sm:text-base transition-all duration-700 ease-in-out ${
-              isExpanded ? 'opacity-100 max-w-[200px]' : 'opacity-0 max-w-0'
-            }`}
+        {/* Payments - Only show for students */}
+        {userRole === 'student' && (
+          <Link
+            href="/dashboard/payment"
+            className={`transition-all duration-1000 ease-in-out flex items-center px-3 sm:px-4 py-2 rounded-lg mx-2 mt-1 ${
+              pathname === '/dashboard/payment'
+                ? 'bg-navBlue text-white'
+                : `${darkMode ? 'text-[#EDF3F8] hover:bg-[#101E27]' : 'text-[#6B7280] hover:bg-gray-300'}`
+            } ${isExpanded ? '' : 'justify-center'}`}
           >
-            Payments
-          </div>
-        </Link>
+            <div className="min-w-[20px] sm:min-w-[24px] flex justify-center items-center">
+              <Image
+                src="/elements.png"
+                width={16}
+                height={16}
+                alt="payment"
+                className={`sm:w-5 sm:h-5 ${isExpanded ? '' : 'ml-0'} transition-all duration-700 ease-in-out ${
+                  pathname === '/dashboard/payment' && darkMode ? 'brightness-0 invert' : ''
+                }`}
+              />
+            </div>
+            <div
+              className={`ml-2 sm:ml-3 overflow-hidden text-sm sm:text-base transition-all duration-700 ease-in-out ${
+                isExpanded ? 'opacity-100 max-w-[200px]' : 'opacity-0 max-w-0'
+              }`}
+            >
+              Payments
+            </div>
+          </Link>
+        )}
       </div>
 
       {/* Bottom Actions */}
@@ -287,12 +316,10 @@ export default function SideNav({ isMobileOpen }: SideNavProps) {
         </Link>
 
         {/* Log Out */}
-        <Link
-          href="/logout"
-          className={`transition-all duration-1000 ease-in-out flex items-center px-3 sm:px-4 py-2 rounded-lg mx-2 mt-1 ${
-            pathname === '/logout'
-              ? 'bg-navBlue text-white'
-              : `${darkMode ? 'text-[#EDF3F8] hover:bg-[#101E27]' : 'text-[#6B7280] hover:bg-gray-300'}`
+        <button
+          onClick={handleLogout}
+          className={`w-full transition-all duration-1000 ease-in-out flex items-center px-3 sm:px-4 py-2 rounded-lg mx-2 mt-1 ${
+            darkMode ? 'text-[#EDF3F8] hover:bg-[#101E27]' : 'text-[#6B7280] hover:bg-gray-300'
           } ${isExpanded ? '' : 'justify-center'}`}
         >
           <div className="min-w-[20px] sm:min-w-[24px] flex justify-center items-center">
@@ -301,9 +328,7 @@ export default function SideNav({ isMobileOpen }: SideNavProps) {
               width={16}
               height={16}
               alt="logout"
-              className={`sm:w-5 sm:h-5 ${isExpanded ? '' : 'ml-0'} transition-all duration-700 ease-in-out ${
-                pathname === '/logout' && darkMode ? 'brightness-0 invert' : ''
-              }`}
+              className={`sm:w-5 sm:h-5 ${isExpanded ? '' : 'ml-0'} transition-all duration-700 ease-in-out`}
             />
           </div>
           <div
@@ -313,7 +338,7 @@ export default function SideNav({ isMobileOpen }: SideNavProps) {
           >
             Log Out
           </div>
-        </Link>
+        </button>
       </div>
     </div>
   );
