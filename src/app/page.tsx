@@ -270,7 +270,7 @@ export default function Home() {
       }`}>
         <div className="w-[92%] md:w-[85%] mx-auto flex flex-col lg:flex-row gap-5 py-6 md:py-8">
           <Image 
-            src="/Dave.jpg" 
+            src="/logo.png" 
             alt="welcomeImage" 
             width={592} 
             height={562} 
@@ -281,17 +281,14 @@ export default function Home() {
             <div className="lg:mt-[13%] w-full lg:w-[85%] lg:ml-auto">
               <h1 className={`font-bold text-lg md:text-3xl ${
                 darkMode ? 'text-[#FFFFFF]' : 'text-black'
-              }`}>Welcome Message from the NIEEES PRESIDENT</h1>
+              }`}>Welcome Message from the NIEEES</h1>
               <p className={`mt-4 text-sm md:text-lg leading-relaxed text-justify ${
                 darkMode ? 'text-[#EDF3F8]' : 'text-black'
               }`}>
               &quot;On behalf of the Nigerian Institution of Electrical and Electronics Engineers Students (NIEEES), University of Jos Chapter, I warmly welcome you to our department's platform. As student engineers, we are passionate about creativity, teamwork, and innovation that solve real-world challenges. Our community is dedicated to fostering collaboration among students, staff, and industry partners, while also ensuring that every member grows academically, professionally, and socially. We invite you to engage with us as we shape the future of engineering together.&quot;
               </p>
                 <div className="flex flex-col mt-4 mb-5">
-                  <p className={darkMode ? 'text-[#EDF3F8]' : 'text-black'}>NIEEES UNIJOS PRESIDENT</p>
-                  <p className={`font-bold ${
-                    darkMode ? 'text-[#FFFFFF]' : 'text-black'
-                  }`}>HOITITOU DAVID GODWIN</p>
+                  <p className={darkMode ? 'text-[#EDF3F8]' : 'text-black'}>NIEEES UNIJOS</p>
                 </div>
             </div>
           </ScrollAnimationSection>

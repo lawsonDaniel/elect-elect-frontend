@@ -247,14 +247,7 @@ export default function AboutUs() {
                     ))}
                     </ul>
                     <div className="mt-auto ml-auto">
-                    <button className={`w-[7.75rem] h-[2.5rem] bg-transparent rounded-4xl border flex items-center justify-center gap-2 ${
-                        darkMode 
-                            ? 'border-[#101E27] text-[#EDF3F8]' 
-                            : 'border-[#9CA3AF] text-black'
-                    }`}>
-                        Enroll now
-                        <Image src="/arrow.png" alt="arrow" width={16} height={16}   />
-                    </button>
+                    
                     </div>
                 </div>
                 ))}
