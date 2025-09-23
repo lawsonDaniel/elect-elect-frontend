@@ -32,7 +32,10 @@ const validationSchema = Yup.object({
   schoolEmail: Yup.string()
     .email('Please enter a valid email address')
     .required('School email is required')
-    ,
+    .matches(
+      /^[a-zA-Z0-9._%+-]+@unijos\.edu\.ng$/,
+      'Please use your official University of Jos email address (@unijos.edu.ng)'
+    ),
   staffId: Yup.string()
     .required('Staff ID is required')
     .min(3, 'Staff ID must be at least 3 characters')
