@@ -78,7 +78,7 @@ export default function AboutUs() {
                     <div className="px-4 sm:px-6 md:px-8">
                     <div className="relative w-full h-64 sm:h-72 md:h-80">
                         <Image 
-                        src="/students.jpeg" 
+                        src="/gallery2.jpg"  
                         alt="Students at University of Jos Electrical Engineering Department" 
                         fill
                         className="object-cover rounded-lg shadow-lg"
@@ -94,7 +94,7 @@ export default function AboutUs() {
                     <div className="float-right ml-8 mb-6 w-1/2 xl:w-2/5">
                     <div className="relative h-96 xl:h-[28rem]">
                         <Image 
-                        src="/students.jpeg" 
+                        src="/gallery2.jpg" 
                         alt="Students at University of Jos Electrical Engineering Department" 
                         fill
                         className="object-cover rounded-lg shadow-lg"

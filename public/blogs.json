@@ -1,0 +1,53 @@
+[
+  {
+    "id": 1,
+    "title": "Final Year Dinner on the 25th of This Month",
+    "description": "The Electrical Electronics Engineering class of 2025 will be hosting their grand final-year dinner this month — a night of celebration, memories, and togetherness.",
+    "category": "Events",
+    "author": "Lawblaze",
+    "date": "September 25, 2025",
+    "readTime": "4mins Read",
+    "image": "https://images.unsplash.com/photo-1555255707-c07966088b7b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
+    "content": "The much-anticipated Final Year Dinner for the Electrical Electronics Engineering students will take place on the 25th of this month. This event will be a memorable occasion filled with laughter, dancing, fine dining, and reflections on the journey through engineering school. Students will gather to celebrate their achievements, friendships, and the future that lies ahead. It promises to be a glamorous night that will close the chapter on undergraduate life in style."
+  },
+  {
+    "id": 2,
+    "title": "EEE Final-Year Students Hold Their Project Defense Today",
+    "description": "The Electrical Electronics Engineering students are defending their final-year projects today, showcasing innovative solutions to real-world problems.",
+    "category": "News",
+    "author": "Lawblaze",
+    "date": "September 23, 2025",
+    "readTime": "3mins Read",
+    "image": "https://images.unsplash.com/photo-1521791055366-0d553872125f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
+    "content": "Today marks a significant milestone for the Electrical Electronics Engineering final-year students as they defend their research and projects before faculty and external examiners. From renewable energy solutions to smart automation systems, these projects reflect years of dedication, creativity, and teamwork. The defense not only tests technical competence but also communication and presentation skills, as students transition into the next stage of their careers."
+  },
+  {
+    "id": 3,
+    "title": "How Our Final-Year Students Built a Campus-wide Inverter System",
+    "description": "A behind-the-scenes look at how EEE 500-level students solved real energy problems with hands-on solutions.",
+    "category": "News",
+    "author": "Dr. Smith",
+    "date": "July 1, 2025",
+    "readTime": "5mins Read",
+    "image": "https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
+    "content": "This is the full content of the blog post about the inverter system. Our students worked tirelessly to design and implement a campus-wide inverter system, tackling real-world energy challenges. The project involved collaboration between multiple departments, hands-on engineering, and innovative problem-solving."
+  },
+  {
+    "id": 4,
+    "title": "Departmental Week Returns — Bigger and Better!",
+    "description": "From tech talks to robotics showdowns, here's what to expect from this year's highly anticipated Departmental Week.",
+    "category": "Announcements",
+   
+    "image": "https://images.unsplash.com/photo-1596496053490-d67c1a6ccf6b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
+    "content": "The Departmental Week is back with exciting events, including tech talks, robotics competitions, and networking sessions. This year's event promises to be bigger and better, with participation from students, faculty, and industry professionals."
+  },
+  {
+    "id": 5,
+    "title": "My Internship at Schneider Electric - What I Learned",
+    "description": "From theory to real-world design systems, an EE student shares how industrial experience changed everything.",
+    "category": "Student Life",
+    
+    "image": "https://images.unsplash.com/photo-1581092160607-ee22621dd758?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
+    "content": "During my internship at Schneider Electric, I learned the importance of applying theoretical knowledge to practical design systems. This experience transformed my understanding of electrical engineering and opened new career perspectives."
+  }
+]
