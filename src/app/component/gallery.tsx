@@ -54,7 +54,43 @@ export default function GallerySlideshow({ darkMode }: { darkMode: boolean }) {
       src: "/gallery10.jpg",
       alt: "Graduation Ceremony",
       caption: "Celebrating our graduates"
-    }
+    },
+    {
+      src: "/gallery11.jpg",
+      alt: "Graduation Ceremony",
+      caption: "Celebrating our graduates"
+    },
+    {
+      src: "/gallery12.jpg",
+      alt: "Graduation Ceremony",
+      caption: "Celebrating our graduates"
+    },
+    {
+      src: "/gallery13.jpg",
+      alt: "Graduation Ceremony",
+      caption: "Celebrating our graduates"
+    },
+    {
+      src: "/gallery914.jpg",
+      alt: "Graduation Ceremony",
+      caption: "Celebrating our graduates"
+    },
+    {
+      src: "/gallery15.jpg",
+      alt: "Graduation Ceremony",
+      caption: "Celebrating our graduates"
+    },
+    {
+      src: "/gallery16.jpg",
+      alt: "Graduation Ceremony",
+      caption: "Celebrating our graduates"
+    },
+    {
+      src: "/gallery917.jpg",
+      alt: "Graduation Ceremony",
+      caption: "Celebrating our graduates"
+    },
+
 
 
   ];

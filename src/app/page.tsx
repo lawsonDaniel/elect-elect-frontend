@@ -678,6 +678,60 @@ export default function Home() {
           )}
         </div>
       </motion.section>
+      {/* Welcome Message from the developers*/}
+      <motion.section 
+        className={`py-20 ${darkMode ? 'bg-[#070E12]' : 'bg-gray-50'}`}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.3 }}
+        variants={staggerContainer}
+      >
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <motion.div 
+              className="relative group"
+              
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-3xl blur-lg opacity-20 group-hover:opacity-30 transition-opacity"></div>
+              <img 
+                src="/gallery17.jpg" 
+                alt="NIEEES " 
+                className="relative w-full h-[500px] object-cover rounded-3xl shadow-2xl group-hover:scale-[1.02] transition-transform duration-500" 
+              />
+            </motion.div>
+            
+            <motion.div 
+              className="space-y-6"
+              
+            >
+              <div>
+                <motion.h2 
+                  className={`text-4xl md:text-5xl font-bold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}
+                  
+                >
+                  Welcome Address from the {' '}
+                  <span className="bg-gradient-to-r from-blue-600 to-purple-500 bg-clip-text text-transparent">
+                    Developers
+                  </span>
+                </motion.h2>
+              </div>
+              
+              <motion.blockquote 
+                className={`text-lg leading-relaxed italic border-l-4 border-blue-500 pl-6 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}
+                
+              >
+                &quot; Welcome to the official website of the Department of Electrical and Electronics Engineering, University of Jos. This platform was designed and implemented to enhance communication, accessibility of resources, and overall digital experience for students, staff, and visitors.
+
+                This web application was developed by the project team as part of our academic work, under the supervision of Dr. [Supervisor&apos;s Name].
+
+                We believe this system will serve as a valuable resource and contribute positively to the growth and visibility of the Department.&quot;
+              </motion.blockquote>
+              
+              
+            </motion.div>
+          </div>
+        </div>
+      </motion.section>
 
       <Footer />
     </div>
