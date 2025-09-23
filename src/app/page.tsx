@@ -111,7 +111,7 @@ export default function Home() {
             layout="intrinsic"
           />
           <ScrollAnimationSection>
-            <div className="lg:mt-[13%] w-full">
+            <div className="lg:mt-[13%] w-full lg:w-[85%] lg:ml-auto">
               <h1 className={`font-bold text-lg md:text-3xl ${
                 darkMode ? 'text-[#FFFFFF]' : 'text-black'
               }`}>Welcome Message from the HOD</h1>
@@ -167,7 +167,7 @@ export default function Home() {
       }`}>
         <div className="w-[92%] md:w-[85%] mx-auto flex flex-col lg:flex-row gap-5 py-6 md:py-8">
           <Image 
-            src="/DEAN.PNG" 
+            src="/DEAN.png" 
             alt="welcomeImage" 
             width={592} 
             height={562} 
@@ -175,7 +175,7 @@ export default function Home() {
             layout="intrinsic"
           />
           <ScrollAnimationSection>
-            <div className="lg:mt-[13%] w-full">
+            <div className="lg:mt-[13%] w-full lg:w-[85%] lg:ml-auto">
               <h1 className={`font-bold text-lg md:text-3xl ${
                 darkMode ? 'text-[#FFFFFF]' : 'text-black'
               }`}>Welcome Message from the DEAN</h1>
@@ -278,7 +278,7 @@ export default function Home() {
             layout="intrinsic"
           />
           <ScrollAnimationSection>
-            <div className="lg:mt-[13%] w-full">
+            <div className="lg:mt-[13%] w-full lg:w-[85%] lg:ml-auto">
               <h1 className={`font-bold text-lg md:text-3xl ${
                 darkMode ? 'text-[#FFFFFF]' : 'text-black'
               }`}>Welcome Message from the NIEEES PRESIDENT</h1>
