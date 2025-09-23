@@ -3,17 +3,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/utils/db';
 import Material from '@/models/material.model';
 import jwt from 'jsonwebtoken';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
-
+import {  PutObjectCommand } from '@aws-sdk/client-s3';
+import { s3Client } from '@/utils/aws';
 
 // Initialize S3 Client
-const s3Client = new S3Client({
-  region: process.env.AWS_REGION,
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-  },
-});
+
 // Helper function to verify JWT token
 async function verifyToken(request: NextRequest) {
   const token = request.cookies.get('auth-token')?.value || 
@@ -88,12 +82,15 @@ export async function POST(request: NextRequest) {
 
     // Verify authentication
     const user = await verifyToken(request);
+    console.log("Authenticated user:", user);
     await dbConnect();
+    console.log("Database connected");
 
     // Parse form data
     let formData;
     try {
       formData = await request.formData();
+      console.log("Form data parsed successfully");
     } catch (error) {
       console.error('FormData parsing error:', error);
       return NextResponse.json(
@@ -108,9 +105,11 @@ export async function POST(request: NextRequest) {
     const materialType = formData.get('materialType') as string;
     const description = formData.get('description') as string;
     const level = formData.get('level') as string;
+    console.log("Form data extracted:", { courseTitle, courseCode, materialType, description, level, fileName: file?.name });
 
     // Validate required fields
     if (!file || !courseTitle || !courseCode || !materialType || !description) {
+      console.log("Missing required fields");
       return NextResponse.json(
         { success: false, error: 'All fields are required' },
         { status: 400 }
@@ -124,6 +123,7 @@ export async function POST(request: NextRequest) {
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
     ];
     if (!allowedTypes.includes(file.type)) {
+      console.log("Invalid file type:", file.type);
       return NextResponse.json(
         { success: false, error: 'Invalid file type. Only PDF and DOCX files are allowed.' },
         { status: 400 }
@@ -133,6 +133,7 @@ export async function POST(request: NextRequest) {
     // Validate file size (10MB limit)
     const maxSize = 10 * 1024 * 1024;
     if (file.size > maxSize) {
+      console.log("File size too large:", file.size);
       return NextResponse.json(
         { success: false, error: 'File size too large. Maximum size is 10MB.' },
         { status: 400 }
@@ -142,24 +143,28 @@ export async function POST(request: NextRequest) {
     // Convert file to buffer
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
+    console.log("File converted to buffer, size:", buffer.length);
 
     // Generate unique filename
     const timestamp = Date.now();
     const originalName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
     const fileName = `${timestamp}_${originalName}`;
+    console.log("Generated filename:", fileName);
 
     // Upload file to S3
     const bucketName = process.env.AWS_S3_BUCKET_NAME;
-    const uploadParams:any = {
+    const uploadParams: any = {
       Bucket: bucketName,
-      Key: `uploads/${fileName}`, // Store in 'uploads' folder in S3
+      Key: `uploads/${fileName}`,
       Body: buffer,
       ContentType: file.type,
-      ACL: 'public-read', // Make file publicly accessible (adjust as needed)
+      ACL: 'public-read',
     };
+    console.log("S3 upload params prepared:", { bucket: bucketName, key: `uploads/${fileName}` });
 
     try {
       await s3Client.send(new PutObjectCommand(uploadParams));
+      console.log("File uploaded to S3 successfully");
     } catch (error) {
       console.error('S3 upload error:', error);
       return NextResponse.json(
@@ -170,6 +175,7 @@ export async function POST(request: NextRequest) {
 
     // Generate S3 file URL
     const fileUrl = `https://${bucketName}.s3.${process.env.AWS_REGION}.amazonaws.com/uploads/${fileName}`;
+    console.log("Generated S3 file URL:", fileUrl);
 
     // Create material document
     const material = new Material({
@@ -183,11 +189,14 @@ export async function POST(request: NextRequest) {
       fileSize: file.size,
       uploadedBy: user.userId
     });
+    console.log("Material document created:", material);
 
     await material.save();
+    console.log("Material saved to database");
 
     // Populate uploader for response
     await material.populate('uploadedBy', 'firstName surname userType');
+    console.log("Uploader populated:", material.uploadedBy);
 
     return NextResponse.json({
       success: true,
@@ -200,6 +209,7 @@ export async function POST(request: NextRequest) {
 
     if (error.name === 'ValidationError') {
       const errorMessages = Object.values(error.errors).map((err: any) => err.message);
+      console.log("Validation errors:", errorMessages);
       return NextResponse.json(
         { success: false, error: errorMessages.join(', ') },
         { status: 400 }
@@ -207,12 +217,14 @@ export async function POST(request: NextRequest) {
     }
 
     if (error.message === 'No token provided') {
+      console.log("Authentication failed: No token provided");
       return NextResponse.json(
         { success: false, error: 'Authentication required' },
         { status: 401 }
       );
     }
 
+    console.log("Unexpected error during upload");
     return NextResponse.json(
       { success: false, error: 'Failed to upload material' },
       { status: 500 }

@@ -6,6 +6,7 @@ import { Poppins, Space_Grotesk } from "next/font/google";
 import { Download, Upload, Eye, Edit, Trash2, Plus } from 'lucide-react';
 import { useDarkMode } from '@/contexts/DarkModeContext';
 import endPoints from '@/utils/endpoints.class';
+import toast from 'react-hot-toast';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -35,8 +36,6 @@ export default function Page() {
   const [materials, setMaterials] = useState<any>([]);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
   const [userRole, setUserRole] = useState<string | null>(null); // Initialize as null until fetched
   const { darkMode } = useDarkMode();
 
@@ -51,7 +50,7 @@ export default function Page() {
         setUserRole(profile.userType === 'staff' ? 'lecturer' : 'student');
       } catch (error) {
         console.error('Failed to fetch user profile:', error);
-        setError('Failed to load user profile');
+        toast.error('Failed to load user profile');
         setUserRole('student'); // Fallback to 'student' if profile fetch fails
       }
     };
@@ -74,12 +73,12 @@ export default function Page() {
         setSubmitting(true);
         console.log("Uploading material with values:", values);
         await endPoints.uploadMaterial(values);
-        setSuccess('Material uploaded successfully!');
+        toast.success('Material uploaded successfully!');
         setShowUploadModal(false);
         resetForm();
         fetchMaterials(); // Refresh the materials list
       } catch (error: any) {
-        setError(error.message || 'Failed to upload material');
+        toast.error(error.message || 'Failed to upload material');
       } finally {
         setSubmitting(false);
       }
@@ -102,7 +101,7 @@ export default function Page() {
       console.log("Fetched materials:", response);
       setMaterials(response.data || response);
     } catch (error: any) {
-      setError(error.message || 'Failed to fetch materials');
+      toast.error(error.message || 'Failed to fetch materials');
       console.error("Fetch materials error:", error);
     } finally {
       setLoading(false);
@@ -112,14 +111,14 @@ export default function Page() {
   const handleDownload = async (materialId: string) => {
     try {
       await endPoints.downloadMaterial(materialId);
-      setSuccess('Download started successfully');
+      toast.success('Download started successfully');
       setMaterials(materials.map((material: any) =>
         material.id === materialId
           ? { ...material, downloads: material.downloads + 1 }
           : material
       ));
     } catch (error: any) {
-      setError(error.message || 'Failed to download material');
+      toast.error(error.message || 'Failed to download material');
     }
   };
 
@@ -134,23 +133,12 @@ export default function Page() {
   const handleDelete = async (materialId: string) => {
     try {
       await endPoints.deleteMaterial(materialId);
-      setSuccess('Material deleted successfully');
+      toast.success('Material deleted successfully');
       setMaterials(materials.filter((material: any) => material.id !== materialId));
     } catch (error: any) {
-      setError(error.message || 'Failed to delete material');
+      toast.error(error.message || 'Failed to delete material');
     }
   };
-
-  // Clear messages after 3 seconds
-  useEffect(() => {
-    if (error || success) {
-      const timer = setTimeout(() => {
-        setError('');
-        setSuccess('');
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [error, success]);
 
   // Show loading state until userRole is fetched
   if (userRole === null) {
@@ -160,18 +148,6 @@ export default function Page() {
   return (
     <>
       <div className={`w-full ${poppins.className}`}>
-        {/* Error and Success Messages */}
-        {error && (
-          <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-            {error}
-          </div>
-        )}
-        {success && (
-          <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded">
-            {success}
-          </div>
-        )}
-
         {/* Page Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
           <div>
