@@ -1,8 +1,10 @@
+// app/api/materials/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/utils/db';
 import Material from '@/models/material.model';
 import jwt from 'jsonwebtoken';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+
 
 // Initialize S3 Client
 const s3Client = new S3Client({
@@ -12,7 +14,6 @@ const s3Client = new S3Client({
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
   },
 });
-
 // Helper function to verify JWT token
 async function verifyToken(request: NextRequest) {
   const token = request.cookies.get('auth-token')?.value || 
@@ -27,6 +28,58 @@ async function verifyToken(request: NextRequest) {
   return decoded;
 }
 
+// GET: Fetch all materials with optional filtering
+export async function GET(request: NextRequest) {
+  try {
+    await dbConnect();
+
+    const { searchParams } = new URL(request.url);
+    const level = searchParams.get('level');
+    const materialType = searchParams.get('materialType');
+    const courseCode = searchParams.get('courseCode');
+    const uploadedBy = searchParams.get('uploadedBy');
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '10');
+    const skip = (page - 1) * limit;
+    console.log("searchParams.get('level')",searchParams.get('level'))
+    // Build filter object
+    const filter: any = {};
+    if (level && level !== 'All Resources') filter.level = level;
+    if (materialType) filter.materialType = materialType;
+    if (courseCode) filter.courseCode = { $regex: courseCode, $options: 'i' };
+    if (uploadedBy) filter.uploadedBy = uploadedBy;
+    console.log("filter by",filter)
+    // Fetch materials with pagination
+    const materials = await Material.find(filter)
+      .populate('uploadedBy', 'firstName surname userType')
+      .sort({ uploadDate: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const total = await Material.countDocuments(filter);
+
+    return NextResponse.json({
+      success: true,
+      data: materials,
+      pagination: {
+        currentPage: page,
+        totalPages: Math.ceil(total / limit),
+        totalItems: total,
+        hasNext: page < Math.ceil(total / limit),
+        hasPrev: page > 1
+      }
+    });
+
+  } catch (error: any) {
+    console.error('Get materials error:', error);
+    return NextResponse.json(
+      { success: false, error: 'Failed to fetch materials' },
+      { status: 500 }
+    );
+  }
+}
+
+// POST: Upload new material
 // POST: Upload new material to S3
 export async function POST(request: NextRequest) {
   try {
@@ -97,7 +150,7 @@ export async function POST(request: NextRequest) {
 
     // Upload file to S3
     const bucketName = process.env.AWS_S3_BUCKET_NAME;
-    const uploadParams = {
+    const uploadParams:any = {
       Bucket: bucketName,
       Key: `uploads/${fileName}`, // Store in 'uploads' folder in S3
       Body: buffer,
@@ -167,5 +220,4 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// GET handler remains unchanged
-export { GET } from './original-file'; // Replace with your existing GET handler
+
