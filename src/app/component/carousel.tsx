@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import {useState, useEffect, useRef } from 'react'
-import {ArrowRight, ArrowLeft, X, Mail, ExternalLink, Award, BookOpen, Users} from "lucide-react";
+import {ArrowRight, ArrowLeft, X, Mail, ExternalLink, Award, BookOpen, Users, ChevronRight} from "lucide-react";
 import { useDarkMode } from '@/contexts/DarkModeContext';
 
 const DepartmentData = [
@@ -286,12 +286,18 @@ export default function DepartmentCarousel() {
   const [isAtStart, setIsAtStart] = useState(true)
   const [isAtEnd, setIsAtEnd] = useState(false)
   const [selectedStaff, setSelectedStaff] = useState<typeof DepartmentData[0] | null>(null)
+  const [showMobileIndicator, setShowMobileIndicator] = useState(true)
 
   const checkScrollPosition = () => {
     if (scrollRef.current) {
       const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current
       setIsAtStart(scrollLeft === 0)
       setIsAtEnd(scrollLeft + clientWidth >= scrollWidth - 1)
+      
+      // Hide mobile indicator only after significant scrolling (more than 50px)
+      if (scrollLeft > 50) {
+        setShowMobileIndicator(false)
+      }
     }
   }
   
@@ -305,6 +311,15 @@ export default function DepartmentCarousel() {
     return () => {
       container.removeEventListener('scroll', checkScrollPosition)
     }
+  }, [])
+
+  // Hide mobile indicator after 30 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowMobileIndicator(false)
+    }, 30000)
+
+    return () => clearTimeout(timer)
   }, [])
 
   useEffect(() => {
@@ -406,6 +421,22 @@ export default function DepartmentCarousel() {
             <ArrowRight size={24} />
           </button>
         )}
+
+        {/* Mobile Scroll Indicator */}
+        {showMobileIndicator && !isAtEnd && (
+          <div className="md:hidden absolute right-2 top-1/2 -translate-y-1/2 z-20 pointer-events-none">
+            <div className={`flex items-center gap-2 px-3 py-2 rounded-full shadow-lg ${
+              darkMode 
+                ? 'bg-[#101E27] text-[#EDF3F8]' 
+                : 'bg-white text-[#4B5563]'
+            }`}>
+              <span className="text-sm font-medium animate-pulse">Swipe</span>
+              <ChevronRight size={20} className="animate-bounce" />
+            </div>
+          </div>
+        )}
+
+
 
         {/* Scrollable Faculty Cards */}
         <div

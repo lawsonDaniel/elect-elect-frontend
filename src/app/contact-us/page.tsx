@@ -89,7 +89,7 @@ export default function ContactUs() {
               <span className={`font-semibold ${
                 darkMode ? 'text-[#FFFFFF]' : 'text-black'
               }`}>Phone: </span>
-              +234 999 999 9999
+              NIL
             </p>
             <p className={`text-sm pt-3 ${
               darkMode ? 'text-[#EDF3F8]' : 'text-[#6B7280]'
@@ -97,7 +97,7 @@ export default function ContactUs() {
               <span className={`font-semibold ${
                 darkMode ? 'text-[#FFFFFF]' : 'text-black'
               }`}>Website: </span> 
-              www.unijos.ng
+              www.eeeunijos.com
             </p>
           </div>
           <div>
