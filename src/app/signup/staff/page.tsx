@@ -32,23 +32,7 @@ const validationSchema = Yup.object({
   schoolEmail: Yup.string()
     .email('Please enter a valid email address')
     .required('School email is required')
-    .matches(
-      /^[a-zA-Z0-9._%+-]+@unijos\.edu\.ng$/,
-      'Please use your official University of Jos email address (@unijos.edu.ng)'
-    )
-    .test(
-      'is-not-student-email',
-      'Student emails are not allowed. Please use a staff email address.',
-      (value) => {
-        if (!value) return true; // Let required() handle empty values
-        
-        const usernamePart = value.split('@')[0];
-        // Check if it matches the student email pattern (e.g., 2018en0338)
-        const studentEmailPattern = /^\d{4}[a-zA-Z]{2}\d{4}$/;
-        
-        return !studentEmailPattern.test(usernamePart);
-      }
-    ),
+    ,
   staffId: Yup.string()
     .required('Staff ID is required')
     .min(3, 'Staff ID must be at least 3 characters')
