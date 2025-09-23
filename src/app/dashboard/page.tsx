@@ -173,7 +173,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Cards Grid */}
+        {/* Cards Grid
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 flex-1 order-1 xl:order-2">
           {cards.map((card:any, idx) => (
             <div
@@ -197,7 +197,7 @@ export default function Dashboard() {
               </div>
             </div>
           ))}
-        </div>
+        </div> */}
       </div>
 
       {/* New Dashboard Components Section */}
