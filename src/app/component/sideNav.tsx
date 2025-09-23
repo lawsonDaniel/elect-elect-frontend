@@ -76,13 +76,13 @@ const handleLogout = (e: React.MouseEvent) => {
       {/* Logo and Toggle */}
       <div className="relative flex items-center p-3 sm:p-4">
         <div className="flex items-center">
-          <Image
+          <Link href="/"><Image
             src="/logo.png"
             width={48}
             height={48}
             alt="Logo"
             className={`w-8 h-8 sm:w-12 sm:h-12 ${isExpanded ? '' : 'translate-x-1/4 transition-all duration-700 ease-in-out'}`}
-          />
+          /> </Link>
           {isExpanded && (
             <div className="flex flex-col">
               <span

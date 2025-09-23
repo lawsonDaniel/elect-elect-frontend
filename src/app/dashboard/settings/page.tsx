@@ -19,7 +19,6 @@ const poppins = Poppins({
 interface ProfileFormValues {
   firstName: string;
   surname: string;
-  otherNames: string;
   department: string;
   matric: string;
   email: string;
@@ -57,6 +56,7 @@ interface CustomFieldProps {
   placeholder?: string;
   className?: string;
   children?: React.ReactNode;
+  disabled?: boolean;
   [key: string]: unknown;
 }
 
@@ -77,8 +77,6 @@ const profileValidationSchema = Yup.object({
     .min(2, 'Surname must be at least 2 characters')
     .max(50, 'Surname must be less than 50 characters')
     .required('Surname is required'),
-  otherNames: Yup.string()
-    .max(50, 'Other names must be less than 50 characters'),
   department: Yup.string()
     .required('Department is required'),
   matric: Yup.string()
@@ -141,7 +139,6 @@ export default function Settings() {
         setProfile({
           firstName: userProfile.firstName || 'John',
           surname: userProfile.surname || 'Doe',
-          otherNames: userProfile.otherNames || 'Elon',
           department: userProfile.department || 'Electrical & Electronics Engineering',
           matric: userProfile.mattNumber || userProfile.staffId || 'UJ/2018/EN/0001',
           email: userProfile.schoolEmail || 'elon@gmail.com',
@@ -159,7 +156,6 @@ export default function Settings() {
   const initialProfileValues: ProfileFormValues = profile || {
     firstName: 'John',
     surname: 'Doe',
-    otherNames: 'Elon',
     department: 'Electrical & Electronics Engineering',
     matric: 'UJ/2018/EN/0001',
     email: 'elon@gmail.com',
@@ -213,7 +209,6 @@ export default function Settings() {
       await endPoints.updateUser(userData._id, {
         firstName: values.firstName,
         surname: values.surname,
-        otherNames: values.otherNames,
         department: values.department,
         [values.role.toLowerCase() === 'staff' ? 'staffId' : 'mattNumber']: values.matric,
         schoolEmail: values.email,
@@ -264,7 +259,7 @@ export default function Settings() {
   };
 
   // Custom Field Component for better styling
-  const CustomField: React.FC<CustomFieldProps> = ({ name, type = 'text', placeholder, className = '', children, ...props }) => {
+  const CustomField: React.FC<CustomFieldProps> = ({ name, type = 'text', placeholder, className = '', children, disabled = false, ...props }) => {
     return (
       <Field name={name}>
         {({ field, meta }: FieldProps) => (
@@ -272,11 +267,18 @@ export default function Settings() {
             {type === 'select' ? (
               <select
                 {...field}
+                disabled={disabled}
                 className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                   darkMode
                     ? 'bg-[#070E12] border-[#101E27] text-[#EDF3F8] focus:ring-[#EDF3F8]'
                     : 'bg-white border-gray-300 text-gray-900 focus:ring-black'
-                } ${meta.touched && meta.error ? 'border-red-300' : ''} ${className}`}
+                } ${meta.touched && meta.error ? 'border-red-300' : ''} ${
+                  disabled 
+                    ? darkMode 
+                      ? 'opacity-60 cursor-not-allowed bg-[#101E27]' 
+                      : 'opacity-60 cursor-not-allowed bg-gray-100'
+                    : ''
+                } ${className}`}
                 {...props}
               >
                 {children}
@@ -286,11 +288,18 @@ export default function Settings() {
                 {...field}
                 type={type}
                 placeholder={placeholder}
+                disabled={disabled}
                 className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                   darkMode
                     ? 'bg-[#070E12] border-[#101E27] text-[#EDF3F8] focus:ring-[#EDF3F8]'
                     : 'bg-white border-gray-300 text-gray-900 focus:ring-black'
-                } ${meta.touched && meta.error ? 'border-red-300' : ''} ${className}`}
+                } ${meta.touched && meta.error ? 'border-red-300' : ''} ${
+                  disabled 
+                    ? darkMode 
+                      ? 'opacity-60 cursor-not-allowed bg-[#101E27]' 
+                      : 'opacity-60 cursor-not-allowed bg-gray-100'
+                    : ''
+                } ${className}`}
                 {...props}
               />
             )}
@@ -421,7 +430,7 @@ export default function Settings() {
                           <Image
                             width={64}
                             height={64}
-                            src="/DrTijani.png"
+                            src="/placeholderIMG.jpg"
                             alt="Profile"
                             className="w-full h-full object-cover"
                           />
@@ -474,15 +483,9 @@ export default function Settings() {
                       </div>
                       <div>
                         <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-[#EDF3F8]' : 'text-gray-700'}`}>
-                          Other Names
-                        </label>
-                        <CustomField name="otherNames" />
-                      </div>
-                      <div>
-                        <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-[#EDF3F8]' : 'text-gray-700'}`}>
                           Department
                         </label>
-                        <CustomField name="department" />
+                        <CustomField name="department" disabled={true} />
                       </div>
                       <div>
                         <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-[#EDF3F8]' : 'text-gray-700'}`}>
@@ -494,7 +497,7 @@ export default function Settings() {
                         <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-[#EDF3F8]' : 'text-gray-700'}`}>
                           School Email
                         </label>
-                        <CustomField name="email" type="email" />
+                        <CustomField name="email" type="email" disabled={true}/>
                       </div>
                       <div>
                         <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-[#EDF3F8]' : 'text-gray-700'}`}>
@@ -506,7 +509,7 @@ export default function Settings() {
                         <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-[#EDF3F8]' : 'text-gray-700'}`}>
                           Role
                         </label>
-                        <CustomField name="role" type="select">
+                        <CustomField name="role" type="select" disabled={true}>
                           <option value="Student">Student</option>
                           <option value="Staff">Staff</option>
                           <option value="Admin">Admin</option>

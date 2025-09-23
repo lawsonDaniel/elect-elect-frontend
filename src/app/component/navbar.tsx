@@ -33,7 +33,7 @@ export default function Navbar() {
     return(
         <div className="mt-2 absolute w-full">
             <nav className="fixed left-1/2 -translate-x-1/2 w-[92%] md:w-[85%] h-18 bg-navBlue dark:bg-[#101E27] flex items-center justify-between rounded-md shadow-sm px-7 z-50">
-                <img src="logo.png" alt="logo" className="w-12 h-12" />
+                <Link href="/"><img src="logo.png" alt="logo" className="w-12 h-12" /></Link>
                 <ul className="hidden lg:flex text-[#D1D5DB] text-lg justify-center list-none text items-center space-x-10">
                     <Link href="/">
                         <li className={`cursor-pointer hover:text-white ${pathname === '/' ? 'text-gold font-semibold' : ''}`}>Home</li>

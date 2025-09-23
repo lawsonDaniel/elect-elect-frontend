@@ -119,7 +119,7 @@ export default function Dashboard() {
 
           <div className="flex items-center gap-4 mb-6">
             <Image
-              src="/DrTijani.png"
+              src="/placeholderIMG.jpg"
               width={48}
               height={48}
               alt="Profile Picture"
