@@ -184,33 +184,42 @@ class EndPoints {
     }
   }
 
+  // public downloadMaterial = async (id: string) => {
+  //   try {
+  //     const response = await api.get(`/materials/${id}/download`, {
+  //       responseType: 'blob',
+  //     });
+  //     const blob = new Blob([response.data]);
+  //     const url = window.URL.createObjectURL(blob);
+  //     const contentDisposition = response.headers['content-disposition'];
+  //     let filename = 'download';
+  //     if (contentDisposition) {
+  //       const filenameMatch = contentDisposition.match(/filename="(.+)"/);
+  //       if (filenameMatch) {
+  //         filename = filenameMatch[1];
+  //       }
+  //     }
+  //     const link = document.createElement('a');
+  //     link.href = url;
+  //     link.setAttribute('download', filename);
+  //     document.body.appendChild(link);
+  //     link.click();
+  //     document.body.removeChild(link);
+  //     window.URL.revokeObjectURL(url);
+  //     return { success: true, message: 'Download started' };
+  //   } catch (error: any) {
+  //     throw new Error(error.response?.data?.error || 'Failed to download material');
+  //   }
+  // }
   public downloadMaterial = async (id: string) => {
-    try {
-      const response = await api.get(`/materials/${id}/download`, {
-        responseType: 'blob',
-      });
-      const blob = new Blob([response.data]);
-      const url = window.URL.createObjectURL(blob);
-      const contentDisposition = response.headers['content-disposition'];
-      let filename = 'download';
-      if (contentDisposition) {
-        const filenameMatch = contentDisposition.match(/filename="(.+)"/);
-        if (filenameMatch) {
-          filename = filenameMatch[1];
-        }
-      }
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', filename);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-      return { success: true, message: 'Download started' };
-    } catch (error: any) {
-      throw new Error(error.response?.data?.error || 'Failed to download material');
-    }
+  try {
+    // This will redirect to S3 URL and increment download count
+    window.open(`/api/materials/${id}/download`, '_blank');
+    return { success: true, message: 'Download started' };
+  } catch (error: any) {
+    throw new Error('Failed to download material');
   }
+}
 
   public getMaterialsStats = async (userId?: string) => {
     try {
