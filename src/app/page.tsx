@@ -664,30 +664,6 @@ export default function Home() {
                         {article.description}
                       </p>
                       
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-3">
-                          <img 
-                            src="/HOD.jpeg" 
-                            alt={article.author} 
-                            className="w-10 h-10 rounded-full object-cover border-2 border-blue-500/20" 
-                          />
-                          <div>
-                            <p className={`font-semibold text-sm ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                              {article.author}
-                            </p>
-                            <div className="flex items-center text-xs space-x-1">
-                              <span className={darkMode ? 'text-gray-400' : 'text-gray-500'}>
-                                {article.date}
-                              </span>
-                              <DotIcon className={`w-3 h-3 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`} />
-                              <span className={darkMode ? 'text-gray-400' : 'text-gray-500'}>
-                                {article.readTime}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      
                       <Link 
                         href={`/blog/${article.id}`} 
                         className={`inline-flex items-center gap-2 mt-4 font-semibold text-sm group-hover:gap-3 transition-all ${
