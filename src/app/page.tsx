@@ -483,8 +483,8 @@ export default function Home() {
             >
               <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-red-500 rounded-3xl blur-lg opacity-20 group-hover:opacity-30 transition-opacity"></div>
               <img 
-                src="/Dave.jpg" 
-                alt="NIEEES President Hoititou David Godwin" 
+                src="/logo.png" 
+                alt="NIEEES " 
                 className="relative w-full h-[500px] object-cover rounded-3xl shadow-2xl group-hover:scale-[1.02] transition-transform duration-500" 
               />
             </motion.div>
@@ -500,7 +500,7 @@ export default function Home() {
                 >
                   Welcome Message from the{' '}
                   <span className="bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
-                    NIEEES President
+                    NIEEES
                   </span>
                 </motion.h2>
               </div>
@@ -517,14 +517,11 @@ export default function Home() {
                 
               >
                 <div className="w-16 h-16 bg-gradient-to-r from-orange-600 to-red-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
-                  HG
+                  NU
                 </div>
                 <div>
                   <p className={`font-bold text-xl ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                    Hoititou David Godwin
-                  </p>
-                  <p className={`text-sm font-medium ${darkMode ? 'text-orange-400' : 'text-orange-600'}`}>
-                    NIEEES UNIJOS President
+                    NIEEES UNIJOS
                   </p>
                 </div>
               </motion.div>
