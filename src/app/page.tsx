@@ -224,7 +224,7 @@ export default function Home() {
             
             <motion.div 
               className="space-y-6"
-              
+              variants={fadeInRight}
             >
               <div>
                 <motion.h2 
@@ -304,7 +304,7 @@ export default function Home() {
               <motion.div 
                 key={value.title}
                 className="group relative"
-                
+                variants={scaleIn}
                 whileHover={{ y: -10 }}
                 transition={{ duration: 0.3 }}
               >
@@ -386,7 +386,7 @@ export default function Home() {
             
             <motion.div 
               className="relative group order-1 lg:order-2"
-              
+              variants={fadeInRight}
             >
               <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-3xl blur-lg opacity-20 group-hover:opacity-30 transition-opacity"></div>
               <img 
@@ -431,7 +431,7 @@ export default function Home() {
               <motion.div 
                 key={program.title}
                 className="group relative"
-                
+                variants={scaleIn}
                 whileHover={{ y: -8 }}
                 transition={{ duration: 0.3 }}
               >
@@ -491,7 +491,7 @@ export default function Home() {
             
             <motion.div 
               className="space-y-6"
-              
+              variants={fadeInRight}
             >
               <div>
                 <motion.h2 
@@ -628,7 +628,7 @@ export default function Home() {
                 <motion.article 
                   key={article.id}
                   className="group cursor-pointer"
-                  
+                  variants={scaleIn}
                   whileHover={{ y: -8 }}
                   transition={{ duration: 0.3 }}
                 >
