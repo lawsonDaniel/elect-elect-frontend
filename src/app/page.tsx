@@ -390,7 +390,7 @@ export default function Home() {
             >
               <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-3xl blur-lg opacity-20 group-hover:opacity-30 transition-opacity"></div>
               <img 
-                src="/DEAN.PNG" 
+                src="/DEAN.png" 
                 alt="Dean Prof. Rose Daffi" 
                 className="relative w-full h-[500px] object-cover rounded-3xl shadow-2xl group-hover:scale-[1.02] transition-transform duration-500" 
               />
