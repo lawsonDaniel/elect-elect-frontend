@@ -116,23 +116,23 @@ const DepartmentData = [
     name:'Engr. Kishak Zakka Cinfwat',
     image: '/Engr_Kishak.jpg',
     email: 'cinfwatk@unijos.edu.ng',
-    qualifications: ['M.Eng Sensor System Engineering from Hanze University of Applied Sciences, Groningen, Netherland','M.Eng. Management Science and Engineering from Tsinghua University, Beijing, China', 'B.Eng. Electrical & Electronic Engineering' ],
-    specialization: 'Instrumentation and Control, AI Applications System Modelling and Sensor Systems',
+    qualifications: ['M.Sc Sensor System Engineering from Hanze University of Applied Sciences, Groningen, Netherland','M.Sc. Management Science and Engineering from Tsinghua University, Beijing, China', 'B.Eng. Electrical & Electronic Engineering' ],
+    specialization: 'Electronic materials and devices, Instrumentation and Control, AI Applications System Modelling and Sensor Systems',
     researchInterests: [
       'Electronic materials and devices',
-      'sensor systems',
-      'instrumentation and control engineering',
+      'Sensor systems',
+      'Instrumentation and control engineering',
       'UAV applications',
       'AI applications',
-      'engineering asset management',
-      'systems modelling and simulation',
-      ' human factors and safety engineering'
+      'Engineering asset management',
+      'Systems modelling and simulation',
+      'Human factors and safety engineering'
     ],
     profileLinks: {
       googleScholar: 'https://scholar.google.com/citations?user=AB0x0IkAAAAJ&hl=en&oi=ao',
       researchGate: 'https://www.researchgate.net/profile/Kishak-Cinfwat',
     },
-    bio: 'Engr. Kishak Cinfwat, attended Abubakar Tafawa Balewa University, Bauchi - Nigeria, and obtained a B.Eng. in Electrical & Electronic Engineering Department. As a general scholar at the University of Science and Technology, Beijing, China, he studied Chinese (Mandarin). Thereafter, he obtained an M.Sc. in Management Science and Engineering from Tsinghua University, Beijing,  China and another M.Sc. in Sensor System Engineering from Hanze University of Applied Sciences, Groningen, Netherland. He has also worked in several organizations before joining the University of Jos as a Lecturer.'
+    bio: 'Engr. Kishak Cinfwat, attended Abubakar Tafawa Balewa University, Bauchi - Nigeria, and obtained a B.Eng. in Electrical & Electronic Engineering. As a general scholar at the University of Science and Technology, Beijing, China, he studied Chinese (Mandarin). Thereafter, he obtained an M.Sc. in Management Science and Engineering from Tsinghua University, Beijing,  China and another M.Sc. in Sensor System Engineering from Hanze University of Applied Sciences, Groningen, Netherland. He also worked in several organizations before joining the University of Jos as a Lecturer.'
   },
   {
     rank: 'Lecturer I', 

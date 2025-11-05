@@ -74,7 +74,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { scrollYProgress } = useScroll();
-  const heroY = useTransform(scrollYProgress, [0, 1], [0, -200]);
+  const heroY = useTransform(scrollYProgress, [0, 1], [0, -200]); 
 
   const values = [
     {
