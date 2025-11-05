@@ -145,7 +145,7 @@ export default function AboutUs() {
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12 xl:gap-16 items-center">
                             <div className="relative z-10 order-2 lg:order-1">
                                 <Image 
-                                    src="/vision1.jpeg" 
+                                    src="/gallery14.jpg" 
                                     alt="Study area with covered furniture" 
                                     width={592} 
                                     height={279} 
@@ -196,7 +196,7 @@ export default function AboutUs() {
                             </div>
                             <div className="relative z-10">
                                 <Image 
-                                    src="/vision2.jpeg" 
+                                    src="/gallery5.jpg" 
                                     alt="Library shelves" 
                                     width={592} 
                                     height={279} 
